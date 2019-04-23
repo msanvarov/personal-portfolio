@@ -1,5 +1,6 @@
 import React from "react";
 import Logo from "../../assets/images/header/logo.png";
+import { Container, Row, Col } from "react-bootstrap";
 
 const Profile = () => {
   return (
@@ -24,14 +25,15 @@ const Profile = () => {
             portfolio
           </a>
         </div>
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-6 col-md-7 col-sm-10 col-xs-12 col-lg-offset-6 col-md-offset-5 col-sm-offset-2 col-xs-offset-0">
-              <h1>I`m Salim Anvarov</h1>
-            </div>
-          </div>
-        </div>
+        <Container>
+          <Row>
+            <Col lg={{span: 6, offset: 6}} md={{span: 7, offset:5}} sm={{span: 10, offset: 2}} xs={{span: 12, offset: 0}}>
+            <h1>I`m Salim Anvarov</h1>
+            </Col>
+          </Row>
+        </Container>
       </div>
+      {/* TOOD add about */}
     </div>
   );
 };

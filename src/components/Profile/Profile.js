@@ -1,11 +1,12 @@
 import React from "react";
 import Logo from "../../assets/images/header/logo.png";
 import { Container, Row, Col } from "react-bootstrap";
+import "./Profile.css";
 
-const Profile = () => {
+const Profile = (props) => {
   return (
     <div className="prt_main_wrapper">
-      <div className="prt_home_wrapper">
+      <div className="prt_home_wrapper" style={{height: window.innerHeight}}>
         <div className="prt_logo_wrapper">
           <a href="#main">
             <img src={Logo} alt="Logo" id="prt_close_tab" />
@@ -13,13 +14,13 @@ const Profile = () => {
         </div>
         <div className="prt_menu_wrapper">
           <a href="#about" className="prt_top">
-            about
+            who am i?
           </a>
           <a href="#contact" className="prt_right">
             contact
           </a>
           <a href="#services" className="prt_bottom">
-            strength
+            strengths
           </a>
           <a href="#portfolio" className="prt_left">
             portfolio
@@ -27,13 +28,12 @@ const Profile = () => {
         </div>
         <Container>
           <Row>
-            <Col lg={{span: 6, offset: 6}} md={{span: 7, offset:5}} sm={{span: 10, offset: 2}} xs={{span: 12, offset: 0}}>
+            <Col lg={{span: 6, offset: 6}}>
             <h1>I`m Salim Anvarov</h1>
             </Col>
           </Row>
         </Container>
       </div>
-      {/* TOOD add about */}
     </div>
   );
 };

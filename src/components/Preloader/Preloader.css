@@ -1,30 +1,26 @@
 #preloader {
-  background: #2a54f5;
-  bottom: 0;
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-  z-index: 9999;
+	background-color: #323132;
+	bottom: 0;
+	left: 0;
+	position: fixed;
+	right: 0;
+	top: 0;
+	z-index: 2147483647;
+	width: 100%;
+	height: 100%;
 }
-
-#status,
-.status-mes {
-  background-image: url(./puff.svg);
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 200px;
-  left: 50%;
-  margin: -100px 0 0 -100px;
-  position: absolute;
-  top: 50%;
-  width: 200px;
+#status {
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    -moz-transform: translate(-50%,-50%);
+    -o-transform: translate(-50%,-50%);
 }
-
-.status-mes {
-  background: none;
-  left: 0;
-  margin: 0;
-  text-align: center;
-  top: 65%;
+#status img {
 }

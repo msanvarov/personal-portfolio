@@ -12,13 +12,13 @@ class Layout extends Component {
       this.setState({
         showLoader: false
       });
-    }, 600);
+    }, 2000);
   };
   render() {
     return (
       <Aux>
         <Preloader show={this.state.showLoader} />
-        <Profile />
+        <Profile/>
       </Aux>
     );
   }

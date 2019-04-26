@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Preloader from "../../components/Preloader/Preloader";
-import Profile from "../../components/Profile/Profile";
+import Landing from "../../components/Landing/Landing";
 
 class Layout extends Component {
   state = {
@@ -18,7 +18,7 @@ class Layout extends Component {
     return (
       <Aux>
         <Preloader show={this.state.showLoader} />
-        <Profile/>
+        <Landing />
       </Aux>
     );
   }

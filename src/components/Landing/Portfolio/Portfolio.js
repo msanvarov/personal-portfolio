@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import LArrow from "../../../assets/images/header/left_arrow.png";
 import "./Portfolio.css";
 import { Container, Row, Col } from "react-bootstrap";
+import ScrollAnimation from "react-animate-on-scroll";
 import axios from "../../../axios-github";
 import Footer from "../../Footer/Footer";
 
@@ -34,6 +35,7 @@ class Portfolio extends Component {
               </div>
             </Col>
           </Row>
+          <Row />
         </Container>
         <Footer />
       </div>

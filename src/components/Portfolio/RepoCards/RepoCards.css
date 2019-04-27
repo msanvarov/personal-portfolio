@@ -4,3 +4,9 @@ a {
 a:hover {
   color: #e0e0e0 !important;
 }
+hr {
+  width: 100%;
+  color: white;
+  height: 1px;
+  background-color: white;
+}

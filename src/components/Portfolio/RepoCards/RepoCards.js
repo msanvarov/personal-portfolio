@@ -18,6 +18,7 @@ const RepoCards = props => {
             <a href={props.data.htmlRef}>{props.data.name}</a>
           </h4>
         </Card.Title>
+        <hr />
         <Card.Subtitle className="mb-3 mt-2 row">
           <div className="pl-3 col-1-sm">
             <FontAwesomeIcon icon={faStar} /> {props.data.stargazers_count}

@@ -54,6 +54,9 @@ class Landing extends Component {
   triggerContact = () => {
     this.setState({ renderContact: !this.state.renderContact });
   };
+  triggerAbout = () => {
+    this.setState({ renderAbout: !this.state.renderAbout });
+  };
   render() {
     let portfolio = this.state.renderPortfolio ? (
       <Portfolio toRender={this.triggeredPortfolio} repos={this.state.repos} />
@@ -62,7 +65,7 @@ class Landing extends Component {
       <Contact toRender={this.triggerContact} />
     ) : null;
     let about = this.state.renderAbout ? (
-      <About toRender={this.renderAbout} />
+      <About toRender={this.triggerAbout} />
     ) : null;
     return (
       <Aux>
@@ -78,7 +81,7 @@ class Landing extends Component {
               </a>
             </div>
             <div className="prt_menu_wrapper">
-              <a href="#about" className="prt_top">
+              <a href="#about" className="prt_top" onClick={this.triggerAbout}>
                 who am i?
               </a>
               <a

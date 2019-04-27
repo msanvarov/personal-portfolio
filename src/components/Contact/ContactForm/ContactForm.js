@@ -22,8 +22,7 @@ const ContactForm = () => {
             premise: values.subject,
             message: values.message
           })
-          .then(res => {
-            console.log(res.data);
+          .then(() => {
             resetForm();
           })
           .catch(err => console.log(err));

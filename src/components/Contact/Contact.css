@@ -2,7 +2,7 @@
   background-color: #010101;
   position: absolute;
   animation-duration: 1s;
-  animation-name: slidein;
+  animation-name: slideLeft;
   width: 100%;
   top: 0;
   z-index: 1;
@@ -159,7 +159,7 @@
   background-image: url(http://placehold.it/450X250);
 }
 
-@keyframes slidein {
+@keyframes slideLeft {
   from {
     left: 100%;
   }

@@ -1,4 +1,5 @@
 import React from "react";
+import "./Footer.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithubAlt, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { Container, Row, Col } from "react-bootstrap";
@@ -19,12 +20,12 @@ const Footer = () => {
             <ul>
               <li>
                 <a href="https://github.com/msanvarov/personal-portfolio">
-                  <FontAwesomeIcon icon={faGithubAlt} /> Github Repo
+                  <FontAwesomeIcon icon={faGithubAlt} />
                 </a>
               </li>
               <li>
                 <a href="https://www.linkedin.com/in/salim-anvarov-aa5905b2/">
-                  <FontAwesomeIcon icon={faLinkedin} /> Linkedin
+                  <FontAwesomeIcon icon={faLinkedin} />
                 </a>
               </li>
             </ul>

@@ -1,12 +1,15 @@
 .prt_portfolio_wrapper {
   background-color: #010101;
   position: absolute;
-  right: 0px;
+  animation-duration: 1s;
+  animation-name: slidein;
+
   width: 100%;
   display: block;
   top: 0;
   z-index: 1;
 }
+
 .prt_loadmore {
   display: none;
 }
@@ -112,4 +115,14 @@
   margin: 0px;
   text-transform: capitalize;
   color: #000000;
+}
+
+@keyframes slidein {
+  from {
+    right: 100%;
+  }
+
+  to {
+    right: 0px;
+  }
 }

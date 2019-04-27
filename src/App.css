@@ -166,7 +166,7 @@ button:focus {
   position: absolute;
   right: 0;
   bottom: -10px;
-  color: #f6483b;
+  color: #2a7ae3;
   font-weight: 500;
 }
 .prt_heading_wrapper_2 {
@@ -190,8 +190,8 @@ button:focus {
   display: inline-block;
   text-align: center;
   text-transform: capitalize;
-  background-color: #f6483b;
-  border: 1px solid #f6483b;
+  background-color: #2a7ae3;
+  border: 1px solid #2a7ae3;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   -ms-transition: all 0.3s;
@@ -200,9 +200,9 @@ button:focus {
 }
 .prt_btn:hover,
 .prt_btn:focus {
-  color: #f6483b;
+  color: #2a7ae3;
   background-color: #111111;
-  border: 1px solid #f6483b;
+  border: 1px solid #2a7ae3;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   -ms-transition: all 0.3s;

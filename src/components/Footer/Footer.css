@@ -19,7 +19,7 @@
   transition: all 0.3s;
 }
 .prt_footer_wrapper p a:hover {
-  color: #f6483b;
+  color: #2a7ae3;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   -ms-transition: all 0.3s;
@@ -59,7 +59,7 @@
 }
 .prt_footer_wrapper ul li a:hover {
   color: #ffffff;
-  background-color: #f6483b;
+  background-color: #2a7ae3;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   -ms-transition: all 0.3s;

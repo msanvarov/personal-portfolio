@@ -3,6 +3,8 @@ import "./Contact.css";
 import { Container, Row, Col } from "react-bootstrap";
 import Map from "../Map/Map";
 import Form from "./ContactForm/ContactForm";
+import Footer from "../Footer/Footer";
+import ContactCard from "./ContactCard/ContactCard";
 import RArrow from "../../assets/images/header/right_arrow.png";
 
 const Contact = props => {
@@ -43,8 +45,28 @@ const Contact = props => {
               </Col>
             </Row>
           </div>
+          <div className="prt_contact_details">
+            <Row>
+              <Col lg={4} md={4} sm={6} xs={12}>
+                <ContactCard
+                  title="Email"
+                  description="salim.anvarov@mail.utoronto.ca"
+                />
+              </Col>
+              <Col lg={4} md={4} sm={6} xs={12}>
+                <ContactCard title="City" description="Toronto" />
+              </Col>
+              <Col lg={4} md={4} sm={6} xs={12}>
+                <ContactCard
+                  title="UToronto"
+                  description="BSc Computer Science and Statistics"
+                />
+              </Col>
+            </Row>
+          </div>
         </Row>
       </Container>
+      <Footer />
     </div>
   );
 };

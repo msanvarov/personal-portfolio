@@ -4,6 +4,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import DArrow from "../../assets/images/header/down_arrow.png";
 import Education from "./Education/Education";
 import Experience from "./Experience/Experience";
+import Footer from "../Footer/Footer";
 const About = props => {
   return (
     <div className="prt_about_wrapper prt_toppadder115">
@@ -16,43 +17,40 @@ const About = props => {
         />
       </div>
       <Container>
-        <Row>
-          <div className="prt_about_info prt_bottompadder80">
-            <Row>
-              <Col lg={6} md={6} sm={12} xs={12}>
-                <div className="prt_about_img">
-                  <img src="http://placehold.it/370X488" alt="About" />
+        <div className="prt_about_info prt_bottompadder80">
+          <Row>
+            <Col lg={6} md={6} sm={12} xs={12}>
+              <div className="prt_about_img">
+                <img src="http://placehold.it/370X488" alt="About" />
+              </div>
+            </Col>
+            <Col lg={6} md={6} sm={12} xs={12}>
+              <div className="prt_heading_wrapper_2">
+                <div className="prt_heading prt_toppadder50">
+                  <h1>about me</h1>
+                  <p>who am i</p>
                 </div>
-              </Col>
-              <Col lg={6} md={6} sm={12} xs={12}>
-                <div className="prt_heading_wrapper_2">
-                  <div className="prt_heading prt_toppadder50">
-                    <h1>about me</h1>
-                    <p>who am i</p>
-                  </div>
-                </div>
-                <p>
-                  There are many variations of passages of Lorem Ipsum
-                  available, but the majority have suffered alteration in some
-                  form, by injected humour, or randomised words which don't look
-                  even slightly believable. If you are going to use a passage of
-                  Lorem Ipsum, you need to be sure there isn't anything
-                  embarrassing hidden in the middle of text. All the Lorem Ipsum
-                  generators on the Internet tend to repeat predefined chunks as
-                  necessary, making this the first true generator on the
-                  Internet. It uses a dictionary of over 200 Latin words,
-                  combined with a handful of model sentence structures.
-                </p>
-                <a href="#some_site" className="prt_btn">
-                  Download Resume
-                </a>
-              </Col>
-            </Row>
-          </div>
-          {/* <Education /> */}
-          {/* <Experience /> */}
-        </Row>
+              </div>
+              <p>
+                Hard-working developer with a ﬂair for creating elegant
+                solutions to complex LOB operations. Team player with a can-do
+                attitude, and a strong user focus. Developed CRUD applications
+                that leverage REST APIs to tackle identifying data quality gaps,
+                and negate the manual process involved when dealing with large
+                amounts of data. Created a POF to handle linking external and
+                internal classiﬁcation codes to promote the comparability of
+                RBC's potential impact on diﬀerent industries
+              </p>
+              <a href="#some_site" className="prt_btn">
+                Download Resume
+              </a>
+            </Col>
+          </Row>
+        </div>
+        <Education />
+        <Experience />
       </Container>
+      <Footer />
     </div>
   );
 };

@@ -81,7 +81,7 @@
 }
 .prt_about_learnbox_right:hover:after {
   background-color: #ffffff;
-  border: 3px solid #f6483b;
+  border: 3px solid #2a7ae3;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   -ms-transition: all 0.3s;
@@ -119,7 +119,7 @@
 }
 .prt_about_learnbox_left:hover:after {
   background-color: #ffffff;
-  border: 3px solid #f6483b;
+  border: 3px solid #2a7ae3;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   -ms-transition: all 0.3s;
@@ -127,7 +127,7 @@
   transition: all 0.3s;
 }
 .prt_about_learnbox_right:hover .prt_about_learnbox_year h1 {
-  color: #f6483b;
+  color: #2a7ae3;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   -ms-transition: all 0.3s;
@@ -135,7 +135,7 @@
   transition: all 0.3s;
 }
 .prt_about_learnbox_left:hover .prt_about_learnbox_year h1 {
-  color: #f6483b;
+  color: #2a7ae3;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   -ms-transition: all 0.3s;
@@ -257,7 +257,7 @@
   transition: all 0.3s;
 }
 .prt_about_experiencebox:hover .prt_about_experience_year h1 {
-  color: #f6483b;
+  color: #2a7ae3;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   -ms-transition: all 0.3s;

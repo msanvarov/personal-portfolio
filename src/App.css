@@ -209,3 +209,180 @@ button:focus {
   -o-transition: all 0.3s;
   transition: all 0.3s;
 }
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .prt_counter_box {
+    padding-left: 50px;
+  }
+  .prt_home_wrapper h1 {
+    font-size: 120px;
+    margin: 0px;
+  }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .prt_profile_slider {
+    padding-top: 0px;
+    margin-bottom: 50px;
+  }
+  .prt_counter_box {
+    padding-left: 0px;
+  }
+  .prt_about_learnbox_right:after {
+    top: 0%;
+    left: 0%;
+    margin-top: 0;
+  }
+  .prt_about_learnbox_left:after {
+    top: 0%;
+    right: 0%;
+    margin-top: 0;
+  }
+  .prt_about_learnsection:after {
+    display: none;
+  }
+  .prt_about_learnbox_left,
+  .prt_about_learnbox_right {
+    border-bottom: 1px solid #202020;
+    padding-bottom: 30px;
+  }
+  .prt_services_slider_wrapper {
+    height: 1020px;
+    position: relative;
+  }
+  .prt_services_slider_imgs {
+    margin-left: 150px;
+  }
+  .prt_services_slider_box {
+    position: absolute;
+    top: 450px;
+    left: 0;
+    right: 0;
+    margin: 0px auto;
+  }
+  .prt_home_wrapper h1 {
+    font-size: 90px;
+    margin: 0px;
+  }
+}
+@media (max-width: 767px) {
+  .prt_home_wrapper h1 {
+    font-size: 90px;
+    margin: 0px;
+    text-align: center;
+  }
+  .prt_profile_slider {
+    padding-top: 0px;
+    margin-bottom: 50px;
+  }
+  .prt_about_learnbox_right:after {
+    top: 0%;
+    left: 0%;
+    margin-top: 0;
+  }
+  .prt_about_learnbox_left:after {
+    top: 0%;
+    right: 0%;
+    margin-top: 0;
+  }
+  .prt_about_learnsection:after {
+    display: none;
+  }
+  .prt_about_learnbox_left,
+  .prt_about_learnbox_right {
+    border-bottom: 1px solid #202020;
+    padding-bottom: 30px;
+  }
+  .prt_footer_wrapper p {
+    width: 100%;
+    text-align: center;
+    margin: 0px 0px 20px 0px;
+  }
+  .prt_footer_wrapper ul {
+    width: 100%;
+    text-align: center;
+  }
+  .prt_services_slider_wrapper {
+    height: 1020px;
+    position: relative;
+  }
+  .prt_services_slider_imgs {
+    margin-left: 150px;
+  }
+  .prt_services_slider_box {
+    position: absolute;
+    top: 450px;
+    left: 0;
+    right: 0;
+    margin: 0px auto;
+  }
+}
+@media (min-width: 620px) and (max-width: 700px) {
+  .prt_services_slider_imgs {
+    margin-left: 120px;
+  }
+}
+@media (min-width: 540px) and (max-width: 619px) {
+  .prt_services_slider_imgs {
+    margin-left: 50px;
+  }
+}
+@media (max-width: 539px) {
+  .prt_services_slider_imgs {
+    margin-left: 0px;
+  }
+}
+@media (min-width: 480px) and (max-width: 767px) {
+}
+@media (max-width: 479px) {
+  .prt_services_slider_imgs {
+    margin-left: 0px;
+  }
+  .prt_heading h1 {
+    font-size: 34px;
+  }
+  .prt_home_wrapper h1 {
+    font-size: 50px;
+  }
+  .prt_counter_box {
+    padding-left: 0px;
+  }
+  .prt_about_learnbox_year {
+    display: table-caption;
+    width: 100%;
+    vertical-align: middle;
+    padding-top: 0px;
+  }
+  .prt_about_learnbox_info {
+    width: 100%;
+  }
+  .prt_about_experience_year {
+    display: inline-block;
+    width: 100%;
+  }
+  .prt_about_experience_year h4 {
+    margin-bottom: 50px;
+    text-align: left;
+  }
+  .prt_about_experience_info {
+    display: inline-block;
+    width: 100%;
+    padding-left: 0px;
+  }
+  .prt_footer_wrapper ul li {
+    margin: 0px 2px;
+  }
+  .prt_about_learnbox_right:after {
+    display: none;
+  }
+  .prt_about_learnbox_left:after {
+    display: none;
+  }
+}
+@media (max-width: 390px) {
+  .prt_services_slider_box {
+    top: 350px;
+  }
+  .prt_services_slider_wrapper {
+    height: 900px;
+  }
+}

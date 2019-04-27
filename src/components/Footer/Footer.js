@@ -1,4 +1,6 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithubAlt, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { Container, Row, Col } from "react-bootstrap";
 
 const Footer = () => {
@@ -17,12 +19,12 @@ const Footer = () => {
             <ul>
               <li>
                 <a href="https://github.com/msanvarov/personal-portfolio">
-                  <i className="fa fa-github-alt" aria-hidden="true" />
+                  <FontAwesomeIcon icon={faGithubAlt} /> Github Repo
                 </a>
               </li>
               <li>
                 <a href="https://www.linkedin.com/in/salim-anvarov-aa5905b2/">
-                  <i className="fa fa-linkedin" aria-hidden="true" />
+                  <FontAwesomeIcon icon={faLinkedin} /> Linkedin
                 </a>
               </li>
             </ul>

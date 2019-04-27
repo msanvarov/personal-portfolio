@@ -1,22 +1,19 @@
 import React from "react";
 import LArrow from "../../../assets/images/header/left_arrow.png";
 import "./Portfolio.css";
-import Aux from "../../../hoc/Auxiliary/Auxiliary";
 import { Container, Row, Col } from "react-bootstrap";
 import Footer from "../../Footer/Footer";
 
 const Portfolio = props => {
   return (
-    <Aux>
-      <div className="prt_portfolio_wrapper prt_toppadder115">
-        <div className="prt_close_wrapper">
-          <img
-            src={LArrow}
-            alt="Close"
-            className="prt_close"
-            onClick={props.toRender}
-          />
-        </div>
+    <div className="prt_portfolio_wrapper prt_toppadder115">
+      <div className="prt_close_wrapper">
+        <img
+          src={LArrow}
+          alt="Close"
+          className="prt_close"
+          onClick={props.toRender}
+        />
       </div>
       <Container>
         <Row>
@@ -48,7 +45,7 @@ const Portfolio = props => {
         </div>
       </Container>
       <Footer />
-    </Aux>
+    </div>
   );
 };
 export default Portfolio;

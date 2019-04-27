@@ -1,11 +1,12 @@
 .prt_contact_wrapper {
   background-color: #010101;
   position: absolute;
-  left: 100%;
+  animation-duration: 1s;
+  animation-name: slidein;
   width: 100%;
   top: 0;
   z-index: 1;
-  display: none;
+  display: block;
 }
 .prt_contact_box {
 }
@@ -156,4 +157,14 @@
 }
 .prt_contact_details_box.details_box3 {
   background-image: url(http://placehold.it/450X250);
+}
+
+@keyframes slidein {
+  from {
+    left: 100%;
+  }
+
+  to {
+    left: 0px;
+  }
 }

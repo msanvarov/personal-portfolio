@@ -4,12 +4,14 @@ import "./Landing.css";
 import axios from "../../axios-github";
 import Logo from "../../assets/images/header/logo.png";
 import Portfolio from "../../components/Portfolio/Portfolio";
+import Contact from "../../components/Contact/Contact";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Preloader from "../../components/Preloader/Preloader";
 
 class Landing extends Component {
   state = {
     renderPortfolio: false,
+    renderContact: false,
     repos: [],
     showLoader: true
   };
@@ -47,9 +49,15 @@ class Landing extends Component {
   triggeredPortfolio = () => {
     this.setState({ renderPortfolio: !this.state.renderPortfolio });
   };
+  triggerContact = () => {
+    this.setState({ renderContact: !this.state.renderContact });
+  };
   render() {
     let portfolio = this.state.renderPortfolio ? (
       <Portfolio toRender={this.triggeredPortfolio} repos={this.state.repos} />
+    ) : null;
+    let contact = this.state.renderContact ? (
+      <Contact toRender={this.triggerContact} />
     ) : null;
     return (
       <Aux>
@@ -68,7 +76,11 @@ class Landing extends Component {
               <a href="#about" className="prt_top">
                 who am i?
               </a>
-              <a href="#contact" className="prt_right">
+              <a
+                href="#contact"
+                className="prt_right"
+                onClick={this.triggerContact}
+              >
                 contact
               </a>
               <a href="#services" className="prt_bottom">
@@ -96,6 +108,7 @@ class Landing extends Component {
             </Container>
           </div>
           {portfolio}
+          {contact}
         </div>
       </Aux>
     );

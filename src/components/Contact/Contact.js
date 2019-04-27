@@ -1,5 +1,6 @@
-import RArrow from "../../../assets/images/header/right_arrow.png";
 import React from "react";
+import "./Contact.css";
+import RArrow from "../../assets/images/header/right_arrow.png";
 
 export default function Contact() {
   return (

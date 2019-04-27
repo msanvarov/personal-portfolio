@@ -1,0 +1,377 @@
+.prt_about_wrapper {
+  background-color: #010101;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  z-index: 1;
+  display: block;
+}
+.prt_about_info {
+  display: inline-block;
+  width: 100%;
+}
+.prt_about_img {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+.prt_about_img img {
+  display: inline-block;
+}
+.prt_about_details {
+  display: inline-block;
+  width: 100%;
+}
+.prt_about_details p {
+  margin-bottom: 30px;
+}
+.prt_about_details a.prt_btn {
+  margin-right: 20px;
+  margin-bottom: 10px;
+}
+.prt_about_edulearn_wrapper {
+  display: inline-block;
+  width: 100%;
+}
+.prt_about_learnsection {
+  display: inline-block;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+.prt_about_learnsection:after {
+  content: "";
+  position: absolute;
+  background-color: #202020;
+  width: 2px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0px auto;
+  z-index: -1;
+}
+.prt_about_learnbox_right {
+  display: table;
+  width: 100%;
+  margin-bottom: 30px;
+  position: relative;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_about_learnbox_right:after {
+  content: "";
+  position: absolute;
+  background-color: #000000;
+  width: 15px;
+  height: 15px;
+  border-radius: 100%;
+  border: 3px solid #ffffff;
+  top: 50%;
+  left: -22px;
+  margin-top: -7px;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_about_learnbox_right:hover:after {
+  background-color: #ffffff;
+  border: 3px solid #f6483b;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_about_learnbox_left {
+  display: table;
+  width: 100%;
+  margin-bottom: 30px;
+  text-align: right;
+  position: relative;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_about_learnbox_left:after {
+  content: "";
+  position: absolute;
+  background-color: #000000;
+  width: 15px;
+  height: 15px;
+  border-radius: 100%;
+  border: 3px solid #ffffff;
+  top: 50%;
+  right: -22px;
+  margin-top: -7px;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_about_learnbox_left:hover:after {
+  background-color: #ffffff;
+  border: 3px solid #f6483b;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_about_learnbox_right:hover .prt_about_learnbox_year h1 {
+  color: #f6483b;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_about_learnbox_left:hover .prt_about_learnbox_year h1 {
+  color: #f6483b;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_about_learnbox_left .prt_about_learnbox_year {
+  float: right;
+  padding-top: 30px;
+}
+.prt_about_learnbox_year {
+  display: table-cell;
+  width: 200px;
+  vertical-align: middle;
+}
+.prt_about_learnbox_year h1 {
+  font-size: 60px;
+  margin: 0px;
+  color: #202020;
+  font-weight: 500;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_about_learnbox_right:hover .prt_about_learnbox_year h1 {
+  -webkit-animation-duration: 2s;
+  -moz-animation-duration: 2s;
+  -ms-animation-duration: 2s;
+  -o-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-delay: 300ms;
+  -moz-animation-delay: 300ms;
+  -ms-animation-delay: 300ms;
+  -o-animation-delay: 300ms;
+  animation-delay: 300ms;
+  animation-iteration-count: infinite;
+  animation-name: pulse;
+}
+.prt_about_learnbox_left:hover .prt_about_learnbox_year h1 {
+  -webkit-animation-duration: 2s;
+  -moz-animation-duration: 2s;
+  -ms-animation-duration: 2s;
+  -o-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-delay: 300ms;
+  -moz-animation-delay: 300ms;
+  -ms-animation-delay: 300ms;
+  -o-animation-delay: 300ms;
+  animation-delay: 300ms;
+  animation-iteration-count: infinite;
+  animation-name: pulse;
+}
+.prt_about_learnbox_left .prt_about_learnbox_info {
+  float: left;
+}
+.prt_about_learnbox_info {
+  display: table-cell;
+  width: calc(100% - 200px);
+}
+.prt_about_learnbox_info h4 {
+  font-size: 18px;
+  text-transform: capitalize;
+  margin-top: 0px;
+}
+.prt_about_learnbox_info span {
+  display: inline-block;
+  width: 100%;
+  color: #ffffff;
+  text-transform: capitalize;
+  margin-bottom: 10px;
+}
+.prt_about_learnbox_info p {
+  margin: 0px;
+}
+.prt_about_experience_wrapper {
+  display: inline-block;
+  width: 100%;
+}
+.prt_about_experience {
+  display: inline-block;
+  width: 100%;
+}
+.prt_about_experiencebox {
+  display: table;
+  width: 100%;
+  margin-bottom: 50px;
+  position: relative;
+  z-index: 1;
+  padding: 50px 10px 50px 0px;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_about_experiencebox:after {
+  content: "";
+  position: absolute;
+  background-color: #111111;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 69%;
+  z-index: -1;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_about_experiencebox:hover:after {
+  background-color: rgba(255, 255, 255, 0.2);
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_about_experiencebox:hover .prt_about_experience_year h1 {
+  color: #f6483b;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_about_experience_year {
+  display: table-cell;
+  width: 230px;
+  vertical-align: middle;
+}
+.prt_about_experience_year h1 {
+  font-size: 100px;
+  margin: 0px;
+  color: #202020;
+  font-weight: 500;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_about_experience_year h4 {
+  font-size: 18px;
+  text-transform: capitalize;
+  margin: 0px;
+  text-align: right;
+  color: #b7b7b7;
+}
+.prt_about_experience_info {
+  display: table-cell;
+  width: calc(100% - 230px);
+  padding-left: 30px;
+}
+.prt_about_experience_info h4 {
+  font-size: 18px;
+  text-transform: capitalize;
+  margin-top: 0px;
+}
+.prt_about_experience_info span {
+  display: inline-block;
+  width: 100%;
+  color: #ffffff;
+  text-transform: capitalize;
+  margin-bottom: 10px;
+}
+.prt_about_experience_info p {
+  margin: 0px;
+}
+.prt_profile_info {
+  display: inline-block;
+  width: 100%;
+}
+.prt_profile_slider {
+  display: inline-block;
+  width: 100%;
+  padding-top: 30px;
+  text-align: center;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_profile_slider .owl-theme .owl-nav.disabled + .owl-dots {
+  margin-top: 20px;
+}
+.prt_profile_slider i {
+  display: inline-block;
+  width: 100%;
+  font-size: 76px;
+  color: #202020;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_profile_slider .item:hover i.pl_clr1 {
+  color: #1b73ff;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_profile_slider .item:hover i.pl_clr2 {
+  color: #c82663;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_profile_slider .item:hover i.pl_clr3 {
+  color: #76c239;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_profile_slider h4 {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 0px;
+  color: #fffefe;
+  margin-top: 20px;
+  text-transform: capitalize;
+}
+.prt_profile_details {
+  display: inline-block;
+  width: 100%;
+}
+.prt_profile_details p {
+  margin-bottom: 0px;
+}

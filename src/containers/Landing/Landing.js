@@ -5,6 +5,7 @@ import axios from "../../axios-github";
 import Logo from "../../assets/images/header/logo.png";
 import Portfolio from "../../components/Portfolio/Portfolio";
 import Contact from "../../components/Contact/Contact";
+import About from "../../components/About/About";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Preloader from "../../components/Preloader/Preloader";
 
@@ -12,6 +13,7 @@ class Landing extends Component {
   state = {
     renderPortfolio: false,
     renderContact: false,
+    renderAbout: false,
     repos: [],
     showLoader: true
   };
@@ -58,6 +60,9 @@ class Landing extends Component {
     ) : null;
     let contact = this.state.renderContact ? (
       <Contact toRender={this.triggerContact} />
+    ) : null;
+    let about = this.state.renderAbout ? (
+      <About toRender={this.renderAbout} />
     ) : null;
     return (
       <Aux>
@@ -109,6 +114,7 @@ class Landing extends Component {
           </div>
           {portfolio}
           {contact}
+          {about}
         </div>
       </Aux>
     );

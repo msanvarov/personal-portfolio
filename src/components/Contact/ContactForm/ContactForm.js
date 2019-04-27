@@ -15,22 +15,15 @@ const ContactForm = () => {
         message: ""
       }}
       onSubmit={(values, { resetForm }) => {
-        console.log(values);
-
         axios
-          .post(
-            "https://formspree.io/salim.anvarov@yahoo.com",
-            {
-              headers: { "content-type": "application/x-www-form-urlencoded" },
-              email: values.email,
-              message: `Name: ${values.name}\nSubject:${
-                values.subject
-              }\nMessage: ${values.message}`
-            },
-            { mode: "no-cors" }
-          )
+          .post("https://formcarry.com/s/bh2JHyiHHm7", {
+            email: values.email,
+            name: values.name,
+            premise: values.subject,
+            message: values.message
+          })
           .then(res => {
-            console.log(res);
+            console.log(res.data);
             resetForm();
           })
           .catch(err => console.log(err));
@@ -147,6 +140,7 @@ const ContactForm = () => {
                   )}
                 </Form.Group>
               </Row>
+              <Form.Control hidden name="_gotcha" />
               <button
                 type="submit"
                 className="prt_btn submitForm"

@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import LArrow from "../../../assets/images/header/left_arrow.png";
 import "./Portfolio.css";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, ButtonToolbar, Button } from "react-bootstrap";
 import axios from "../../../axios-github";
 import Footer from "../../Footer/Footer";
 import RepoCards from "./RepoCards/RepoCards";
+import ScrollAnimation from "react-animate-on-scroll";
 
 class Portfolio extends Component {
   state = {
@@ -23,13 +24,15 @@ class Portfolio extends Component {
         };
       });
       this.setState({
-        repos: filtered.sort(
-          (curr, next) =>
-            next.stargazers_count +
-            next.forks -
-            curr.stargazers_count -
-            curr.forks
-        )
+        repos: filtered
+          .sort(
+            (curr, next) =>
+              next.stargazers_count +
+              next.forks -
+              curr.stargazers_count -
+              curr.forks
+          )
+          .slice(0, 16)
       });
     });
   };
@@ -57,10 +60,31 @@ class Portfolio extends Component {
           </Row>
           <Row>
             {this.state.repos.map((repo, i) => (
-              <Col lg={3} md={3} sm={3} xs={3} className="mt-2" key={i}>
+              <Col lg={3} md={3} sm={12} xs={12} className="mt-2" key={i}>
                 <RepoCards data={repo} />
               </Col>
             ))}
+          </Row>
+          <Row>
+            <Col lg={12} md={12} sm={12} xs={12} className="mt-2">
+              <ScrollAnimation
+                delay={1000}
+                animateIn="fadeIn slow"
+                className="mx-auto my-4"
+              >
+                <div className="d-flex justify-content-center">
+                  <ButtonToolbar>
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      href="https://github.com/msanvarov"
+                    >
+                      Browse More
+                    </Button>
+                  </ButtonToolbar>
+                </div>
+              </ScrollAnimation>
+            </Col>
           </Row>
         </Container>
         <Footer />

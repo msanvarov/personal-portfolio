@@ -39,7 +39,7 @@ const Contact = props => {
                 </div>
               </Col>
               <Col lg={6} md={6} sm={12} xs={12}>
-                <div class="prt_contact_map">
+                <div className="prt_contact_map">
                   <Map />
                 </div>
               </Col>

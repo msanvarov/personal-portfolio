@@ -3,6 +3,7 @@ import { Form, Row, Col } from "react-bootstrap";
 import "../Contact.css";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
 
 const ContactForm = () => {
   return (
@@ -15,7 +16,24 @@ const ContactForm = () => {
       }}
       onSubmit={(values, { resetForm }) => {
         console.log(values);
-        resetForm();
+
+        axios
+          .post(
+            "https://formspree.io/salim.anvarov@yahoo.com",
+            {
+              headers: { "content-type": "application/x-www-form-urlencoded" },
+              email: values.email,
+              message: `Name: ${values.name}\nSubject:${
+                values.subject
+              }\nMessage: ${values.message}`
+            },
+            { mode: "no-cors" }
+          )
+          .then(res => {
+            console.log(res);
+            resetForm();
+          })
+          .catch(err => console.log(err));
       }}
       validationSchema={Yup.object().shape({
         email: Yup.string()

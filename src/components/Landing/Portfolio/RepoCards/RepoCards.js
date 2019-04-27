@@ -1,38 +1,36 @@
 import React from "react";
 import { Card } from "react-bootstrap";
-import PropTypes from "prop-types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCodeBranch, faStar } from "@fortawesome/free-solid-svg-icons";
+import "./RepoCards.css";
 
 const RepoCards = props => {
   return (
-    <Card>
+    <Card
+      border="primary"
+      bg="primary"
+      text="white"
+      style={{ height: "15rem" }}
+    >
       <Card.Body>
         <Card.Title>
           <h4>
-            <a href={props.htmlRef}>{props.name}</a>
+            <a href={props.data.htmlRef}>{props.data.name}</a>
           </h4>
         </Card.Title>
-        <Card.Subtitle className="mb-3 row">
+        <Card.Subtitle className="mb-3 mt-2 row">
           <div className="pl-3 col-1-sm">
-            <i className="fas fa-star" /> {props.stargazers_count}
+            <FontAwesomeIcon icon={faStar} /> {props.data.stargazers_count}
           </div>
-          <div className="col-1-sm">
-            <i className="fas fa-code-branch pl-2" /> {props.forks}
+          <div className="pl-3 col-1-sm">
+            <FontAwesomeIcon icon={faCodeBranch} /> {props.data.forks}
           </div>
-          <div className="text-right col">{props.language}</div>
+          <div className="text-right col">{props.data.language}</div>
         </Card.Subtitle>
-        <Card.Text>{props.description}</Card.Text>
+        <Card.Text>{props.data.description}</Card.Text>
       </Card.Body>
     </Card>
   );
-};
-
-RepoCards.propTypes = {
-  name: PropTypes.string.isRequired,
-  htmlRef: PropTypes.string.isRequired,
-  stargazers_count: PropTypes.string.isRequired,
-  forks: PropTypes.string.isRequired,
-  language: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired
 };
 
 export default RepoCards;

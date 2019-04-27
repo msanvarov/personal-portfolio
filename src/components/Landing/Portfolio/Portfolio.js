@@ -2,16 +2,36 @@ import React, { Component } from "react";
 import LArrow from "../../../assets/images/header/left_arrow.png";
 import "./Portfolio.css";
 import { Container, Row, Col } from "react-bootstrap";
-import ScrollAnimation from "react-animate-on-scroll";
 import axios from "../../../axios-github";
 import Footer from "../../Footer/Footer";
+import RepoCards from "./RepoCards/RepoCards";
 
 class Portfolio extends Component {
   state = {
     repos: []
   };
   componentDidMount = () => {
-    axios.get("/users/msanvarov/repos").then();
+    axios.get("/users/msanvarov/repos").then(res => {
+      let filtered = res.data.map(i => {
+        return {
+          htmlRef: i.html_url,
+          name: i.name,
+          stargazers_count: i.stargazers_count,
+          forks: i.forks,
+          language: i.language,
+          description: i.description
+        };
+      });
+      this.setState({
+        repos: filtered.sort(
+          (curr, next) =>
+            next.stargazers_count +
+            next.forks -
+            curr.stargazers_count -
+            curr.forks
+        )
+      });
+    });
   };
   render() {
     return (
@@ -35,7 +55,13 @@ class Portfolio extends Component {
               </div>
             </Col>
           </Row>
-          <Row />
+          <Row>
+            {this.state.repos.map((repo, i) => (
+              <Col lg={3} md={3} sm={3} xs={3} className="mt-2" key={i}>
+                <RepoCards data={repo} />
+              </Col>
+            ))}
+          </Row>
         </Container>
         <Footer />
       </div>

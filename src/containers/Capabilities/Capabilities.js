@@ -21,19 +21,26 @@ class Capabilities extends Component {
     abilities: [
       {
         language: "Python",
-        percentage: 90
+        percentage: 90,
+        href:
+          "https://github.com/msanvarov?utf8=%E2%9C%93&tab=repositories&q=&type=&language=python"
       },
       {
         language: "JS",
-        percentage: 95
+        percentage: 95,
+        href:
+          "https://github.com/msanvarov?utf8=%E2%9C%93&tab=repositories&q=&type=&language=javascript"
       },
       {
         language: "C/C++",
-        percentage: 80
+        percentage: 80,
+        href: "https://github.com/msanvarov?tab=repositories"
       },
       {
         language: "Java",
-        percentage: 85
+        percentage: 85,
+        href:
+          "https://github.com/msanvarov?utf8=%E2%9C%93&tab=repositories&q=&type=&language=java"
       }
     ],
     accolades: [
@@ -59,7 +66,7 @@ class Capabilities extends Component {
       },
       {
         title: "Software Development",
-        description: "Electron, Kivy with Python and CLI with C.",
+        description: "Electron, Kivy, C/C++",
         img: SoftwareI
       },
       {

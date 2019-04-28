@@ -25,8 +25,8 @@ const Abilities = props => {
                   <Col
                     lg={3}
                     md={3}
-                    sm={12}
-                    xs={12}
+                    sm={6}
+                    xs={6}
                     className="text-center"
                     key={i}
                   >
@@ -35,6 +35,9 @@ const Abilities = props => {
                       percentage={ability.percentage}
                       language={ability.language}
                     />
+                    <a href={ability.href}>
+                      <p>See More</p>
+                    </a>
                   </Col>
                 );
               })}

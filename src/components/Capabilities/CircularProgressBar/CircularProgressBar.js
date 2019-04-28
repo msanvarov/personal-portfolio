@@ -16,9 +16,10 @@ const CircularProgressBar = props => {
             stroke: "gray"
           },
           text: {
-            fill: "#2a7ae3",
+            fill: "#ffffff",
             fontSize: "10px"
-          }
+          },
+          initialAnimation: true
         }}
       />
     </div>

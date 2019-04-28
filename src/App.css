@@ -215,8 +215,8 @@ button:focus {
     padding-left: 50px;
   }
   .prt_home_wrapper h1 {
-    font-size: 120px;
-    margin: 80px;
+    font-size: 120px !important;
+    margin: 80px !important;
   }
 }
 @media (min-width: 768px) and (max-width: 991px) {
@@ -260,14 +260,14 @@ button:focus {
     margin: 0px auto;
   }
   .prt_home_wrapper h1 {
-    font-size: 90px;
-    margin: 80px;
+    font-size: 90px !important;
+    margin: 80px !important;
   }
 }
 @media (max-width: 767px) {
   .prt_home_wrapper h1 {
-    font-size: 90px;
-    margin: 0px;
+    font-size: 90px !important;
+    margin: 0px !important;
     text-align: center;
   }
   .prt_profile_slider {
@@ -330,6 +330,9 @@ button:focus {
   .prt_services_slider_imgs {
     margin-left: 0px;
   }
+  .prt_home_wrapper h1 {
+    font-size: 60px !important;
+  }
 }
 @media (min-width: 480px) and (max-width: 767px) {
 }
@@ -341,7 +344,7 @@ button:focus {
     font-size: 34px;
   }
   .prt_home_wrapper h1 {
-    font-size: 50px;
+    font-size: 50px !important;
   }
   .prt_counter_box {
     padding-left: 0px;
@@ -380,7 +383,7 @@ button:focus {
 }
 @media (max-width: 370px) {
   .prt_home_wrapper h1 {
-    font-size: 35px;
+    font-size: 40px !important;
   }
 }
 @media (min-width: 371px) and (max-width: 390px) {
@@ -391,7 +394,7 @@ button:focus {
     height: 900px;
   }
   .prt_home_wrapper h1 {
-    font-size: 45px;
+    font-size: 45px !important;
   }
 }
 

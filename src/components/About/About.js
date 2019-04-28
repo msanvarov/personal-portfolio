@@ -4,6 +4,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import DArrow from "../../assets/images/header/down_arrow.png";
 import Education from "./Education/Education";
 import Experience from "./Experience/Experience";
+import Picture from "../../assets/images/header/profile.png";
 import Footer from "../Footer/Footer";
 const About = props => {
   return (
@@ -21,7 +22,7 @@ const About = props => {
           <Row>
             <Col lg={6} md={6} sm={12} xs={12}>
               <div className="prt_about_img">
-                <img src="http://placehold.it/370X488" alt="About" />
+                <img src={Picture} alt="About" />
               </div>
             </Col>
             <Col lg={6} md={6} sm={12} xs={12}>

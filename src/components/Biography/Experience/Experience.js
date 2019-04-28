@@ -1,5 +1,5 @@
 import React from "react";
-import "../About.css";
+import "./Experience.css";
 import { Col, Row } from "react-bootstrap";
 
 const Experience = () => {

@@ -1,0 +1,35 @@
+.prt_about_wrapper {
+  background-color: #010101;
+  position: absolute;
+  width: 100%;
+  top: 0px;
+  z-index: 1;
+  display: block;
+}
+.prt_about_info {
+  display: inline-block;
+  width: 100%;
+}
+.prt_about_img {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+.prt_about_img img {
+  display: inline-block;
+}
+.prt_about_details {
+  display: inline-block;
+  width: 100%;
+}
+.prt_about_details p {
+  margin-bottom: 30px;
+}
+.prt_about_details a.prt_btn {
+  margin-right: 20px;
+  margin-bottom: 10px;
+}
+.prt_profile_info {
+  display: inline-block;
+  width: 100%;
+}

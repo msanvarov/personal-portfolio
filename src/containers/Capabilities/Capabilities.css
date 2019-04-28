@@ -118,8 +118,8 @@
 }
 .prt_services_slider_text img {
   display: inline-block;
-  width: 60px;
-  height: 70px;
+  width: 100px;
+  height: 100px;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   -ms-transition: all 0.3s;
@@ -168,7 +168,7 @@
 .prt_couter_wrapper {
   display: inline-block;
   width: 100%;
-  background-image: url(http://placehold.it/1920X600);
+  background-image: url("../../assets/images/header/background.jpg");
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;

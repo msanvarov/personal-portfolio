@@ -14,7 +14,6 @@
   background-color: #000000;
 }
 .prt_home_wrapper {
-  background-image: url(http://placehold.it/1920X1080);
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -32,7 +31,8 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: cover;
-  background-position: -41px -85px;
+  margin-left: 20rem;
+  background-position: -0px -85px;
 }
 .prt_logo_wrapper img {
   position: fixed;

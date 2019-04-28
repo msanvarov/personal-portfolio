@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Container, Row, Col } from "react-bootstrap";
 import "./Landing.css";
 import axios from "../../axios-github";
 import Logo from "../../assets/images/header/logo.png";
@@ -8,12 +7,14 @@ import Contact from "../../components/Contact/Contact";
 import About from "../../components/About/About";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Preloader from "../../components/Preloader/Preloader";
-
+import Capabilities from "../../components/Capabilities/Capabilities";
+import Particles from "react-particles-js";
 class Landing extends Component {
   state = {
     renderPortfolio: false,
     renderContact: false,
     renderAbout: false,
+    renderCapabilities: false,
     repos: [],
     showLoader: true
   };
@@ -57,6 +58,9 @@ class Landing extends Component {
   triggerAbout = () => {
     this.setState({ renderAbout: !this.state.renderAbout });
   };
+  triggerCapabilities = () => {
+    this.setState({ renderCapabilities: !this.state.renderCapabilities });
+  };
   render() {
     let portfolio = this.state.renderPortfolio ? (
       <Portfolio toRender={this.triggeredPortfolio} repos={this.state.repos} />
@@ -67,6 +71,9 @@ class Landing extends Component {
     let about = this.state.renderAbout ? (
       <About toRender={this.triggerAbout} />
     ) : null;
+    let strengths = this.state.renderCapabilities ? (
+      <Capabilities toRender={this.triggerCapabilities} />
+    ) : null;
     return (
       <Aux>
         <Preloader show={this.state.showLoader} />
@@ -75,6 +82,52 @@ class Landing extends Component {
             className="prt_home_wrapper"
             style={{ height: window.innerHeight }}
           >
+            <h1 className="d-flex justify-content-center">I'm Salim Anvarov</h1>
+            <Particles
+              params={{
+                particles: {
+                  number: {
+                    value: 60,
+                    density: {
+                      enable: true,
+                      value_area: 1500
+                    }
+                  },
+                  line_linked: {
+                    enable: true,
+                    opacity: 0.02
+                  },
+                  move: {
+                    direction: "right",
+                    speed: 0.05
+                  },
+                  size: {
+                    value: 1
+                  },
+                  opacity: {
+                    anim: {
+                      enable: true,
+                      speed: 1,
+                      opacity_min: 0.05
+                    }
+                  }
+                },
+                interactivity: {
+                  events: {
+                    onclick: {
+                      enable: true,
+                      mode: "push"
+                    }
+                  },
+                  modes: {
+                    push: {
+                      particles_nb: 1
+                    }
+                  }
+                },
+                retina_detect: true
+              }}
+            />
             <div className="prt_logo_wrapper">
               <a href="#main">
                 <img src={Logo} alt="Logo" id="prt_close_tab" />
@@ -91,7 +144,11 @@ class Landing extends Component {
               >
                 contact
               </a>
-              <a href="#services" className="prt_bottom">
+              <a
+                href="#strengths"
+                className="prt_bottom"
+                onClick={this.triggerCapabilities}
+              >
                 strengths
               </a>
               <a
@@ -102,22 +159,11 @@ class Landing extends Component {
                 portfolio
               </a>
             </div>
-            <Container>
-              <Row>
-                <Col
-                  lg={{ span: 6, offset: 6 }}
-                  md={{ span: 7, offset: 5 }}
-                  sm={{ span: 10, offset: 2 }}
-                  xs={12}
-                >
-                  <h1>I`m Salim Anvarov</h1>
-                </Col>
-              </Row>
-            </Container>
           </div>
           {portfolio}
           {contact}
           {about}
+          {strengths}
         </div>
       </Aux>
     );

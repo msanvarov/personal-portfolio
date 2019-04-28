@@ -216,7 +216,7 @@ button:focus {
   }
   .prt_home_wrapper h1 {
     font-size: 120px;
-    margin: 0px;
+    margin: 80px;
   }
 }
 @media (min-width: 768px) and (max-width: 991px) {
@@ -261,7 +261,7 @@ button:focus {
   }
   .prt_home_wrapper h1 {
     font-size: 90px;
-    margin: 0px;
+    margin: 80px;
   }
 }
 @media (max-width: 767px) {
@@ -378,11 +378,19 @@ button:focus {
     display: none;
   }
 }
-@media (max-width: 390px) {
+@media (max-width: 370px) {
+  .prt_home_wrapper h1 {
+    font-size: 35px;
+  }
+}
+@media (min-width: 371px) and (max-width: 390px) {
   .prt_services_slider_box {
     top: 350px;
   }
   .prt_services_slider_wrapper {
     height: 900px;
+  }
+  .prt_home_wrapper h1 {
+    font-size: 45px;
   }
 }

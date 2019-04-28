@@ -1,0 +1,304 @@
+.prt_services_wrapper {
+  background-color: #010101;
+  position: absolute;
+  width: 100%;
+  top: 0px;
+  bottom: 0px;
+  z-index: 1;
+  display: block;
+}
+.prt_services_slider_wrapper {
+  display: inline-block;
+  width: 100%;
+}
+.prt_services_slider_imgs {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_services_slider_imgs img.img_1,
+.prt_services_slider_imgs img.img_2,
+.prt_services_slider_imgs img.img_3,
+.prt_services_slider_imgs img.img_4 {
+  position: absolute;
+  left: 0;
+  top: 0;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_services_slider_imgs .img_2 {
+  z-index: 3;
+  -webkit-transform: translateX(-44px) scale(0.9);
+  -moz-transform: translateX(-44px) scale(0.9);
+  -ms-transform: translateX(-44px) scale(0.9);
+  -o-transform: translateX(-44px) scale(0.9);
+  transform: translateX(-44px) scale(0.9);
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_services_slider_imgs .img_3 {
+  z-index: 2;
+  -webkit-transform: translateX(-85px) scale(0.8);
+  -moz-transform: translateX(-85px) scale(0.8);
+  -ms-transform: translateX(-85px) scale(0.8);
+  -o-transform: translateX(-85px) scale(0.8);
+  transform: translateX(-85px) scale(0.8);
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_services_slider_imgs .img_4 {
+  z-index: 1;
+  -webkit-transform: translateX(-125px) scale(0.7);
+  -moz-transform: translateX(-125px) scale(0.7);
+  -ms-transform: translateX(-125px) scale(0.7);
+  -o-transform: translateX(-125px) scale(0.7);
+  transform: translateX(-125px) scale(0.7);
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_services_slider_imgs img.active {
+  -webkit-transform: translateX(0) scale(1);
+  -moz-transform: translateX(0) scale(1);
+  -ms-transform: translateX(0) scale(1);
+  -o-transform: translateX(0) scale(1);
+  transform: translateX(0) scale(1);
+  z-index: 4;
+  -webkit-animation: fadeIn 0.5s;
+  -moz-animation: fadeIn 0.5s;
+  -ms-animation: fadeIn 0.5s;
+  -o-animation: fadeIn 0.5s;
+  animation: fadeIn 0.5s;
+}
+.prt_services_slider_box {
+  display: inline-block;
+  width: 100%;
+}
+.prt_services_slider_text {
+  float: left;
+  width: 50%;
+  text-align: center;
+  overflow: hidden;
+  height: 175px;
+  margin-bottom: 30px;
+  cursor: pointer;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_services_slider_text:hover img,
+.prt_services_slider_text.active img {
+  width: 86px;
+  height: 100px;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_services_slider_text img {
+  display: inline-block;
+  width: 60px;
+  height: 70px;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_services_slider_text h4 {
+  text-transform: capitalize;
+  font-size: 18px;
+  margin-bottom: 0px;
+  margin-top: 20px;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_services_slider_text:hover h4,
+.prt_services_slider_text.active h4 {
+  margin-top: 30px;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_services_slider_text:hover p,
+.prt_services_slider_text.active p {
+  opacity: 0;
+  visibility: hidden;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_services_slider_text p {
+  margin-bottom: 0px;
+  margin-top: 20px;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_couter_wrapper {
+  display: inline-block;
+  width: 100%;
+  background-image: url(http://placehold.it/1920X600);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  position: relative;
+  z-index: 1;
+}
+.prt_couter_wrapper:after {
+  content: "";
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.85);
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  z-index: -1;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_counter_box {
+  display: inline-block;
+  width: 100%;
+  text-align: left;
+  padding-left: 100px;
+  margin-bottom: 30px;
+}
+.prt_counter_box h3 {
+  font-size: 40px;
+  margin: 0px;
+  font-weight: 500;
+  margin-top: -90px;
+  margin-left: 80px;
+}
+.prt_counter_box p {
+  font-size: 18px;
+  margin-left: 80px;
+}
+.circles-text {
+  font-size: 36px !important;
+  color: #ffffff;
+  font-weight: 500;
+}
+#canvas {
+  display: inline-block;
+  width: 100%;
+}
+#canvas .circle {
+  display: inline-block;
+  margin: 1em;
+  width: 200px;
+  height: 200px;
+}
+#canvas h5 {
+  font-size: 18px;
+  text-align: center;
+}
+#circles-1 {
+  background-image: url(http://placehold.it/200X200);
+  border-radius: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+#circles-2 {
+  background-image: url(http://placehold.it/200X200);
+  border-radius: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+#circles-3 {
+  background-image: url(http://placehold.it/200X200);
+  border-radius: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+#circles-4 {
+  background-image: url(http://placehold.it/200X200);
+  border-radius: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.circles-decimals {
+  font-size: 0.4em;
+}
+.prt_skills_wrapper {
+  display: inline-block;
+  width: 100%;
+}
+.prt_skills_bars {
+  display: inline-block;
+  width: 100%;
+}
+.prt_client_slider_wrapper {
+  display: inline-block;
+  width: 100%;
+}
+.prt_client_slider {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_client_slider .owl-theme .owl-nav.disabled + .owl-dots {
+  margin-top: 20px;
+}
+.prt_client_slider .owl-carousel .owl-item img {
+  width: auto !important;
+  display: inline-block;
+  opacity: 0.4;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.prt_client_slider .owl-carousel .owl-item img:hover {
+  opacity: 1;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}

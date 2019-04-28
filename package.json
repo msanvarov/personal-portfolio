@@ -14,7 +14,9 @@
     "react": "^16.8.6",
     "react-animate-on-scroll": "^2.1.5",
     "react-bootstrap": "^1.0.0-beta.8",
+    "react-circular-progressbar": "^1.1.0",
     "react-dom": "^16.8.6",
+    "react-particles-js": "^2.6.0",
     "react-scripts": "3.0.0",
     "yup": "^0.27.0"
   },

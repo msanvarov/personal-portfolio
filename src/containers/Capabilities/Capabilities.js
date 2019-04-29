@@ -56,12 +56,12 @@ class Capabilities extends Component {
     lineOfWork: [
       {
         title: "Web Design",
-        description: "Prototyping with XD and Mobirise.",
+        description: "Prototyping with XD and Mobirise",
         img: WebDesign
       },
       {
         title: "Full Stack Development",
-        description: "Comfortable with Mern, Flask with React or Vue.",
+        description: "MERN, FR, FV, MEVN",
         img: FullStackI
       },
       {
@@ -71,7 +71,7 @@ class Capabilities extends Component {
       },
       {
         title: "App Development",
-        description: "Java for Android and React Native.",
+        description: "Android and React Native",
         img: AppI
       }
     ],

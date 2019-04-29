@@ -11,7 +11,7 @@ const Counter = props => {
               <Col lg={6} md={6} sm={6} xs={12} key={i}>
                 <div className="prt_counter_box">
                   <h3>{accolade.len}</h3>
-                  <p>{accolade.description}</p>
+                  <p className="mt-2">{accolade.description}</p>
                 </div>
               </Col>
             );

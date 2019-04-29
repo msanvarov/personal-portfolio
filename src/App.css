@@ -348,6 +348,7 @@ button:focus {
   }
   .prt_counter_box {
     padding-left: 0px;
+    margin-top: 5rem !important;
   }
   .prt_about_learnbox_year {
     display: table-caption;

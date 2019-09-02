@@ -26,7 +26,7 @@ class Capabilities extends Component {
           "https://github.com/msanvarov?utf8=%E2%9C%93&tab=repositories&q=&type=&language=python"
       },
       {
-        language: "JS",
+        language: "Node",
         percentage: 95,
         href:
           "https://github.com/msanvarov?utf8=%E2%9C%93&tab=repositories&q=&type=&language=javascript"
@@ -56,7 +56,7 @@ class Capabilities extends Component {
     lineOfWork: [
       {
         title: "Web Design",
-        description: "Prototyping with XD and Mobirise",
+        description: "Prototyping with XD and Sketch",
         img: WebDesign
       },
       {

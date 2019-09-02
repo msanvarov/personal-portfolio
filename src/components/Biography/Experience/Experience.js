@@ -23,7 +23,10 @@ const Experience = () => {
                 <div className="prt_about_experience_info">
                   <h4>Software Developer</h4>
                   <span>RBC</span>
-                  <p>To be filled...</p>
+                  <p>
+                    Developed software and automation solutions for various
+                    devops workflows.
+                  </p>
                 </div>
               </div>
             </Col>

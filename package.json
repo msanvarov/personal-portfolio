@@ -4,9 +4,9 @@
   "private": true,
   "homepage": "https://msanvarov.github.io/personal-portfolio",
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "1.2.19",
-    "@fortawesome/free-brands-svg-icons": "5.9.0",
-    "@fortawesome/free-solid-svg-icons": "5.9.0",
+    "@fortawesome/fontawesome-svg-core": "1.2.22",
+    "@fortawesome/free-brands-svg-icons": "5.10.2",
+    "@fortawesome/free-solid-svg-icons": "5.10.2",
     "@fortawesome/react-fontawesome": "0.1.4",
     "axios": "0.18.1",
     "formik": "1.5.7",

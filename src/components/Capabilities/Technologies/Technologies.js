@@ -17,7 +17,12 @@ const Technologies = props => {
             {props.tech.map((tech, i) => {
               return (
                 <Carousel.Item key={i}>
-                  <img className="d-block w-100" src={tech.picture} alt="pic" />
+                  <img
+                    className="d-block w-100"
+                    src={tech.picture}
+                    alt="pic"
+                    style={{ height: "800px" }}
+                  />
                   <Carousel.Caption>
                     <h3>{tech.title}</h3>
                     <p>{tech.description}</p>

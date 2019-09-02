@@ -428,7 +428,7 @@ button:focus {
   font-size: 150px;
   color: #ffffff;
   font-weight: bold;
-  background: url(http://placehold.it/650X800) no-repeat;
+  background: url(http://placehold.it/650X800?text=$20) no-repeat;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: cover;

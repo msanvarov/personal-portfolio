@@ -229,28 +229,28 @@
   text-align: center;
 }
 #circles-1 {
-  background-image: url(http://placehold.it/200X200);
+  background-image: url(http://placehold.it/200X200?text=%20);
   border-radius: 100%;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
 #circles-2 {
-  background-image: url(http://placehold.it/200X200);
+  background-image: url(http://placehold.it/200X200?text=%20);
   border-radius: 100%;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
 #circles-3 {
-  background-image: url(http://placehold.it/200X200);
+  background-image: url(http://placehold.it/200X200?text=%20);
   border-radius: 100%;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
 #circles-4 {
-  background-image: url(http://placehold.it/200X200);
+  background-image: url(http://placehold.it/200X200?text=%20);
   border-radius: 100%;
   background-position: center;
   background-repeat: no-repeat;

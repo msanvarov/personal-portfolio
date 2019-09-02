@@ -73,11 +73,11 @@
   transition: all 0.3s;
 }
 .prt_contact_details_box.details_box1 {
-  background-image: url(http://placehold.it/450X250);
+  background-image: url(http://placehold.it/450X250?text=%20);
 }
 .prt_contact_details_box.details_box2 {
-  background-image: url(http://placehold.it/450X250);
+  background-image: url(http://placehold.it/450X250?text=%20);
 }
 .prt_contact_details_box.details_box3 {
-  background-image: url(http://placehold.it/450X250);
+  background-image: url(http://placehold.it/450X250?text=%20);
 }

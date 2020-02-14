@@ -1,0 +1,36 @@
+             _
+   ()       | |
+   /\  __,  | |
+  /  \/  |  |/
+ /(__/\_/|_/|__/
+
+The humans.txt file explains the team, technology,
+and graphic assets behind this site.
+
+_______________________________________________________________________________
+
+DEVELOPER | Разработчик
+
+Sal Anvarov
+Hand crafted design & web development
+
+Design tools:
+Photoshop
+
+github.com/msanvarov
+
+_______________________________________________________________________________
+
+TECHNOLOGIES | Технологии
+
+React
+Styled Components
+Three js
+Firebase
+
+_______________________________________________________________________________
+
+FONTS | Шрифты
+Gotham
+Charcoal
+Geneva

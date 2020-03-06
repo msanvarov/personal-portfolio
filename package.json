@@ -20,7 +20,7 @@
     "react-dom": "16.13.0",
     "react-particles-js": "2.7.1",
     "react-scripts": "3.4.0",
-    "yup": "0.28.2"
+    "yup": "0.28.3"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -11706,13 +11706,13 @@ react-overlays@^2.1.0:
     uncontrollable "^7.0.0"
     warning "^4.0.3"
 
-react-particles-js@3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/react-particles-js/-/react-particles-js-3.0.1.tgz#8b4559d9a84a1d563ccb033413aa5b707eb8f082"
-  integrity sha512-cIO3PwZBn7WQFymPA8mf/VaAKAjbkvKPE5It93mnuRG2xYPFFZsrfIbnOkZgirGe0yBkWKGGw65j3k2mWoQo4w==
+react-particles-js@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/react-particles-js/-/react-particles-js-3.0.2.tgz#93a811c7e50f709567ad7c509fe0bf1c0ad79343"
+  integrity sha512-EgJii5SSO3c5vtv3GUf04s4BItk5xNYf6K5E9ObaVIFkgQzuCrAjB5d4M5rEz/cbbcLGOv484XAPa6idcP7XjQ==
   dependencies:
     lodash "^4.17.11"
-    tsparticles "^1.12.5"
+    tsparticles "^1.12.6"
 
 react-scripts@3.4.1:
   version "3.4.1"
@@ -13674,10 +13674,10 @@ tslib@^1.8.1, tslib@^1.9.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
   integrity sha512-4krF8scpejhaOgqzBEcGM7yDIEfi0/8+8zDRZhNZZ2kjmHJ4hv3zCbQWxoJGz1iw5U0Jl0nma13xzHXcncMavQ==
 
-tsparticles@^1.12.5:
-  version "1.12.5"
-  resolved "https://registry.yarnpkg.com/tsparticles/-/tsparticles-1.12.5.tgz#78ee03b6197cb23f7b897c281ae024d4e5c5e09a"
-  integrity sha512-Jd/H/Ed190L8ZWg+1fpQmRzaUHfC4mIDz3wtq6XcLZGuUW/UJ0XpIQ0ndwNK2BXogVdpEplCl80AxMPUM+aKJQ==
+tsparticles@^1.12.6:
+  version "1.12.6"
+  resolved "https://registry.yarnpkg.com/tsparticles/-/tsparticles-1.12.6.tgz#c302c4b2ee3579e0472a935c9569d01824b5ee4c"
+  integrity sha512-u3qev5gPuEOOFzmBSt+XpHDGOEvE7o+qIYJPjfex9pKt+eCC41jfQTVssmrIcv393gaHyrJHwGotAXOCL0ln9w==
   dependencies:
     pathseg "^1.2.0"
 

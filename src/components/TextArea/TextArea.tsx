@@ -1,13 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 
 const defaultTextAreaProps = {
-  minRows: 1
+  minRows: 1,
 };
 
 type TextAreaProps = {
   allowResize: boolean;
   maxRows: number;
-} & React.HTMLProps<HTMLTextAreaElement> &
+} & React.PropsWithoutRef<JSX.IntrinsicElements["textarea"]> &
   typeof defaultTextAreaProps;
 
 const TextArea: React.FC<TextAreaProps> = ({
@@ -16,10 +16,13 @@ const TextArea: React.FC<TextAreaProps> = ({
   onChange,
   minRows,
   maxRows,
-  ...props
+  ...rest
 }) => {
   const [rows, setRows] = useState(minRows);
-  const [textareaDimensions, setTextareaDimensions] = useState();
+  const [textareaDimensions, setTextareaDimensions] = useState<{
+    lineHeight: number;
+    paddingHeight: number;
+  } | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
     if (textareaRef && textareaRef.current) {
@@ -30,35 +33,38 @@ const TextArea: React.FC<TextAreaProps> = ({
       setTextareaDimensions({ lineHeight, paddingHeight });
     }
   }, []);
-  const handleChange = (event: React.FormEvent<HTMLTextAreaElement>): void => {
+  const handleChange = (event: any): void => {
     if (onChange) {
       onChange(event);
     }
 
-    const { lineHeight, paddingHeight } = textareaDimensions;
-    const previousRows = (event.target as HTMLTextAreaElement).rows;
-    (event.target as HTMLTextAreaElement).rows = minRows;
+    if (textareaDimensions) {
+      const { lineHeight, paddingHeight } = textareaDimensions;
 
-    const currentRows = ~~(
-      ((event.target as HTMLTextAreaElement).scrollHeight - paddingHeight) /
-      lineHeight
-    );
+      const previousRows = (event.target as HTMLTextAreaElement).rows;
+      (event.target as HTMLTextAreaElement).rows = minRows;
 
-    if (currentRows === previousRows) {
-      (event.target as HTMLTextAreaElement).rows = currentRows;
+      const currentRows = ~~(
+        ((event.target as HTMLTextAreaElement).scrollHeight - paddingHeight) /
+        lineHeight
+      );
+
+      if (currentRows === previousRows) {
+        (event.target as HTMLTextAreaElement).rows = currentRows;
+      }
+
+      if (maxRows && currentRows >= maxRows) {
+        (event.target as HTMLTextAreaElement).rows = maxRows;
+        (event.target as HTMLTextAreaElement).scrollTop = (event.target as HTMLTextAreaElement).scrollHeight;
+      }
+
+      setRows(maxRows && currentRows > maxRows ? maxRows : currentRows);
     }
-
-    if (maxRows && currentRows >= maxRows) {
-      (event.target as HTMLTextAreaElement).rows = maxRows;
-      (event.target as HTMLTextAreaElement).scrollTop = (event.target as HTMLTextAreaElement).scrollHeight;
-    }
-
-    setRows(maxRows && currentRows > maxRows ? maxRows : currentRows);
   };
 
   return (
     <textarea
-      {...props}
+      {...rest}
       ref={textareaRef}
       onChange={handleChange}
       style={{ resize: allowResize ? undefined : "none" }}

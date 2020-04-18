@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "portfolio-cms-63647"
+  },
+  "targets": {
+    "portfolio-cms-63647": {
+      "hosting": {
+        "portfolio": [
+          "portfolio-cms-63647"
+        ]
+      }
+    }
   }
 }

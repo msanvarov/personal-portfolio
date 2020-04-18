@@ -3,7 +3,7 @@ import styled from "styled-components/macro";
 
 type MonogramType = {
   highlight: boolean;
-} & HTMLOrSVGElement;
+};
 
 const Monogram: React.FC<MonogramType> = ({ highlight, ...props }) => {
   return (
@@ -28,15 +28,15 @@ const Monogram: React.FC<MonogramType> = ({ highlight, ...props }) => {
 };
 
 const MonogramWrapper = styled.svg`
-  fill: ${props => props.theme.colorText};
+  fill: ${(props) => props.theme.colorText};
 `;
 
 const MonogramHighlight = styled.rect`
-  fill: ${props => props.theme.colorAccent};
+  fill: ${(props) => props.theme.colorAccent};
   opacity: 0;
   transform: scale3d(1, 0, 1);
   transform-origin: top;
-  transition: transform 0.4s ${props => props.theme.curveFastoutSlowin},
+  transition: transform 0.4s ${(props) => props.theme.curveFastoutSlowin},
     opacity 0.1s ease 0.4s;
   a:focus &,
   a:hover &,
@@ -44,7 +44,7 @@ const MonogramHighlight = styled.rect`
     opacity: 1;
     transform: scale3d(1, 1, 1);
     transform-origin: bottom;
-    transition: transform 0.4s ${props => props.theme.curveFastoutSlowin},
+    transition: transform 0.4s ${(props) => props.theme.curveFastoutSlowin},
       opacity 0.1s ease;
   }
 `;

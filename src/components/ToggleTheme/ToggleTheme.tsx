@@ -9,7 +9,7 @@ import { AppContext } from "@app/App";
 // TODO fix types
 
 type ToggleThemeProps = {
-  isMobile: boolean;
+  isMobile?: boolean;
 };
 
 export const ToggleTheme: React.FC<ToggleThemeProps> = ({

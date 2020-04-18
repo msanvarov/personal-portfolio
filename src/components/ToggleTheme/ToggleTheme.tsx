@@ -6,6 +6,8 @@ import themeIconData from "./ThemeIcon.json";
 import { prefersReducedMotion } from "@hooks/usePrefersReducedMotion";
 import { AppContext } from "@app/App";
 
+// TODO fix types
+
 type ToggleThemeProps = {
   isMobile: boolean;
 };
@@ -16,7 +18,6 @@ export const ToggleTheme: React.FC<ToggleThemeProps> = ({
 }) => {
   const theme = useTheme();
   const { dispatch } = React.useContext(AppContext);
-  // TODO fix useRef
   const initThemeId = useRef((theme as any).id);
   const lottieContainerRef = useRef();
   const lottieAnimRef = useRef();
@@ -55,7 +56,7 @@ export const ToggleTheme: React.FC<ToggleThemeProps> = ({
     } else {
       (lottieAnimRef.current as any).play();
     }
-  }, [prefersReducedMotion, theme.id]);
+  }, [prefersReducedMotion, (theme as any).id]);
 
   const handleClick = () => {
     dispatch({ type: "toggleTheme" });

@@ -11714,13 +11714,13 @@ react-overlays@^3.1.2:
     uncontrollable "^7.0.0"
     warning "^4.0.3"
 
-react-particles-js@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/react-particles-js/-/react-particles-js-3.1.0.tgz#00d80ba957111e69bd0247eef343b7ac9a388695"
-  integrity sha512-YZVwXXE8qYav7Hk4Rj+U8I8R8bLKNI6RPQLbruI3e+oHvZ2G7YzLmNdxFC6K3WqQO61YP2lemZSfdK26x9rAYA==
+react-particles-js@3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/react-particles-js/-/react-particles-js-3.2.0.tgz#83b208b99d11b6beb1184fdaa46762ebdd98356d"
+  integrity sha512-RjQqRF2GcJdCJD1A1iARUczkuQSOnSjsehSJ9trM71qp9YyCyOKJjGZ74qDIrcdBLKZIHBngzLGevVMQPIPYZw==
   dependencies:
     lodash "^4.17.11"
-    tsparticles "^1.12.11"
+    tsparticles "^1.13.5"
 
 react-scripts@3.4.1:
   version "3.4.1"
@@ -13677,17 +13677,23 @@ tslib@^1.10.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
 
+tslib@^1.11.1:
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.11.1.tgz#eb15d128827fbee2841549e171f45ed338ac7e35"
+  integrity sha512-aZW88SY8kQbU7gpV19lN24LtXh/yD4ZZg6qieAJDDg+YBsJcSmLGK9QpnUjAKVG/xefmvJGd1WUmfpT/g6AJGA==
+
 tslib@^1.8.1, tslib@^1.9.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
   integrity sha512-4krF8scpejhaOgqzBEcGM7yDIEfi0/8+8zDRZhNZZ2kjmHJ4hv3zCbQWxoJGz1iw5U0Jl0nma13xzHXcncMavQ==
 
-tsparticles@^1.12.11:
-  version "1.12.11"
-  resolved "https://registry.yarnpkg.com/tsparticles/-/tsparticles-1.12.11.tgz#4b3756fb377a01cec8cd89b1b8237fbb96aa504f"
-  integrity sha512-77eEoc+aFtimGNQJQHwVAsjg8qYaDV0ehIwQSNWbI2b1cTQZrnV4uR2Pk5ic8IdSht4SULkNQmVhvjAoH0nZ4Q==
+tsparticles@^1.13.5:
+  version "1.13.5"
+  resolved "https://registry.yarnpkg.com/tsparticles/-/tsparticles-1.13.5.tgz#c6d7d8862a3bb8b5adea74081ab6553ae92b0e7f"
+  integrity sha512-KqpEpxwddTjV3IHFb6QmywWvD3mswR6t44Zw5ZuEIp7fGS6wXJo6pjn650/gMIwm+JScYynQr6D1aldc5gTpkg==
   dependencies:
     pathseg "^1.2.0"
+    tslib "^1.11.1"
 
 tsutils@^3.17.1:
   version "3.17.1"

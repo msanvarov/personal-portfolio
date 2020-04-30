@@ -1,80 +1,32 @@
-import { createGlobalStyle, css } from 'styled-components';
+import { css, keyframes } from 'styled-components';
 
-import { resetStyles } from './reset';
-import { responsiveFont } from './utils';
-import { variables } from './variables';
+import { Media } from './variables';
+
+export const AnimationFade = keyframes`
+  0% {opacity: 0}
+  100% {opacity: 1}
+`;
 
 // stylelint-disable selector-type-no-unknown
-export const Styles = createGlobalStyle`
-  ${resetStyles}
-
-  :root {
-    --scale-element: 1;
-    --scale-font: 1;
-
-    ${variables.verticalBreakpoints.map(
-      ({ height, scale }) => css`
-        @media (max-height: ${height}) {
-          --scale-element: ${scale};
-          --scale-font: ${scale};
-        }
-      `,
-    )}
+export const Padding = css`
+  padding-right: 120px;
+  padding-left: 200px;
+  @media (min-width: ${Media.desktop}px) {
+    padding-left: 120px;
   }
-
-  html,
-  body {
-    min-height: 100vh;
-
-    background-color: ${variables.colors.background};
+  @media (max-width: ${Media.tablet}px) {
+    padding-left: 160px;
   }
-
-  html {
-    -webkit-overflow-scrolling: touch;
-    overflow-x: hidden;
-    /* always show the vertical scrollbar so that content doesn't jump */
-    overflow-y: scroll;
-
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    box-sizing: border-box;
+  @media (max-width: ${Media.mobile}px) {
+    padding-right: 25px;
+    padding-left: 25px;
   }
-
-  /* inherited from <html> */
-  *,
-  *::before,
-  *::after {
-    box-sizing: inherit;
+  @media (max-width: ${Media.mobile}px), (max-height: ${Media.mobile}px) {
+    padding-left: var(--spacingOuter);
+    padding-right: var(--spacingOuter);
   }
-
-  body {
-    ${responsiveFont()}
-
-    position: relative;
-
-    margin: 0;
-
-    font-family: ${variables.font.family};
-    line-height: ${variables.font.lineHeight};
-    /* iOS on orientation change */
-    text-size-adjust: 100%;
-
-    color: ${variables.colors.font};
-  }
-
-  img {
-    display: block;
-    max-width: 100%;
-    height: auto;
-  }
-
-  /* placeholders */
-  input,
-  textarea,
-  select {
-    &::placeholder {
-      opacity: 1;
-      color: ${variables.colors.placeholder};
-    }
+  @media ${Media.mobileLS} {
+    padding-left: 100px;
+    padding-right: 100px;
   }
 `;

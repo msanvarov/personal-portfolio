@@ -69,7 +69,6 @@
     "gatsby-plugin-typescript": "2.4.0",
     "gatsby-transformer-sharp": "2.5.0",
     "lodash": "4.17.15",
-    "polished": "3.5.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-helmet": "6.0.0",

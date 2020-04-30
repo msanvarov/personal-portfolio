@@ -6,6 +6,7 @@
     "experimentalDecorators": true,
     "target": "esnext",
     "moduleResolution": "node",
+    "declaration": true,
     "allowJs": true,
     "noEmit": true,
     "strict": true,

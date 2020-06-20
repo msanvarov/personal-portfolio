@@ -10,7 +10,7 @@
     "@fortawesome/react-fontawesome": "0.1.11",
     "axios": "0.19.2",
     "formik": "2.1.4",
-    "gh-pages": "3.0.0",
+    "gh-pages": "3.1.0",
     "i": "0.3.6",
     "npm": "6.14.4",
     "react": "16.13.1",

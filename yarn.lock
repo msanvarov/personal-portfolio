@@ -2420,7 +2420,7 @@
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.1.tgz#48fd98c1561fe718b61733daed46ff115b496e18"
   integrity sha512-eqz8c/0kwNi/OEHQfvIuJVLTst3in0e7uTKeuY+WL/zfKn0xVujOTp42bS/vUUokhK5P2BppLd9JXMOMHcgbjA==
 
-"@types/react-transition-group@^4.2.4":
+"@types/react-transition-group@^4.4.0":
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/@types/react-transition-group/-/react-transition-group-4.4.0.tgz#882839db465df1320e4753e6e9f70ca7e9b4d46d"
   integrity sha512-/QfLHGpu+2fQOqQaXh8MG9q03bFENooTb/it4jr5kKaZlDQfWvjqWZg48AwzPVMBHlRuTRAY7hRHCEOXz5kV6w==
@@ -11663,10 +11663,10 @@ react-app-polyfill@^1.0.6:
     regenerator-runtime "^0.13.3"
     whatwg-fetch "^3.0.0"
 
-react-bootstrap@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/react-bootstrap/-/react-bootstrap-1.1.1.tgz#986606d8777b97e4eeeb365592aadc154520b557"
-  integrity sha512-DsJ1aaXQPa3ob/Bh2JXnbWmZJHNxS18HbiJdyBhumf6OHk6rVXo329uwa2lHI0ZuxPO3mA8OJLOT0lighV/e8Q==
+react-bootstrap@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-bootstrap/-/react-bootstrap-1.2.0.tgz#9aca4f4c602d97e7154bf9cf7b0c0d6c58bddd0c"
+  integrity sha512-HHYPi6aukpBkuKKDxTle9Xle4w259ARERjf9mqb84LAe8lqXLdIyiUsYLdU+8PH6Ka9/sBnxgx3ahf3iW23T3g==
   dependencies:
     "@babel/runtime" "^7.4.2"
     "@restart/context" "^2.1.4"
@@ -11675,7 +11675,7 @@ react-bootstrap@1.1.1:
     "@types/invariant" "^2.2.33"
     "@types/prop-types" "^15.7.3"
     "@types/react" "^16.9.35"
-    "@types/react-transition-group" "^4.2.4"
+    "@types/react-transition-group" "^4.4.0"
     "@types/warning" "^3.0.0"
     classnames "^2.2.6"
     dom-helpers "^5.1.2"

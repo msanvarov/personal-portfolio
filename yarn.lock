@@ -11690,13 +11690,13 @@ react-overlays@^4.1.0:
     uncontrollable "^7.0.0"
     warning "^4.0.3"
 
-react-particles-js@3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/react-particles-js/-/react-particles-js-3.2.0.tgz#83b208b99d11b6beb1184fdaa46762ebdd98356d"
-  integrity sha512-RjQqRF2GcJdCJD1A1iARUczkuQSOnSjsehSJ9trM71qp9YyCyOKJjGZ74qDIrcdBLKZIHBngzLGevVMQPIPYZw==
+react-particles-js@3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/react-particles-js/-/react-particles-js-3.3.0.tgz#ecedd5b5c6b853bbf29a7e03ea2af898b8048091"
+  integrity sha512-pc9oJWEHH3UR1sJurL98TPrEWr0Yf2E8j+f8PLDpgbnQirTRqfwEvTRNJ/Ibvt6233WycCrndn6ImfL0PDEr7A==
   dependencies:
     lodash "^4.17.11"
-    tsparticles "^1.13.5"
+    tsparticles "^1.17.1"
 
 react-scripts@3.4.2:
   version "3.4.2"
@@ -13649,23 +13649,23 @@ tslib@^1.10.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
 
-tslib@^1.11.1:
-  version "1.11.1"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.11.1.tgz#eb15d128827fbee2841549e171f45ed338ac7e35"
-  integrity sha512-aZW88SY8kQbU7gpV19lN24LtXh/yD4ZZg6qieAJDDg+YBsJcSmLGK9QpnUjAKVG/xefmvJGd1WUmfpT/g6AJGA==
-
 tslib@^1.8.1, tslib@^1.9.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
   integrity sha512-4krF8scpejhaOgqzBEcGM7yDIEfi0/8+8zDRZhNZZ2kjmHJ4hv3zCbQWxoJGz1iw5U0Jl0nma13xzHXcncMavQ==
 
-tsparticles@^1.13.5:
-  version "1.13.5"
-  resolved "https://registry.yarnpkg.com/tsparticles/-/tsparticles-1.13.5.tgz#c6d7d8862a3bb8b5adea74081ab6553ae92b0e7f"
-  integrity sha512-KqpEpxwddTjV3IHFb6QmywWvD3mswR6t44Zw5ZuEIp7fGS6wXJo6pjn650/gMIwm+JScYynQr6D1aldc5gTpkg==
+tslib@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.1.tgz#410eb0d113e5b6356490eec749603725b021b43e"
+  integrity sha512-SgIkNheinmEBgx1IUNirK0TUD4X9yjjBRTqqjggWCU3pUEqIk3/Uwl3yRixYKT6WjQuGiwDv4NomL3wqRCj+CQ==
+
+tsparticles@^1.17.1:
+  version "1.17.7"
+  resolved "https://registry.yarnpkg.com/tsparticles/-/tsparticles-1.17.7.tgz#37ee621a7e68c70a1750a420f105cc0c45fe7cdc"
+  integrity sha512-+9b0YplbE38WPxWAMwYQ6+VLZ4LsDG8N3RAPx8ezwsi0IfR1ZEirfuHOUoYv3KfPMpmJOxf0F4jAFcq47uwyMA==
   dependencies:
     pathseg "^1.2.0"
-    tslib "^1.11.1"
+    tslib "^2.0.0"
 
 tsutils@^3.17.1:
   version "3.17.1"

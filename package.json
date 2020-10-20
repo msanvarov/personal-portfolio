@@ -19,7 +19,7 @@
     "react-circular-progressbar": "2.0.3",
     "react-dom": "16.14.0",
     "react-particles-js": "3.4.0",
-    "react-scripts": "3.4.3",
+    "react-scripts": "3.4.4",
     "yup": "0.29.3"
   },
   "scripts": {

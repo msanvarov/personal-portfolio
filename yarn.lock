@@ -14826,10 +14826,10 @@ yargs@^15.4.1:
     y18n "^4.0.0"
     yargs-parser "^18.1.2"
 
-yup@0.32.5:
-  version "0.32.5"
-  resolved "https://registry.yarnpkg.com/yup/-/yup-0.32.5.tgz#fddc1dc655bc016b416275e7ce9ab8d817a1636a"
-  integrity sha512-bLbkTrPrFEF4rg30lS8T3QqoVLSAJ1N/b6btn5HVM4y9Q2EVJr2VLk+3kcskqPB41OSPx0cGRLINklH7PNqSYg==
+yup@0.32.6:
+  version "0.32.6"
+  resolved "https://registry.yarnpkg.com/yup/-/yup-0.32.6.tgz#7fd924536cdf61ec5df7a4bd0576d0a3954b03f6"
+  integrity sha512-i5poB/ZWU0zGoCwViLw++NQbUFy+X9xfoSSK31JOLh3RoBVUaYrNlYIyxqK8HGrxTHPIl5BBNu/mJYKNeFVvdA==
   dependencies:
     "@babel/runtime" "^7.10.5"
     "@types/lodash" "^4.14.165"

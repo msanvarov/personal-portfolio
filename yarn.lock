@@ -4608,7 +4608,7 @@ entities@^2.0.0:
 
 env-paths@^2.2.0:
   version "2.2.1"
-  resolved "https://registry.yarnpkg.com/env-paths/-/env-paths-2.2.1.tgz#420399d416ce1fbe9bc0a07c62fa68d67fd0f8f2"
+  resolved "https://registry.npmjs.org/env-paths/-/env-paths-2.2.1.tgz"
   integrity sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==
 
 err-code@^2.0.2:
@@ -5848,7 +5848,7 @@ hosted-git-info@^2.1.4:
 
 hosted-git-info@^4.0.1, hosted-git-info@^4.0.2:
   version "4.0.2"
-  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-4.0.2.tgz#5e425507eede4fea846b7262f0838456c4209961"
+  resolved "https://registry.npmjs.org/hosted-git-info/-/hosted-git-info-4.0.2.tgz"
   integrity sha512-c9OGXbZ3guC/xOlCg1Ci/VgWlwsqDv1yMQL1CWqXDL0hDjXuNcq0zuR4xqPSuasI3kqFDhqSyTjREz5gzq0fXg==
   dependencies:
     lru-cache "^6.0.0"
@@ -8287,10 +8287,10 @@ npm-user-validate@^1.0.1:
   resolved "https://registry.npmjs.org/npm-user-validate/-/npm-user-validate-1.0.1.tgz"
   integrity sha512-uQwcd/tY+h1jnEaze6cdX/LrhWhoBxfSknxentoqmIuStxUExxjWd3ULMLFPiFUrZKbOVMowH6Jq2FRWfmhcEw==
 
-npm@7.7.4:
-  version "7.7.4"
-  resolved "https://registry.npmjs.org/npm/-/npm-7.7.4.tgz"
-  integrity sha512-+gUjp4hbUnN7S1z2S3uDTnac94uRiztzFkMLNimHsB4KpuvhO+xjg30ARoptq7UYqF6KTXA4L8XLDMuriyB9Fg==
+npm@7.7.5:
+  version "7.7.5"
+  resolved "https://registry.npmjs.org/npm/-/npm-7.7.5.tgz"
+  integrity sha512-Og1lKsev2CLw8fYzGQ3190FEXzgIGys9Cpm+kgl3SEWx+EhQL4ecyOO1VHGPZo06fdVPp3/CtPjPHro1u2n2rQ==
   dependencies:
     "@npmcli/arborist" "^2.2.9"
     "@npmcli/ci-detect" "^1.2.0"
@@ -10958,7 +10958,7 @@ socks-proxy-agent@^5.0.0:
 
 socks@^2.3.3:
   version "2.6.0"
-  resolved "https://registry.yarnpkg.com/socks/-/socks-2.6.0.tgz#6b984928461d39871b3666754b9000ecf39dfac2"
+  resolved "https://registry.npmjs.org/socks/-/socks-2.6.0.tgz"
   integrity sha512-mNmr9owlinMplev0Wd7UHFlqI4ofnBnNzFuzrm63PPaHgbkqCFe4T5LzwKmtQ/f2tX0NTpcdVLyD/FHxFBstYw==
   dependencies:
     ip "^1.1.5"

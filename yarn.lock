@@ -1402,10 +1402,10 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@npmcli/arborist@^2.0.0", "@npmcli/arborist@^2.2.9":
-  version "2.2.9"
-  resolved "https://registry.npmjs.org/@npmcli/arborist/-/arborist-2.2.9.tgz"
-  integrity sha512-ddC/CCAEHh28XYtgSAOudchdphNXcgErdYxwsEiykc2YbRA9Z+4XjI0BdBdXvv22DvkpO7zotUSxlVTcJmdURw==
+"@npmcli/arborist@^2.0.0", "@npmcli/arborist@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@npmcli/arborist/-/arborist-2.3.0.tgz#0d3273f85691711b10a85f82dffd235d755a3f57"
+  integrity sha512-4z8x8jImp/Clwol4sgmR6qdntLQZDxNFabBSbyr9EB11cyWHyqhRvBKip/1sBTcQAScIwuFT64MOu/HI4a5Nkw==
   dependencies:
     "@npmcli/installed-package-contents" "^1.0.7"
     "@npmcli/map-workspaces" "^1.0.2"
@@ -1418,7 +1418,7 @@
     cacache "^15.0.3"
     common-ancestor-path "^1.0.1"
     json-parse-even-better-errors "^2.3.1"
-    json-stringify-nice "^1.1.1"
+    json-stringify-nice "^1.1.2"
     mkdirp-infer-owner "^2.0.0"
     npm-install-checks "^4.0.0"
     npm-package-arg "^8.1.0"
@@ -1440,10 +1440,10 @@
   resolved "https://registry.npmjs.org/@npmcli/ci-detect/-/ci-detect-1.3.0.tgz"
   integrity sha512-oN3y7FAROHhrAt7Rr7PnTSwrHrZVRTS2ZbyxeQwSSYD0ifwM3YNgQqbaRmjcWoPyq77MjchusjJDspbzMmip1Q==
 
-"@npmcli/config@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/@npmcli/config/-/config-2.0.0.tgz"
-  integrity sha512-3OKVmO63FJRIrcsVI/njCC7QGKSfdCrIUUV+sP5ql8QdaPqXuaFCImqCYFDzGkcrP8PTOS3jbrRsU0Yzm04n3g==
+"@npmcli/config@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@npmcli/config/-/config-2.1.0.tgz#fabfbbbebc3a417db672be4014a7ba71e6bb37f3"
+  integrity sha512-vYTUs6b1ORqWgWFrLkyscdhyhtB1YhbtEM2iaH5rM5Bv1/tWqZEpspGLh+Re6YuPRUmXulzkf3iWhu9ntz8cVw==
   dependencies:
     ini "^2.0.0"
     mkdirp-infer-owner "^2.0.0"
@@ -1493,7 +1493,7 @@
 
 "@npmcli/metavuln-calculator@^1.1.0":
   version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@npmcli/metavuln-calculator/-/metavuln-calculator-1.1.1.tgz#2f95ff3c6d88b366dd70de1c3f304267c631b458"
+  resolved "https://registry.npmjs.org/@npmcli/metavuln-calculator/-/metavuln-calculator-1.1.1.tgz"
   integrity sha512-9xe+ZZ1iGVaUovBVFI9h3qW+UuECUzhvZPxK9RaEA2mjU26o5D0JloGYWwLYvQELJNmBdQB6rrpuN8jni6LwzQ==
   dependencies:
     cacache "^15.0.5"
@@ -7202,10 +7202,10 @@ json-stable-stringify-without-jsonify@^1.0.1:
   resolved "https://registry.npmjs.org/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz"
   integrity sha1-nbe1lJatPzz+8wp1FC0tkwrXJlE=
 
-json-stringify-nice@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.npmjs.org/json-stringify-nice/-/json-stringify-nice-1.1.1.tgz"
-  integrity sha512-aHOgcSoOLvmFZQMvZ27rFw68r4e9OlQtH7YEcF2u5amVYbF/D3cKBXKCvl5EGhQz2NwJZ6RPfgRX6yNQ+UBKJw==
+json-stringify-nice@^1.1.2:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/json-stringify-nice/-/json-stringify-nice-1.1.3.tgz#43991531d674ad5c19152d519047849935293add"
+  integrity sha512-w8+cZZFgcPtFkZTmkA1UpRH0GXXfpeuc/cClNkQjLt9JoQd8cBFSyB8J1WWjJrthIYViHobwnh3jA4z5X2LdGA==
 
 json-stringify-safe@~5.0.1:
   version "5.0.1"
@@ -7444,7 +7444,7 @@ libnpmteam@^2.0.2:
 
 libnpmversion@^1.1.0:
   version "1.1.0"
-  resolved "https://registry.yarnpkg.com/libnpmversion/-/libnpmversion-1.1.0.tgz#699412e7083bc3d229d461c611e9f5eb3fc06a44"
+  resolved "https://registry.npmjs.org/libnpmversion/-/libnpmversion-1.1.0.tgz"
   integrity sha512-ktMHbbGpVVwmvSNQ+dG5fXgC2rB81i1hA94SaR5OCqPQ01Kuipshq6OLo8maD3xK+ulUCIfHxcAi/JYL8J9SWg==
   dependencies:
     "@npmcli/git" "^2.0.6"
@@ -8229,7 +8229,7 @@ npm-package-arg@^8.0.0, npm-package-arg@^8.0.1, npm-package-arg@^8.1.0, npm-pack
 
 npm-packlist@^2.1.4:
   version "2.1.5"
-  resolved "https://registry.yarnpkg.com/npm-packlist/-/npm-packlist-2.1.5.tgz#43ef5bbb9f59b7c0ef91e0905f1dd707b4cfb33c"
+  resolved "https://registry.npmjs.org/npm-packlist/-/npm-packlist-2.1.5.tgz"
   integrity sha512-KCfK3Vi2F+PH1klYauoQzg81GQ8/GGjQRKYY6tRnpQUPKTs/1gBZSRWtTEd7jGdSn1LZL7gpAmJT+BcS55k2XQ==
   dependencies:
     glob "^7.1.6"
@@ -8287,14 +8287,14 @@ npm-user-validate@^1.0.1:
   resolved "https://registry.npmjs.org/npm-user-validate/-/npm-user-validate-1.0.1.tgz"
   integrity sha512-uQwcd/tY+h1jnEaze6cdX/LrhWhoBxfSknxentoqmIuStxUExxjWd3ULMLFPiFUrZKbOVMowH6Jq2FRWfmhcEw==
 
-npm@7.7.6:
-  version "7.7.6"
-  resolved "https://registry.npmjs.org/npm/-/npm-7.7.6.tgz"
-  integrity sha512-4dOo2M/SRzRNWH1e0tmcJMFkDjHJKsJQlxpi3OgJ/N/BsIvbdQFFMioG0vmuFVAev7P2f/rShApb18jk5RpdXA==
+npm@7.8.0:
+  version "7.8.0"
+  resolved "https://registry.npmjs.org/npm/-/npm-7.8.0.tgz"
+  integrity sha512-9AC3Dj9OUWaUdmTmEVttE/1MWkfF7+sAKPRo9tKEyjo49AXmHQBn+RC33M9dima91mEMqDIA71xyRm4VmhDipg==
   dependencies:
-    "@npmcli/arborist" "^2.2.9"
+    "@npmcli/arborist" "^2.3.0"
     "@npmcli/ci-detect" "^1.2.0"
-    "@npmcli/config" "^2.0.0"
+    "@npmcli/config" "^2.1.0"
     "@npmcli/run-script" "^1.8.4"
     abbrev "~1.1.1"
     ansicolors "~0.3.2"

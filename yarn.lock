@@ -1404,7 +1404,7 @@
 
 "@npmcli/arborist@^2.3.0", "@npmcli/arborist@^2.5.0", "@npmcli/arborist@^2.6.4":
   version "2.6.4"
-  resolved "https://registry.yarnpkg.com/@npmcli/arborist/-/arborist-2.6.4.tgz#bc413ae61dd57e23b8775a77c1f3199eea60b223"
+  resolved "https://registry.npmjs.org/@npmcli/arborist/-/arborist-2.6.4.tgz"
   integrity sha512-A/pDQ/VZpdxaqsQS5XOWrhrPuC+ER7HLq+4ZkEmnO2yo/USFCWEsiUPYKhfY+sWXK3pgKjN7B7CEFmAnSoAt3g==
   dependencies:
     "@npmcli/installed-package-contents" "^1.0.7"
@@ -1528,7 +1528,7 @@
 
 "@npmcli/package-json@^1.0.1":
   version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@npmcli/package-json/-/package-json-1.0.1.tgz#1ed42f00febe5293c3502fd0ef785647355f6e89"
+  resolved "https://registry.npmjs.org/@npmcli/package-json/-/package-json-1.0.1.tgz"
   integrity sha512-y6jnu76E9C23osz8gEMBayZmaZ69vFOIk8vR1FJL/wbEJ54+9aVG9rLTjQKSXfgYZEr50nw1txBBFfBZZe+bYg==
   dependencies:
     json-parse-even-better-errors "^2.3.1"
@@ -8310,10 +8310,10 @@ npm-user-validate@^1.0.1:
   resolved "https://registry.npmjs.org/npm-user-validate/-/npm-user-validate-1.0.1.tgz"
   integrity sha512-uQwcd/tY+h1jnEaze6cdX/LrhWhoBxfSknxentoqmIuStxUExxjWd3ULMLFPiFUrZKbOVMowH6Jq2FRWfmhcEw==
 
-npm@7.19.0:
-  version "7.19.0"
-  resolved "https://registry.npmjs.org/npm/-/npm-7.19.0.tgz"
-  integrity sha512-bak/ZycWS8kalVFJ2m1JEo2pgvSwEDA9FMGthGnufAKciu4X4kpJMDZKe8VZKNaA/cXehd9XI7QdSZXmZauR8Q==
+npm@7.19.1:
+  version "7.19.1"
+  resolved "https://registry.npmjs.org/npm/-/npm-7.19.1.tgz"
+  integrity sha512-aN3hZzGkPzKOyhjXtOhnQTGumorFhgpOU6xfuQsF1nJKh4DhsgfOMG4s/SNx56r4xHPvM5m/sk914wzDgKba3A==
   dependencies:
     "@npmcli/arborist" "^2.6.4"
     "@npmcli/ci-detect" "^1.2.0"

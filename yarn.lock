@@ -6267,15 +6267,14 @@ ini@^1.3.5:
   integrity sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==
 
 init-package-json@*:
-  version "2.0.4"
-  resolved "https://registry.npmjs.org/init-package-json/-/init-package-json-2.0.4.tgz"
-  integrity sha512-gUACSdZYka+VvnF90TsQorC+1joAVWNI724vBNj3RD0LLMeDss2IuzaeiQs0T4YzKs76BPHtrp/z3sn2p+KDTw==
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/init-package-json/-/init-package-json-2.0.5.tgz#78b85f3c36014db42d8f32117252504f68022646"
+  integrity sha512-u1uGAtEFu3VA6HNl/yUWw57jmKEMx8SKOxHhxjGnOFUiIlFnohKDFg4ZrPpv9wWqk44nDxGJAtqjdQFm+9XXQA==
   dependencies:
-    glob "^7.1.1"
-    npm-package-arg "^8.1.2"
+    npm-package-arg "^8.1.5"
     promzard "^0.3.0"
     read "~1.0.1"
-    read-package-json "^4.0.0"
+    read-package-json "^4.1.1"
     semver "^7.3.5"
     validate-npm-package-license "^3.0.4"
     validate-npm-package-name "^3.0.0"
@@ -7953,7 +7952,14 @@ minipass-sized@^1.0.3:
   dependencies:
     minipass "^3.0.0"
 
-minipass@*, minipass@^3.0.0, minipass@^3.1.0, minipass@^3.1.1, minipass@^3.1.3:
+minipass@*, minipass@^3.1.0, minipass@^3.1.3:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/minipass/-/minipass-3.1.5.tgz#71f6251b0a33a49c01b3cf97ff77eda030dff732"
+  integrity sha512-+8NzxD82XQoNKNrl1d/FSi+X8wAEWR+sbYAfIvub4Nz0d22plFG72CEVVaufV8PNf4qSslFTD8VMOxNVhHCjTw==
+  dependencies:
+    yallist "^4.0.0"
+
+minipass@^3.0.0, minipass@^3.1.1:
   version "3.1.3"
   resolved "https://registry.npmjs.org/minipass/-/minipass-3.1.3.tgz"
   integrity sha512-Mgd2GdMVzY+x3IJ+oHnVM+KG3lA5c8tnabyJKmHSaG2kAGpudxuOf8ToDkhumF7UzME7DecbQE9uOZhNm7PuJg==
@@ -8364,10 +8370,10 @@ npm-user-validate@*:
   resolved "https://registry.npmjs.org/npm-user-validate/-/npm-user-validate-1.0.1.tgz"
   integrity sha512-uQwcd/tY+h1jnEaze6cdX/LrhWhoBxfSknxentoqmIuStxUExxjWd3ULMLFPiFUrZKbOVMowH6Jq2FRWfmhcEw==
 
-npm@7.23.0:
-  version "7.23.0"
-  resolved "https://registry.npmjs.org/npm/-/npm-7.23.0.tgz"
-  integrity sha512-m7WFTwGfiBX+jL4ObX7rIDkug/hG/Jn8vZUjKw4WS8CqMjVydHiWTARLDIll7LtHu5i7ZHBnqXZbL2S73U5p6A==
+npm@7.24.0:
+  version "7.24.0"
+  resolved "https://registry.npmjs.org/npm/-/npm-7.24.0.tgz"
+  integrity sha512-4zd4txmN7dYEx32kH/K+gecnZhnGDdCrRFK6/n5TGUtqtyjevw0uPul0knJ9PzwDXeNf9MsWzGhjxGeI1M43FA==
   dependencies:
     "@npmcli/arborist" "*"
     "@npmcli/ci-detect" "*"
@@ -10226,7 +10232,7 @@ read-package-json-fast@*, read-package-json-fast@^2.0.1, read-package-json-fast@
     json-parse-even-better-errors "^2.3.0"
     npm-normalize-package-bin "^1.0.1"
 
-read-package-json@*, read-package-json@^4.0.0:
+read-package-json@*, read-package-json@^4.1.1:
   version "4.1.1"
   resolved "https://registry.npmjs.org/read-package-json/-/read-package-json-4.1.1.tgz"
   integrity sha512-P82sbZJ3ldDrWCOSKxJT0r/CXMWR0OR3KRh55SgKo3p91GSIEEC32v3lSHAvO/UcH3/IoL7uqhOFBduAnwdldw==

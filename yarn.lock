@@ -2453,7 +2453,7 @@ archy@*:
 
 are-we-there-yet@^2.0.0:
   version "2.0.0"
-  resolved "https://registry.yarnpkg.com/are-we-there-yet/-/are-we-there-yet-2.0.0.tgz#372e0e7bd279d8e94c653aaa1f67200884bf3e1c"
+  resolved "https://registry.npmjs.org/are-we-there-yet/-/are-we-there-yet-2.0.0.tgz"
   integrity sha512-Ci/qENmwHnsYo9xKIcUJN5LeDKdJ6R1Z1j9V/J5wyq8nh/mYPEpIKJbBZXtZjG04HiK7zV/p6Vs9952MrMeUIw==
   dependencies:
     delegates "^1.0.0"
@@ -6102,10 +6102,10 @@ humanize-ms@^1.2.1:
   dependencies:
     ms "^2.0.0"
 
-i@0.3.6:
-  version "0.3.6"
-  resolved "https://registry.npmjs.org/i/-/i-0.3.6.tgz"
-  integrity sha1-2WyScyB28HJxG2sQ/X1PZa2O4j0=
+i@0.3.7:
+  version "0.3.7"
+  resolved "https://registry.npmjs.org/i/-/i-0.3.7.tgz"
+  integrity sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==
 
 iconv-lite@0.4.24:
   version "0.4.24"
@@ -6268,7 +6268,7 @@ ini@^1.3.5:
 
 init-package-json@*:
   version "2.0.5"
-  resolved "https://registry.yarnpkg.com/init-package-json/-/init-package-json-2.0.5.tgz#78b85f3c36014db42d8f32117252504f68022646"
+  resolved "https://registry.npmjs.org/init-package-json/-/init-package-json-2.0.5.tgz"
   integrity sha512-u1uGAtEFu3VA6HNl/yUWw57jmKEMx8SKOxHhxjGnOFUiIlFnohKDFg4ZrPpv9wWqk44nDxGJAtqjdQFm+9XXQA==
   dependencies:
     npm-package-arg "^8.1.5"
@@ -7954,7 +7954,7 @@ minipass-sized@^1.0.3:
 
 minipass@*, minipass@^3.1.0, minipass@^3.1.3:
   version "3.1.5"
-  resolved "https://registry.yarnpkg.com/minipass/-/minipass-3.1.5.tgz#71f6251b0a33a49c01b3cf97ff77eda030dff732"
+  resolved "https://registry.npmjs.org/minipass/-/minipass-3.1.5.tgz"
   integrity sha512-+8NzxD82XQoNKNrl1d/FSi+X8wAEWR+sbYAfIvub4Nz0d22plFG72CEVVaufV8PNf4qSslFTD8VMOxNVhHCjTw==
   dependencies:
     yallist "^4.0.0"
@@ -8457,7 +8457,7 @@ npmlog@*:
 
 npmlog@^4.1.2:
   version "4.1.2"
-  resolved "https://registry.yarnpkg.com/npmlog/-/npmlog-4.1.2.tgz#08a7f2a8bf734604779a9efa4ad5cc717abb954b"
+  resolved "https://registry.npmjs.org/npmlog/-/npmlog-4.1.2.tgz"
   integrity sha512-2uUqazuKlTaSI/dC8AzicUck7+IrEaOnN/e0jd3Xtt1KcGpwx30v50mL7oPyr/h9bL3E4aZccVwpwP+5W9Vjkg==
   dependencies:
     are-we-there-yet "~1.1.2"
@@ -11402,7 +11402,7 @@ strip-ansi@^3.0.0, strip-ansi@^3.0.1, "strip-ansi@^3.0.1 || ^4.0.0":
 
 strip-ansi@^4.0.0:
   version "4.0.0"
-  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-4.0.0.tgz#a8479022eb1ac368a871389b635262c505ee368f"
+  resolved "https://registry.npmjs.org/strip-ansi/-/strip-ansi-4.0.0.tgz"
   integrity sha1-qEeQIusaw2iocTibY1JixQXuNo8=
   dependencies:
     ansi-regex "^3.0.0"

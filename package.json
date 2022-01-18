@@ -8,7 +8,7 @@
     "@fortawesome/free-brands-svg-icons": "5.15.4",
     "@fortawesome/free-solid-svg-icons": "5.15.4",
     "@fortawesome/react-fontawesome": "0.1.16",
-    "axios": "0.24.0",
+    "axios": "0.25.0",
     "formik": "2.2.9",
     "gh-pages": "3.2.3",
     "i": "0.3.7",

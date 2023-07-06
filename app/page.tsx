@@ -21,6 +21,7 @@ export default function Home() {
     // });
   }, []);
   return (
+    // TODO: Prep for CMS
     <>
       {/* for mobile */}
       <LeftNavbar />

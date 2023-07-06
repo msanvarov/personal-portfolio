@@ -4,6 +4,7 @@ import {
   MainMenu,
   MediaBackground,
 } from "@/components/layout";
+import { Analytics } from "@vercel/analytics/react";
 import "aos/dist/aos.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Lato } from "next/font/google";
@@ -46,6 +47,7 @@ export default function RootLayout({
             <div id="smooth-content">{children}</div>
           </div>
         </main>
+        <Analytics />
       </body>
     </html>
   );

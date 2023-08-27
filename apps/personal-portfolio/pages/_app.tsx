@@ -1,6 +1,7 @@
 import { Preloader } from '@msanvarov/core-components';
 import { persistor, store } from '@msanvarov/store';
 import AOS from 'aos';
+import Hotjar from '@hotjar/browser';
 import 'aos/dist/aos.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AnimatePresence } from 'framer-motion';
@@ -27,6 +28,11 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
 
   useEffect(() => {
     AOS.init();
+
+    const siteId = 3629844;
+    const hotjarVersion = 6;
+
+    Hotjar.init(siteId, hotjarVersion);
 
     // Page transition
     const start = () => {

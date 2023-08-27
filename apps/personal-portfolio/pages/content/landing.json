@@ -1,0 +1,92 @@
+{
+  "bio": {
+    "heading": "Sal Anvarov.",
+    "caption": "Designer & Full Stack Developer",
+    "description": "System designer, strategist and web development guru. Builds UX rich and performant websites. Sal had the privilege of building software and consulting for start-ups and big corporations.",
+    "descriptionExtended": "Currently contributing to the design and development efforts at <span class='text-primary'>Oproma</span>.",
+    "location": "📍 Based in Toronto.",
+    "media": "/assets/3d-headshot.png",
+    "button": {
+      "link": "/bio",
+      "icon": "/assets/icons/cta-icon.svg"
+    }
+  },
+  "credentials": {
+    "heading": "Credentials",
+    "caption": "A little on Sal",
+    "media": "/assets/bio.png",
+    "button": {
+      "link": "/credentials",
+      "icon": "/assets/icons/cta-icon.svg"
+    }
+  },
+  "cv": {
+    "heading": "Portfolio",
+    "caption": "CV",
+    "media": "/assets/portfolio.png",
+    "button": {
+      "link": "/portfolio",
+      "icon": "/assets/icons/cta-icon.svg"
+    }
+  },
+  "blog": {
+    "caption": "Blog",
+    "button": {
+      "link": "/blog",
+      "icon": "/assets/icons/cta-icon.svg"
+    }
+  },
+  "offerings": {
+    "heading": "Offerings",
+    "caption": "Explore offerings",
+    "link": "/offerings",
+    "media": "/assets/offerings.png",
+    "button": {
+      "link": "/offerings",
+      "icon": "/assets/icons/cta-icon.svg"
+    }
+  },
+  "profiles": {
+    "heading": "Profiles",
+    "caption": "Stay Connected",
+    "media": null,
+    "button": {
+      "link": "/contact",
+      "icon": "/assets/icons/cta-icon.svg"
+    },
+    "profiles": [
+      {
+        "link": "https://github.com/msanvarov/personal-portfolio",
+        "icon": "iconoir-github"
+      },
+      {
+        "link": "https://linkedin.com/in/sal-anvarov",
+        "icon": "iconoir-linkedin"
+      }
+    ]
+  },
+  "facts": {
+    "quickFacts": [
+      {
+        "count": "06",
+        "label": "YEARS <br /> EXPERIENCE"
+      },
+      {
+        "count": "60+",
+        "label": "CONSULTATIONS <br /> CONDUCTED"
+      },
+      {
+        "count": "12+",
+        "label": "PRODUCTION <br /> APPLICATIONS"
+      }
+    ]
+  },
+  "contact": {
+    "heading": "Let's <br /> collaborate <span>together.</span>",
+    "media": "/assets/icons/icon2.png",
+    "button": {
+      "link": "/contact",
+      "icon": "/assets/icons/cta-icon.svg"
+    }
+  }
+}

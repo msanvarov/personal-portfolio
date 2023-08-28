@@ -68,10 +68,7 @@ const PostsPage = ({ posts }: PostsPageProps) => {
                       href={`/posts/[post]`}
                     >
                       <div className="img-box">
-                        <img
-                          src={`/assets/thumbnails/${post.metadata.thumbnail}`}
-                          alt="thumbnail"
-                        />
+                        <img src={post.metadata.thumbnail} alt="thumbnail" />
                       </div>
                     </Link>
                     <div className="content">

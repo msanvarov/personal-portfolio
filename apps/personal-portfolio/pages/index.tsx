@@ -143,11 +143,7 @@ const LandingPage = ({ latestPost }: LandingPageProps) => {
                   <div className="about-blog-box info-box shadow-box h-full">
                     <Link href="/posts" className="overlay-link" />
                     <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                    <img
-                      // src={`/assets/thumbnails/${latestPost.metadata.thumbnail}`}
-                      src={'https://via.placeholder.com/100'}
-                      alt="thumbnail"
-                    />
+                    <img src={latestPost.metadata.thumbnail} alt="thumbnail" />
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="infos">
                         <h4>{content.blog.caption}</h4>
@@ -169,11 +165,7 @@ const LandingPage = ({ latestPost }: LandingPageProps) => {
                       className="overlay-link"
                     />
                     <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                    <img
-                      // src={`/assets/thumbnails/${latestPost.metadata.thumbnail}`}
-                      src={content.offerings.media}
-                      alt="thumbnail"
-                    />
+                    <img src={content.offerings.media} alt="thumbnail" />
                     {/* <div className="icon-boxes">
                       <i className="iconoir-codepen" />
                       <i className="iconoir-figma" />

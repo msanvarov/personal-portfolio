@@ -32,7 +32,7 @@
   "blog": {
     "caption": "Blog",
     "button": {
-      "link": "/blog",
+      "link": "/posts",
       "icon": "/assets/icons/cta-icon.svg"
     }
   },

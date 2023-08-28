@@ -50,10 +50,7 @@ const PortfolioPage = ({ caseStudies }: PortfolioPageProps) => {
                     />
                     <img src="/assets/bg1.png" alt="BG" className="bg-img" />
                     <div className="project-img">
-                      <img
-                        src={`/assets/thumbnails/${study.metadata.thumbnail}`}
-                        alt="thumbnail"
-                      />
+                      <img src={study.metadata.thumbnail} alt="thumbnail" />
                     </div>
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="project-info">
@@ -97,10 +94,7 @@ const PortfolioPage = ({ caseStudies }: PortfolioPageProps) => {
                       />
                       <img src="/assets/bg1.png" alt="BG" className="bg-img" />
                       <div className="project-img">
-                        <img
-                          src={`/assets/thumbnails/${study.metadata.thumbnail}`}
-                          alt="thumbnail"
-                        />
+                        <img src={study.metadata.thumbnail} alt="thumbnail" />
                       </div>
                       <div className="d-flex align-items-center justify-content-between">
                         <div className="project-info">
@@ -139,10 +133,7 @@ const PortfolioPage = ({ caseStudies }: PortfolioPageProps) => {
                       />
                       <img src="/assets/bg1.png" alt="BG" className="bg-img" />
                       <div className="project-img">
-                        <img
-                          src={`/assets/thumbnails/${study.metadata.thumbnail}`}
-                          alt="thumbnail"
-                        />
+                        <img src={study.metadata.thumbnail} alt="thumbnail" />
                       </div>
                       <div className="d-flex align-items-center justify-content-between">
                         <div className="project-info">

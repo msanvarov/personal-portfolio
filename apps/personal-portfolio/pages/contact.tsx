@@ -140,7 +140,7 @@ const ContactPage = () => {
                       name="topic"
                       id="topic"
                       required
-                      placeholder="Topic of Conversation *"
+                      placeholder="Topic *"
                     />
                     <ValidationError
                       prefix="topic"

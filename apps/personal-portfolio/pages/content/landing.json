@@ -30,7 +30,9 @@
     }
   },
   "blog": {
-    "caption": "Blog",
+    "caption": "Explore Blog",
+    "heading": "Blog",
+    "media": "/assets/blog.png",
     "button": {
       "link": "/posts",
       "icon": "/assets/icons/cta-icon.svg"

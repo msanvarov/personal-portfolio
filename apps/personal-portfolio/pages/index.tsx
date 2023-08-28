@@ -1,35 +1,9 @@
 import { Layout } from '@msanvarov/core-components';
-import { Post } from '@msanvarov/store';
-import fs from 'fs';
-import matter from 'gray-matter';
-import { GetStaticProps } from 'next';
 import Link from 'next/link';
-import path from 'path';
 import { Fragment } from 'react';
-import { POSTS_PATH, postFilePaths } from '../utils/mdx.utils';
 import content from './content/landing.json';
 
-export const getStaticProps: GetStaticProps<LandingPageProps> = async () => {
-  const filePath = postFilePaths[postFilePaths.length - 1];
-  const source = fs.readFileSync(path.join(POSTS_PATH, filePath));
-  const { content, data } = matter(source);
-
-  return {
-    props: {
-      latestPost: {
-        content,
-        metadata: data,
-        filePath,
-      },
-    },
-  };
-};
-
-type LandingPageProps = {
-  latestPost: Post;
-};
-
-const LandingPage = ({ latestPost }: LandingPageProps) => {
+const LandingPage = () => {
   return (
     <Layout>
       <section className="about-area">
@@ -143,11 +117,11 @@ const LandingPage = ({ latestPost }: LandingPageProps) => {
                   <div className="about-blog-box info-box shadow-box h-full">
                     <Link href="/posts" className="overlay-link" />
                     <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                    <img src={latestPost.metadata.thumbnail} alt="thumbnail" />
+                    <img src={content.blog.media} alt="thumbnail" />
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="infos">
                         <h4>{content.blog.caption}</h4>
-                        <h1>{latestPost.metadata.title}</h1>
+                        <h1>{content.blog.heading}</h1>
                       </div>
                       <Link
                         href={content.blog.button.link}

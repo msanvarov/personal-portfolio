@@ -2,6 +2,7 @@ import { ValidationError, useForm } from '@formspree/react';
 import { Layout } from '@msanvarov/core-components';
 import { useEffect, useState } from 'react';
 import { Alert, Form } from 'reactstrap';
+import content from './content/contact.json';
 
 const ContactPage = () => {
   const [state, handleSubmit] = useForm('xeqbqqwj');
@@ -22,51 +23,41 @@ const ContactPage = () => {
         <div className="container">
           <div className="gx-row d-flex justify-content-between gap-24">
             <div className="contact-infos">
-              <h3 data-aos="fade-up">Contact Info</h3>
+              <h3 data-aos="fade-up">{content.contact.heading}</h3>
               <ul className="contact-details">
                 <li className="d-flex align-items-center" data-aos="zoom-in">
                   <div className="icon-box shadow-box">
-                    <i className="iconoir-mail" />
+                    <i className={content.contact.mail.icon} />
                   </div>
                   <div className="right">
-                    <span>MAIL</span>
-                    <h4>
-                      <a href="mailto:sal@dezzign.studio">sal@dezzign.studio</a>
-                    </h4>
-                    <h4>
-                      <a href="mailto:sal@dezzign.studio">
-                        msalanvarov@gmail.com
-                      </a>
-                    </h4>
+                    <span>{content.contact.mail.heading}</span>
+                    {content.contact.mail.links.map((item, index) => (
+                      <h4 key={index}>
+                        <a href={`mailto:${item}`}>{item}</a>
+                      </h4>
+                    ))}
                   </div>
                 </li>
                 <li className="d-flex align-items-center" data-aos="zoom-in">
                   <div className="icon-box shadow-box">
-                    <i className="iconoir-phone" />
+                    <i className={content.contact.phone.icon} />
                   </div>
                   <div className="right">
-                    <span>CONTACT</span>
-                    <h4>
-                      <a
-                        href="https://calendly.com/msalanvarov"
-                        target="_blank"
-                        rel="noreferrer noopener"
-                      >
-                        Calendly
-                      </a>
-                    </h4>
+                    <span>{content.contact.phone.heading}</span>
+                    {content.contact.phone.links.map((item, index) => (
+                      <h4 key={index}>
+                        <a href={item.href}>{item.text}</a>
+                      </h4>
+                    ))}
                   </div>
                 </li>
                 <li className="d-flex align-items-center" data-aos="zoom-in">
                   <div className="icon-box shadow-box">
-                    <i className="iconoir-pin-alt" />
+                    <i className={content.contact.location.icon} />
                   </div>
                   <div className="right">
-                    <span>Location</span>
-                    <h4>
-                      Toronto, <br />
-                      Canada
-                    </h4>
+                    <span>{content.contact.location.heading}</span>
+                    <h4>{content.contact.location.location}</h4>
                   </div>
                 </li>
               </ul>

@@ -20,9 +20,13 @@ const CredentialsPage = () => {
                   <ul className="social-links d-flex justify-content-center">
                     {content.navbar.profiles.map((item, index) => (
                       <li key={index}>
-                        <Link href={item.link}>
+                        <a
+                          href={item.link}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                        >
                           <i className={item.icon} />
-                        </Link>
+                        </a>
                       </li>
                     ))}
                   </ul>

@@ -47,7 +47,7 @@ export const Header = () => {
               className="theme-btn"
               href="https://calendly.com/msalanvarov"
               target="_blank"
-              rel="noreferrer noopenner"
+              rel="noreferrer noopener"
             >
               <span role="img" aria-label="coffee">
                 ☕

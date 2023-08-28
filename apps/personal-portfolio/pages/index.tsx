@@ -115,7 +115,7 @@ const LandingPage = ({ latestPost }: LandingPageProps) => {
                   </div>
                   <div data-aos="zoom-in">
                     <div className="about-project-box info-box shadow-box h-full">
-                      <Link className="overlay-link" href="/works" />
+                      <Link className="overlay-link" href="/portfolio" />
                       <img src="/assets/bg1.png" alt="BG" className="bg-img" />
                       <img src={content.cv.media} alt="My Works" />
                       <div className="d-flex align-items-center justify-content-between">
@@ -203,9 +203,14 @@ const LandingPage = ({ latestPost }: LandingPageProps) => {
                         {content.profiles.profiles
                           .slice(startIndex, startIndex + 2)
                           .map((item, i) => (
-                            <Link href={item.link} key={i}>
+                            <a
+                              href={item.link}
+                              key={i}
+                              target="_blank"
+                              rel="noreferrer noopener"
+                            >
                               <i className={item.icon} />
-                            </Link>
+                            </a>
                           ))}
                       </div>
                     ))}

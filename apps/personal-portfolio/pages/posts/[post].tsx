@@ -95,13 +95,13 @@ const PostPage = ({ content, frontMatter, posts }: PostPageProps) => {
             <div className="col-md-8">
               <div className="blog-details-content">
                 <div className="img-box">
-                  <img src="/assets/images/blog1.jpeg" alt="Blog" />
+                  <img src={frontMatter.thumbnail} alt="Blog" />
                 </div>
                 <span className="meta">{frontMatter.category}</span>
                 <h1>{frontMatter.title}</h1>
                 <MDXRemote {...content} components={components} />
                 <div className="tags">
-                  <Link href="#" className="theme-btn">
+                  <Link href="#" className="theme-btn my-4">
                     {frontMatter.tag}
                   </Link>
                 </div>

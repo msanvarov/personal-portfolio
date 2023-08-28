@@ -30,8 +30,14 @@ const ContactPage = () => {
                   </div>
                   <div className="right">
                     <span>MAIL</span>
-                    <h4>sal@dezzign.studio</h4>
-                    <h4>msalanvarov@gmail.com</h4>
+                    <h4>
+                      <a href="mailto:sal@dezzign.studio">sal@dezzign.studio</a>
+                    </h4>
+                    <h4>
+                      <a href="mailto:sal@dezzign.studio">
+                        msalanvarov@gmail.com
+                      </a>
+                    </h4>
                   </div>
                 </li>
                 <li className="d-flex align-items-center" data-aos="zoom-in">
@@ -44,7 +50,7 @@ const ContactPage = () => {
                       <a
                         href="https://calendly.com/msalanvarov"
                         target="_blank"
-                        rel="noreferrer noopenner"
+                        rel="noreferrer noopener"
                       >
                         Calendly
                       </a>
@@ -74,7 +80,7 @@ const ContactPage = () => {
                     className="shadow-box"
                     href="https://github.com/msanvarov"
                     target="_blank"
-                    rel="noreferrer noopenner"
+                    rel="noreferrer noopener"
                   >
                     <i className="iconoir-github" />
                   </a>
@@ -84,7 +90,7 @@ const ContactPage = () => {
                     className="shadow-box"
                     href="https://linkedin.com/in/sal-anvarov"
                     target="_blank"
-                    rel="noreferrer noopenner"
+                    rel="noreferrer noopener"
                   >
                     <i className="iconoir-linkedin" />
                   </a>

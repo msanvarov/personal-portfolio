@@ -3,7 +3,7 @@
     "heading": "Sal Anvarov.",
     "caption": "Designer & Full Stack Developer",
     "description": "System designer, strategist and web development guru. Builds UX rich and performant websites. Sal had the privilege of building software and consulting for start-ups and big corporations.",
-    "descriptionExtended": "Currently contributing to the design and development efforts at <span class='text-primary'>Oproma</span>.",
+    "descriptionExtended": "Currently contributing to the design and development efforts at <span class='text-primary-color'>Oproma</span>.",
     "location": "📍 Based in Toronto.",
     "media": "/assets/3d-headshot.png",
     "button": {
@@ -68,7 +68,7 @@
   "facts": {
     "quickFacts": [
       {
-        "count": "06",
+        "count": "6+",
         "label": "YEARS <br /> EXPERIENCE"
       },
       {

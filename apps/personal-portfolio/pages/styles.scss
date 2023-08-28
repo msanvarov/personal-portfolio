@@ -38,6 +38,10 @@ a {
   text-align: right;
 }
 
+.text-primary-color {
+  color: var(--primary_color);
+}
+
 .container {
   max-width: 1170px;
 }

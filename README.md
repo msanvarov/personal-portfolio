@@ -4,20 +4,26 @@
   <a href="http://sal-anvarov.com/" target="blank"><img src="./apps/personal-portfolio/public/assets/thumbnails/website.png" width="320" alt="Nest Logo" /></a>
 </p>
 
-<p align="center">A modern <a href="https://nextjs.org" target="blank" rel="noreferrer noopener">Next.js</a> portfolio website built with 💙 and ☕ by Sal Anvarov.</p>
+<p align="center">A modern <a href="https://nextjs.org" target="blank" rel="noreferrer noopener">Next.js</a> portfolio website built with 💙 and ☕ by Sal Anvarov. <a href="sal-anvarov.com" target="blank" rel="noreferrer noopener">Deployed</a> with connection to <a href="https://www.hotjar.com/" target="blank" rel="noreferrer noopener">HotJar</a>, <a href="https://tagmanager.google.com/#/home" target="blank" rel="noreferrer noopener">GTM</a>, and <a href="https://formspree.io/" target="blank" rel="noreferrer noopener">Formspree</a>.
+</p>
 
 Table of Contents:
 
 1. [Description](#-description)
 2. [Prerequisites](#%EF%B8%8F-prerequisites)
 3. [Deployment](#-deployment)
-4. [Testing](#-testing)
+4. [Repository Files and Folders](#-repository-files-and-folders)
+5. [Testing](#-testing)
 
 🔎 This repo was created with [Nx](https://nx.dev/).
 
 ### 📚 Description
 
-This portfolio website was built with ease of extensibility in mind. It comes with **MDX** for case-studies and blog management and json files for general page content.
+Preview: https://www.sal-anvarov.com/
+
+This portfolio website was built with ease of extensibility in mind. This app comes with **MDX** for case-studies and blog management and **Bootstrap** for styling. The app has redux state management via **Redux Toolkit** and **React Hooks**.
+
+> Remark: Given **App Router** is not fully stable, I opted to stay with **Pages Router** until further notice. The plan is to eventually migrate to **App Router**.
 
 ---
 
@@ -62,6 +68,63 @@ $ docker-compose up -d
 
 ---
 
+### 📁 Repo Files
+
+```text
+.
+├── Dockerfile
+├── README.md
+├── apps
+│   ├── personal-portfolio
+│   │   ├── case-studies
+│   │   ├── index.d.ts
+│   │   ├── jest.config.ts
+│   │   ├── next-env.d.ts
+│   │   ├── next.config.js
+│   │   ├── pages
+│   │   ├── posts
+│   │   ├── project.json
+│   │   ├── public
+│   │   ├── tests
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.spec.json
+│   │   └── utils
+│   └── personal-portfolio-e2e
+│       ├── cypress.config.ts
+│       ├── project.json
+│       ├── src
+│       └── tsconfig.json
+├── assets
+│   └── open-link.svg
+├── compose.yaml
+├── dist
+│   └── apps
+│       └── personal-portfolio
+├── jest.config.ts
+├── jest.preset.js
+├── libs
+│   ├── core-components
+│   │   ├── README.md
+│   │   ├── project.json
+│   │   ├── src
+│   │   ├── tsconfig.json
+│   │   └── tsconfig.lib.json
+│   └── store
+│       ├── README.md
+│       ├── project.json
+│       ├── src
+│       ├── tsconfig.json
+│       └── tsconfig.lib.json
+├── nx.json
+├── package-lock.json
+├── package.json
+├── tools
+│   └── tsconfig.tools.json
+└── tsconfig.base.json
+```
+
+---
+
 ### ✅ Testing
 
 #### Docker 🐳
@@ -95,7 +158,7 @@ $ npm run test
 
 ---
 
-### 👥 Support
+### 👥 Help
 
 PRs are appreciated, I fully rely on the passion ❤️ of the OS developers.
 
@@ -105,4 +168,4 @@ PRs are appreciated, I fully rely on the passion ❤️ of the OS developers.
 
 This personal portfolio website is [MIT licensed](LICENSE).
 
-[Author](https://sal-anvarov.com/)
+[Author](https://linkedin.com/in/sal-anvarov)

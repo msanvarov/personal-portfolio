@@ -1,0 +1,39 @@
+{
+  "contact": {
+    "heading": "Contact",
+    "mail": {
+      "heading": "MAIL",
+      "icon": "iconoir-mail",
+      "links": ["sal@dezzign.studio", "msalanvarov@gmail.com"]
+    },
+    "phone": {
+      "heading": "CONTACT",
+      "icon": "iconoir-phone",
+      "links": [
+        {
+          "text": "Calendly",
+          "href": "https://calendly.com/msalanvarov"
+        }
+      ]
+    },
+    "location": {
+      "heading": "LOCATION",
+      "icon": "iconoir-pin-alt",
+      "type": "Location",
+      "location": "Toronto, Canada"
+    }
+  },
+  "profiles": {
+    "heading": "External",
+    "profiles": [
+      {
+        "link": "https://github.com/msanvarov",
+        "icon": "iconoir-github"
+      },
+      {
+        "link": "https://linkedin.com/in/sal-anvarov",
+        "icon": "iconoir-linkedin"
+      }
+    ]
+  }
+}

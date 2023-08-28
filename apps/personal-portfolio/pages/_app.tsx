@@ -1,7 +1,7 @@
+import Hotjar from '@hotjar/browser';
 import { Preloader } from '@msanvarov/core-components';
 import { persistor, store } from '@msanvarov/store';
 import AOS from 'aos';
-import Hotjar from '@hotjar/browser';
 import 'aos/dist/aos.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AnimatePresence } from 'framer-motion';
@@ -11,6 +11,7 @@ import { Lato } from 'next/font/google';
 import Head from 'next/head';
 import Router from 'next/router';
 import { useEffect, useState } from 'react';
+import TagManager, { TagManagerArgs } from 'react-gtm-module';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import './styles-light.scss';
@@ -33,6 +34,12 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
     const hotjarVersion = 6;
 
     Hotjar.init(siteId, hotjarVersion);
+
+    const tagManagerArgs: TagManagerArgs = {
+      gtmId: 'G-6KFZ6YS2FJ',
+    };
+
+    TagManager.initialize(tagManagerArgs);
 
     // Page transition
     const start = () => {

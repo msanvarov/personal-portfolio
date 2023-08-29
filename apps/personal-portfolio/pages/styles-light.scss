@@ -828,6 +828,12 @@
   /* # Project Details */
 
   .project-details-wrap {
+    .theme-btn {
+      color: var(--primary_color);
+      &:hover {
+        color: var(--dark);
+      }
+    }
     .project-details-img {
       height: 550px;
       position: relative;

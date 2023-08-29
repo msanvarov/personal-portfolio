@@ -15,7 +15,7 @@ export const ThemeConfigurator = () => {
         </button>
       ) : (
         <button className="switcher__btn shadow-box">
-          <i className="iconoir-light-bulb-on" onClick={handleToggle} />
+          <i className="iconoir-light-bulb" onClick={handleToggle} />
         </button>
       )}
     </>

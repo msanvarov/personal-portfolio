@@ -53,9 +53,7 @@ export const BlogNavbar = ({ posts, categories, tags }: BlogNavbarProps) => {
             <ul>
               {categories.map((category, i) => (
                 <li key={i}>
-                  <Link href="/posts" className="theme-btn">
-                    {category}
-                  </Link>
+                  <Link href="/posts">- {category}</Link>
                 </li>
               ))}
             </ul>

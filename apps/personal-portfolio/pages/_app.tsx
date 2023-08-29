@@ -63,7 +63,11 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
   return (
     <Provider {...{ store }}>
       <PersistGate loading={<Preloader />} {...{ persistor }}>
-        <ThemeProvider defaultTheme='dark'>
+        <ThemeProvider
+          {...{
+            defaultTheme: 'dark',
+          }}
+        >
           <Head>
             <title>Sal Anvarov - Personal Portfolio</title>
             <link

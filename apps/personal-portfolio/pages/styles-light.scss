@@ -94,7 +94,7 @@
 
   .theme-btn {
     background: var(--dark);
-    color: #fff;
+    color: #ffffff;
     display: inline-block;
     transition: 0.3s;
     border-radius: 16px;
@@ -829,10 +829,7 @@
 
   .project-details-wrap {
     .theme-btn {
-      color: var(--primary_color);
-      &:hover {
-        color: var(--dark);
-      }
+      color: #ffffff;
     }
     .project-details-img {
       height: 550px;

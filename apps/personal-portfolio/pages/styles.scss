@@ -122,7 +122,7 @@ ol {
 
 .theme-btn {
   background: var(--dark);
-  color: #fff;
+  color: #ffffff;
   display: inline-block;
   transition: 0.3s;
   border-radius: 16px;
@@ -131,7 +131,7 @@ ol {
   padding: 12px 30px;
 
   &:hover {
-    background: #fff;
+    background: #ffffff;
     color: var(--dark);
   }
 }
@@ -418,7 +418,7 @@ ol {
       position: relative;
       box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #fff;
+      color: #ffffff;
       transition: 0.3s;
 
       &:hover {
@@ -511,7 +511,7 @@ ol {
       font-size: 44px;
       line-height: 52px;
       font-weight: 500;
-      color: #fff;
+      color: #ffffff;
       margin: 0;
 
       span {
@@ -622,7 +622,7 @@ ol {
 
   .show-menu {
     display: none;
-    color: #fff;
+    color: #ffffff;
     font-size: 25px;
     cursor: pointer;
     width: 25px;
@@ -634,7 +634,7 @@ ol {
     span {
       width: 100%;
       height: 1px;
-      background: #fff;
+      background: #ffffff;
       display: block;
       transition: 0.4s;
     }
@@ -710,7 +710,7 @@ ol {
       h1 {
         font-size: 36px;
         line-height: 40px;
-        color: #fff;
+        color: #ffffff;
         font-weight: 500;
         margin-bottom: 12px;
       }
@@ -761,7 +761,7 @@ ol {
   .about-credentials-wrap {
     .banner .marquee {
       b {
-        color: #fff;
+        color: #ffffff;
         font-weight: 400;
       }
 
@@ -834,7 +834,7 @@ ol {
     h3 {
       font-size: 16px;
       text-transform: uppercase;
-      color: #fff;
+      color: #ffffff;
       margin-bottom: 23px;
     }
 
@@ -853,7 +853,7 @@ ol {
 
       h2 {
         font-size: 18px;
-        color: #fff;
+        color: #ffffff;
         opacity: 0.9;
         margin-bottom: 7px;
       }
@@ -1095,7 +1095,7 @@ ol {
 
       p {
         font-size: 16px;
-        color: #fff;
+        color: #ffffff;
         opacity: 0.8;
         line-height: 1.56;
         margin-bottom: 26px;
@@ -1109,7 +1109,7 @@ ol {
 
   .big-btn {
     margin-top: 100px;
-    color: #fff;
+    color: #ffffff;
     font-size: 44px;
     opacity: 0.9;
     display: block;
@@ -1187,7 +1187,7 @@ ol {
         border-radius: 50%;
         display: block;
         line-height: 55px;
-        color: #fff;
+        color: #ffffff;
         font-size: 20px;
         border: 1px solid rgba(255, 255, 255, 0.05);
         background: linear-gradient(
@@ -1214,14 +1214,14 @@ ol {
   }
 
   .credential-edc-exp h2 {
-    color: #fff;
+    color: #ffffff;
     font-size: 18px;
     text-transform: uppercase;
   }
 
   .credential-content .credential-about {
     h2 {
-      color: #fff;
+      color: #ffffff;
       font-size: 18px;
       text-transform: uppercase;
       margin-bottom: 37px;
@@ -1229,7 +1229,7 @@ ol {
 
     p {
       font-size: 16px;
-      color: #fff;
+      color: #ffffff;
       opacity: 0.8;
       line-height: 1.56;
       margin-bottom: 30px;
@@ -1287,7 +1287,7 @@ ol {
   .skills-wrap {
     h2 {
       font-size: 18px;
-      color: #fff;
+      color: #ffffff;
       text-transform: uppercase;
       margin-bottom: 19px;
     }
@@ -1709,7 +1709,7 @@ ol {
             padding: 17px 20px;
             font-size: 14px;
             display: block;
-            color: #fff;
+            color: #ffffff;
           }
 
           margin-bottom: 16px;
@@ -1790,7 +1790,7 @@ ol {
         padding: 17px 20px;
         font-size: 14px;
         display: block;
-        color: #fff;
+        color: #ffffff;
       }
 
       textarea {
@@ -1823,7 +1823,7 @@ ol {
     flex: none;
 
     h3 {
-      color: #fff;
+      color: #ffffff;
       font-size: 16px;
       text-transform: uppercase;
       margin-bottom: 29px;
@@ -1947,7 +1947,7 @@ ol {
       transition: 0.3s;
 
       &:hover {
-        color: #fff;
+        color: #ffffff;
       }
     }
   }

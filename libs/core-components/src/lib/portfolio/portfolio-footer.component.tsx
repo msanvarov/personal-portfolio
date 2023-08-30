@@ -6,7 +6,7 @@ export const PortfolioFooter = () => {
       className="container d-flex align-items-center justify-content-center"
       data-aos="zoom-in"
     >
-      <Link href="/portfolio" className="theme-btn shadow-box">
+      <Link href="/portfolio" className="theme-btn">
         Back to Portfolio Entries
       </Link>
     </div>

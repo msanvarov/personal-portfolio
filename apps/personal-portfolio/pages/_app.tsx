@@ -70,6 +70,41 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
         >
           <Head>
             <title>Sal Anvarov - Personal Portfolio</title>
+            <meta name="title" content="Sal Anvarov" />
+            <meta
+              name="description"
+              content="Hard-working developer with a flair for creating elegant solutions to complex problems. Team player with a can-do attitude and a strong focus on client satisfaction. Diverse experience with modern technologies and cloud providers like AWS and GCP with enterprise DevOps experience. Likes to contribute to open-source and create apps on his free time."
+            />
+
+            {/* <!-- Open Graph / Facebook --> */}
+            <meta property="og:type" content="website" />
+            <meta property="og:url" content="https://www.sal-anvarov.com/" />
+            <meta property="og:title" content="Sal Anvarov" />
+            <meta
+              property="og:description"
+              content="Hard-working developer with a flair for creating elegant solutions to complex problems. Team player with a can-do attitude and a strong focus on client satisfaction. Diverse experience with modern technologies and cloud providers like AWS and GCP with enterprise DevOps experience. Likes to contribute to open-source and create apps on his free time."
+            />
+            <meta
+              property="og:image"
+              content="https://www.sal-anvarov.com/assets/logo/logo-lg.png"
+            />
+
+            {/* <!-- Twitter --> */}
+            <meta property="twitter:card" content="summary_large_image" />
+            <meta
+              property="twitter:url"
+              content="https://www.sal-anvarov.com/"
+            />
+            <meta property="twitter:title" content="Sal Anvarov" />
+            <meta
+              property="twitter:description"
+              content="Hard-working developer with a flair for creating elegant solutions to complex problems. Team player with a can-do attitude and a strong focus on client satisfaction. Diverse experience with modern technologies and cloud providers like AWS and GCP with enterprise DevOps experience. Likes to contribute to open-source and create apps on his free time."
+            />
+            <meta
+              property="twitter:image"
+              content="https://www.sal-anvarov.com/assets/logo/logo-lg.png"
+            />
+
             <link
               rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/iconoir/6.9.0/css/iconoir.min.css"

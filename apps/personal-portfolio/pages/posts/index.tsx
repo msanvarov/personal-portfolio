@@ -18,12 +18,17 @@ import { POSTS_PATH, postFilePaths } from '../../utils/mdx.utils';
 
 export const getStaticProps: GetStaticProps<PostsPageProps> = () => {
   const posts = postFilePaths.map((filePath) => {
-    const source = fs.readFileSync(path.join(POSTS_PATH, filePath));
-    const { content, data } = matter(source);
+    const fileContents = fs.readFileSync(path.join(POSTS_PATH, filePath));
+    const fileMetadata = fs.statSync(path.join(POSTS_PATH, filePath));
+    const { content, data } = matter(fileContents);
 
     return {
       content,
-      metadata: data,
+      metadata: {
+        ...data,
+        created: fileMetadata.ctime.toISOString(),
+        modified: fileMetadata.mtime.toISOString(),
+      },
       filePath,
     };
   });
@@ -83,7 +88,7 @@ const PostsPage = ({ posts }: PostsPageProps) => {
                           {post.metadata.title}
                         </Link>
                       </h1>
-                      <Moment format="LLL">{post.metadata.created}</Moment>
+                      <Moment format="LLL">{post.metadata.modified}</Moment>
                       <p>{post.metadata.description}</p>
                     </div>
                   </div>

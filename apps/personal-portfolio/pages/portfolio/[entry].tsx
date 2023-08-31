@@ -28,10 +28,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<PortfolioEntryPageProps> = async ({
   params,
 }) => {
-  const postFilePath = path.join(CASE_STUDIES_PATH, `${params?.entry}.mdx`);
-  const source = fs.readFileSync(postFilePath);
+  const filePath = `${params?.entry}.mdx`;
+  const postFilePath = path.join(CASE_STUDIES_PATH, filePath);
+  const fileContents = fs.readFileSync(postFilePath);
+  const fileMetadata = fs.statSync(path.join(CASE_STUDIES_PATH, filePath));
 
-  const { content, data } = matter(source);
+  const { content, data } = matter(fileContents);
 
   const markdownContent = await serialize(content, {
     // Optionally pass remark/rehype plugins
@@ -45,7 +47,11 @@ export const getStaticProps: GetStaticProps<PortfolioEntryPageProps> = async ({
   return {
     props: {
       content: markdownContent,
-      frontMatter: data,
+      frontMatter: {
+        ...data,
+        created: fileMetadata.ctime.toISOString(),
+        modified: fileMetadata.mtime.toISOString(),
+      },
     },
   };
 };

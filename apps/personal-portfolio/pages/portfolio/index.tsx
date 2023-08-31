@@ -12,12 +12,19 @@ export const getStaticProps: GetStaticProps<PortfolioPageProps> = () => {
   const caseStudies = caseStudiesFilePaths
     // Parse content
     .map((filePath) => {
-      const source = fs.readFileSync(path.join(CASE_STUDIES_PATH, filePath));
-      const { content, data } = matter(source);
+      const fileContents = fs.readFileSync(
+        path.join(CASE_STUDIES_PATH, filePath)
+      );
+      const fileMetadata = fs.statSync(path.join(CASE_STUDIES_PATH, filePath));
+      const { content, data } = matter(fileContents);
 
       return {
         content,
-        metadata: data,
+        metadata: {
+          ...data,
+          created: fileMetadata.ctime.toISOString(),
+          modified: fileMetadata.mtime.toISOString(),
+        },
         filePath,
       };
     });
@@ -57,7 +64,7 @@ const PortfolioPage = ({ caseStudies }: PortfolioPageProps) => {
                         <p>{study.metadata.category}</p>
                         <h1>{study.metadata.title}</h1>
                         <Moment format="L - h:mm a">
-                          {study.metadata.created}
+                          {study.metadata.modified}
                         </Moment>
                       </div>
                       <Link

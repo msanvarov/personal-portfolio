@@ -29,12 +29,17 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({
   params,
 }) => {
   const posts = postFilePaths.map((filePath) => {
-    const source = fs.readFileSync(path.join(POSTS_PATH, filePath));
-    const { content, data } = matter(source);
+    const fileContents = fs.readFileSync(path.join(POSTS_PATH, filePath));
+    const fileMetadata = fs.statSync(path.join(POSTS_PATH, filePath));
+    const { content, data } = matter(fileContents);
 
     return {
       content,
-      metadata: data,
+      metadata: {
+        ...data,
+        created: fileMetadata.ctime.toISOString(),
+        modified: fileMetadata.mtime.toISOString(),
+      },
       filePath,
     };
   });

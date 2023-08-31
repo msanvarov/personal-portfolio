@@ -1,6 +1,7 @@
 import Hotjar from '@hotjar/browser';
 import { Preloader } from '@msanvarov/core-components';
 import { persistor, store } from '@msanvarov/store';
+import { Analytics } from '@vercel/analytics/react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -30,13 +31,13 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
   useEffect(() => {
     AOS.init();
 
-    const siteId = 3629844;
-    const hotjarVersion = 6;
+    const siteId = parseInt(process.env.HOTJAR_WEBSITE_UID ?? '3629844', 10);
+    const hotjarVersion = parseInt(process.env.HOTJAR_VERSION ?? '6', 10);
 
     Hotjar.init(siteId, hotjarVersion);
 
     const tagManagerArgs: TagManagerArgs = {
-      gtmId: 'G-6KFZ6YS2FJ',
+      gtmId: process.env.GOOGLE_TAG_MANAGER_UID ?? 'G-6KFZ6YS2FJ',
     };
 
     TagManager.initialize(tagManagerArgs);
@@ -46,7 +47,6 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
       setLoading(true);
     };
     const end = () => {
-      console.log('CALLING');
       setLoading(false);
     };
     Router.events.on('routeChangeStart', start);
@@ -111,7 +111,7 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
             />
             {/* RUM for DebugBear */}
             <script
-              src="https://cdn.debugbear.com/H50JpacVHAon.js"
+              src={`https://cdn.debugbear.com/${process.env.DEBUGBEAR_RUM_UID}.js`}
               async
             ></script>
             {/* Microsoft Clarity */}
@@ -123,7 +123,9 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
                 c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                 t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                 y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-              })(window, document, "clarity", "script", "inxvkei7ob");
+              })(window, document, "clarity", "script", "${
+                process.env.MICROSOFT_CLARITY_UID ?? 'inxvkei7ob'
+              }");
             `,
               }}
             />
@@ -131,6 +133,7 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
           <AnimatePresence mode="wait" initial={false}>
             <main className={font.className}>
               {loading ? <Preloader /> : <Component {...pageProps} />}
+              <Analytics />
             </main>
           </AnimatePresence>
         </ThemeProvider>

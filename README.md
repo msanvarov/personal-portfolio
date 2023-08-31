@@ -12,8 +12,9 @@ Table of Contents:
 1. [Description](#-description)
 2. [Prerequisites](#%EF%B8%8F-prerequisites)
 3. [Deployment](#-deployment)
-4. [Repository Files and Folders](#-repository-files-and-folders)
-5. [Testing](#-testing)
+4. [Environment Configuration](#-environment-configuration)
+5. [Repository Files and Folders](#-repository-files-and-folders)
+6. [Testing](#-testing)
 
 🔎 This repo was created with [Nx](https://nx.dev/).
 
@@ -28,6 +29,14 @@ This portfolio website was built with ease of extensibility in mind. This app co
 ---
 
 ### 🛠️ Prerequisites
+
+#### Tracking Tools
+
+- [HotJar](https://www.hotjar.com/)
+- [Google Analytics](https://www.marketingplatform.google.com)
+- [Microsoft Clarity](https://clarity.microsoft.com)
+- [DebugBear RUM](https://www.debugbear.com/docs/rum/real-user-monitoring)
+- [Vercel Analytics](https://vercel.com/docs/analytics/quickstart)
 
 #### Non Docker
 
@@ -49,6 +58,8 @@ This portfolio website was built with ease of extensibility in mind. This app co
 
 - Download dependencies via `npm i` or `yarn`.
 
+- Create a **.env file** via the `cp apps/personal-portfolio/.env.example .env` command and replace the example environment variables with valid ones.
+
 - Start the app in development mode via `npm run start` (the app will be exposed on http://localhost:4200; not to conflict with the default React, Angular, or Vue ports).
 
 > Remark: In the docker deployment, the UI is automatically started and served by the API.
@@ -65,6 +76,26 @@ $ docker-compose up -d
 ```
 
 - The following command will download dependencies and execute the web application on http://localhost:80 (deployed behind a Nginx reverse proxy).
+
+---
+
+### 🔒 Environment Configuration
+
+By default, the application comes with a config module that can read in every environment variable from the `.env` file.
+
+**APP_ENV** - the application environment to execute as, either in development or production. Determines the type of logging options to utilize. Options: `development` or `production`.
+
+**HOTJAR_WEBSITE_UID** - hotjar website uid, requires a HotJar account (**free**)
+
+**HOTJAR_VERSION** - hotjar version
+
+**GOOGLE_TAG_MANAGER_UID** - google tag manager uid, requires google analytics to be onboarded.
+
+**MICROSOFT_CLARITY_UID** - microsoft clarity uid, manages heatmaps and events. requires a Microsoft account (**free**)
+
+> Remark: DebugBear can be easy onboarded via [Vercel](https://vercel.com/integrations/debugbear)
+
+**DEBUGBEAR_RUM_UID** - debugbear real user monitoring (RUM) uid, requires DebugBear to be onboarded (**free**).
 
 ---
 

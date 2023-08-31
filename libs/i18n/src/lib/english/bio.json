@@ -53,7 +53,10 @@
     "media": null,
     "button": {
       "link": "/contact",
-      "icon": "/assets/icons/cta-icon.svg"
+      "icon": {
+        "light": "/assets/icons/icon-2.svg",
+        "dark": "/assets/icons/icon.svg"
+      }
     },
     "profiles": [
       {
@@ -71,7 +74,10 @@
     "media": "/assets/icons/icon2.png",
     "button": {
       "link": "/contact",
-      "icon": "/assets/icons/cta-icon.svg"
+      "icon": {
+        "light": "/assets/icons/icon-2.svg",
+        "dark": "/assets/icons/icon.svg"
+      }
     }
   },
   "credentials": {
@@ -80,7 +86,10 @@
     "media": "/assets/signature.png",
     "button": {
       "link": "/credentials",
-      "icon": "/assets/icons/cta-icon.svg"
+      "icon": {
+        "light": "/assets/icons/icon-2.svg",
+        "dark": "/assets/icons/icon.svg"
+      }
     }
   }
 }

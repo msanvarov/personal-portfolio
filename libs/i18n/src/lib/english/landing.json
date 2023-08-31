@@ -8,7 +8,10 @@
     "media": "/assets/3d-headshot.png",
     "button": {
       "link": "/bio",
-      "icon": "/assets/icons/cta-icon.svg"
+      "icon": {
+        "light": "/assets/icons/icon-2.svg",
+        "dark": "/assets/icons/icon.svg"
+      }
     }
   },
   "credentials": {
@@ -17,7 +20,10 @@
     "media": "/assets/bio.png",
     "button": {
       "link": "/credentials",
-      "icon": "/assets/icons/cta-icon.svg"
+      "icon": {
+        "light": "/assets/icons/icon-2.svg",
+        "dark": "/assets/icons/icon.svg"
+      }
     }
   },
   "cv": {
@@ -26,7 +32,10 @@
     "media": "/assets/portfolio.png",
     "button": {
       "link": "/portfolio",
-      "icon": "/assets/icons/cta-icon.svg"
+      "icon": {
+        "light": "/assets/icons/icon-2.svg",
+        "dark": "/assets/icons/icon.svg"
+      }
     }
   },
   "blog": {
@@ -35,7 +44,10 @@
     "media": "/assets/blog.png",
     "button": {
       "link": "/posts",
-      "icon": "/assets/icons/cta-icon.svg"
+      "icon": {
+        "light": "/assets/icons/icon-2.svg",
+        "dark": "/assets/icons/icon.svg"
+      }
     }
   },
   "offerings": {
@@ -45,7 +57,10 @@
     "media": "/assets/offerings.png",
     "button": {
       "link": "/offerings",
-      "icon": "/assets/icons/cta-icon.svg"
+      "icon": {
+        "light": "/assets/icons/icon-2.svg",
+        "dark": "/assets/icons/icon.svg"
+      }
     }
   },
   "profiles": {
@@ -54,7 +69,10 @@
     "media": null,
     "button": {
       "link": "/contact",
-      "icon": "/assets/icons/cta-icon.svg"
+      "icon": {
+        "light": "/assets/icons/icon-2.svg",
+        "dark": "/assets/icons/icon.svg"
+      }
     },
     "profiles": [
       {
@@ -88,7 +106,10 @@
     "media": "/assets/icons/icon2.png",
     "button": {
       "link": "/contact",
-      "icon": "/assets/icons/cta-icon.svg"
+      "icon": {
+        "light": "/assets/icons/icon-2.svg",
+        "dark": "/assets/icons/icon.svg"
+      }
     }
   }
 }

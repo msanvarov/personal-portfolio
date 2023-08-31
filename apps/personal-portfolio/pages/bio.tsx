@@ -1,8 +1,10 @@
-import { Layout } from '@msanvarov/core-components';
+import { Layout, getThemedContent } from '@msanvarov/core-components';
+import { en } from '@msanvarov/i18n';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
-import content from './content/bio.json';
 
 const BioPage = () => {
+  const { theme } = useTheme();
   return (
     <Layout wrapperClass="main-aboutpage">
       <section className="about-area">
@@ -12,20 +14,20 @@ const BioPage = () => {
               <div className="about-image-box shadow-box">
                 <img src="/assets/bg1.png" alt="BG" className="bg-img" />
                 <div className="image-inner">
-                  <img src={content.bio.media} alt="bio" />
+                  <img src={en.bio.bio.media} alt="bio" />
                 </div>
               </div>
             </div>
             <div className="about-details" data-aos="zoom-in">
               <h1 className="section-heading" data-aos="fade-up">
                 <img src="/assets/star-2.png" alt="Star" />{' '}
-                {content.bio.details.heading}{' '}
+                {en.bio.bio.details.heading}{' '}
                 <img src="/assets/star-2.png" alt="Star" />
               </h1>
               <div className="about-details-inner shadow-box">
                 <img src="/assets/icons/icon2.png" alt="Star" />
-                <h1>{content.bio.details.name}</h1>
-                <p>{content.bio.details.description}</p>
+                <h1>{en.bio.bio.details.name}</h1>
+                <p>{en.bio.bio.details.description}</p>
               </div>
             </div>
           </div>
@@ -33,9 +35,9 @@ const BioPage = () => {
             <div className="col-md-6" data-aos="zoom-in">
               <div className="about-edc-exp about-experience shadow-box">
                 <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                <h3>{content.experience.heading}</h3>
+                <h3>{en.bio.experience.heading}</h3>
                 <ul>
-                  {content.experience.experience.map((item, index) => (
+                  {en.bio.experience.experience.map((item, index) => (
                     <li key={index}>
                       <p className="date">{item.date}</p>
                       <h2>{item.title}</h2>
@@ -48,9 +50,9 @@ const BioPage = () => {
             <div className="col-md-6" data-aos="zoom-in">
               <div className="about-edc-exp about-education shadow-box">
                 <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                <h3>{content.education.heading}</h3>
+                <h3>{en.bio.education.heading}</h3>
                 <ul>
-                  {content.education.education.map((item, index) => (
+                  {en.bio.education.education.map((item, index) => (
                     <li key={index}>
                       <p className="date">{item.date}</p>
                       <h2>{item.degree}</h2>
@@ -68,18 +70,21 @@ const BioPage = () => {
                   <div className="about-crenditials-box info-box shadow-box">
                     <Link className="overlay-link" href="/credentials" />
                     <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                    <img src={content.credentials.media} alt="Sign" />
+                    <img src={en.bio.credentials.media} alt="Sign" />
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="infos">
-                        <h4>{content.credentials.caption}</h4>
-                        <h1>{content.credentials.heading}</h1>
+                        <h4>{en.bio.credentials.caption}</h4>
+                        <h1>{en.bio.credentials.heading}</h1>
                       </div>
                       <Link
-                        href={content.credentials.button.link}
+                        href={en.bio.credentials.button.link}
                         className="about-btn"
                       >
                         <img
-                          src={content.credentials.button.icon}
+                          src={getThemedContent(
+                            theme,
+                            en.bio.credentials.button.icon
+                          )}
                           alt="button"
                         />
                       </Link>
@@ -97,14 +102,20 @@ const BioPage = () => {
                     />
                     <h1
                       dangerouslySetInnerHTML={{
-                        __html: content.contact.heading,
+                        __html: en.bio.contact.heading,
                       }}
                     ></h1>
                     <Link
-                      href={content.contact.button.link}
+                      href={en.bio.contact.button.link}
                       className="about-btn"
                     >
-                      <img src={content.contact.button.icon} alt="button" />
+                      <img
+                        src={getThemedContent(
+                          theme,
+                          en.bio.contact.button.icon
+                        )}
+                        alt="button"
+                      />
                     </Link>
                   </div>
                 </div>
@@ -112,7 +123,7 @@ const BioPage = () => {
                   <div className="about-profile-box info-box shadow-box h-full">
                     <img src="/assets/bg1.png" alt="BG" className="bg-img" />
                     <div className="inner-profile-icons shadow-box">
-                      {content.profiles.profiles.map((item, index) => (
+                      {en.bio.profiles.profiles.map((item, index) => (
                         <Link href={item.link} key={index}>
                           <i className={item.icon} />
                         </Link>
@@ -120,14 +131,20 @@ const BioPage = () => {
                     </div>
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="infos">
-                        <h4>{content.profiles.caption}</h4>
-                        <h1>{content.profiles.heading}</h1>
+                        <h4>{en.bio.profiles.caption}</h4>
+                        <h1>{en.bio.profiles.heading}</h1>
                       </div>
                       <Link
-                        href={content.profiles.button.link}
+                        href={en.bio.profiles.button.link}
                         className="about-btn"
                       >
-                        <img src={content.profiles.button.icon} alt="button" />
+                        <img
+                          src={getThemedContent(
+                            theme,
+                            en.bio.profiles.button.icon
+                          )}
+                          alt="button"
+                        />
                       </Link>
                     </div>
                   </div>

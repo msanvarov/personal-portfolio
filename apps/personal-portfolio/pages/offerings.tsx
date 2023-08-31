@@ -1,8 +1,8 @@
 import { Layout } from '@msanvarov/core-components';
+import { en } from '@msanvarov/i18n';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { Container } from 'reactstrap';
-import content from './content/offerings.json';
 
 const OfferingsPage = () => {
   return (
@@ -10,7 +10,7 @@ const OfferingsPage = () => {
       <section className="service-area">
         <div className="container">
           <h1 className="section-heading" data-aos="fade-up">
-            <img src="/assets/star-2.png" alt="Star" /> {content.heading}{' '}
+            <img src="/assets/star-2.png" alt="Star" /> {en.offerings.heading}{' '}
             <img src="/assets/star-2.png" alt="Star" />
           </h1>
           <div className="row">
@@ -19,7 +19,7 @@ const OfferingsPage = () => {
               <div className="service-sidebar" data-aos="fade-right">
                 <div className="service-sidebar-inner shadow-box">
                   <ul>
-                    {content.navbar.entries.map((item, index) => (
+                    {en.offerings.navbar.entries.map((item, index) => (
                       <>
                         <li key={index}>
                           <i className={classNames('icon', item.icon)} />
@@ -41,13 +41,14 @@ const OfferingsPage = () => {
             {/* Content */}
             <div className="col-md-8">
               <h1 className="section-heading" data-aos="fade-up">
-                <img src="/assets/star-2.png" alt="Star" /> {content.heading}{' '}
+                <img src="/assets/star-2.png" alt="Star" />{' '}
+                {en.offerings.heading}{' '}
                 <img src="/assets/star-2.png" alt="Star" />
               </h1>
               <div className="service-content-wrap" data-aos="zoom-in">
                 <div className="service-content-inner shadow-box">
                   <div className="service-items">
-                    {content.offerings.map((item, index) => (
+                    {en.offerings.offerings.map((item, index) => (
                       <div className="service-item" key={index}>
                         <h3>{item.title}</h3>
                         {item.description.map((item, index) => (
@@ -72,18 +73,18 @@ const OfferingsPage = () => {
                   <div className="about-crenditials-box info-box shadow-box">
                     <Link className="overlay-link" href="/credentials" />
                     <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                    <img src={content.credentials.media} alt="Sign" />
+                    <img src={en.offerings.credentials.media} alt="Sign" />
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="infos">
-                        <h4>{content.credentials.caption}</h4>
-                        <h1>{content.credentials.heading}</h1>
+                        <h4>{en.offerings.credentials.caption}</h4>
+                        <h1>{en.offerings.credentials.heading}</h1>
                       </div>
                       <Link
-                        href={content.credentials.button.link}
+                        href={en.offerings.credentials.button.link}
                         className="about-btn"
                       >
                         <img
-                          src={content.credentials.button.icon}
+                          src={en.offerings.credentials.button.icon}
                           alt="button"
                         />
                       </Link>
@@ -101,14 +102,17 @@ const OfferingsPage = () => {
                     />
                     <h1
                       dangerouslySetInnerHTML={{
-                        __html: content.contact.heading,
+                        __html: en.offerings.contact.heading,
                       }}
                     ></h1>
                     <Link
-                      href={content.contact.button.link}
+                      href={en.offerings.contact.button.link}
                       className="about-btn"
                     >
-                      <img src={content.contact.button.icon} alt="button" />
+                      <img
+                        src={en.offerings.contact.button.icon}
+                        alt="button"
+                      />
                     </Link>
                   </div>
                 </div>
@@ -116,7 +120,7 @@ const OfferingsPage = () => {
                   <div className="about-profile-box info-box shadow-box h-full">
                     <img src="/assets/bg1.png" alt="BG" className="bg-img" />
                     <div className="inner-profile-icons shadow-box">
-                      {content.profiles.profiles.map((item, index) => (
+                      {en.offerings.profiles.profiles.map((item, index) => (
                         <Link href={item.link} key={index}>
                           <i className={item.icon} />
                         </Link>
@@ -124,14 +128,17 @@ const OfferingsPage = () => {
                     </div>
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="infos">
-                        <h4>{content.profiles.caption}</h4>
-                        <h1>{content.profiles.heading}</h1>
+                        <h4>{en.offerings.profiles.caption}</h4>
+                        <h1>{en.offerings.profiles.heading}</h1>
                       </div>
                       <Link
-                        href={content.profiles.button.link}
+                        href={en.offerings.profiles.button.link}
                         className="about-btn"
                       >
-                        <img src={content.profiles.button.icon} alt="button" />
+                        <img
+                          src={en.offerings.profiles.button.icon}
+                          alt="button"
+                        />
                       </Link>
                     </div>
                   </div>

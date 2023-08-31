@@ -22,13 +22,24 @@ export const layoutSlice = createSlice({
     toggleDisplayMobileNavbar: (state) => {
       state.displayMobileNavbar = !state.displayMobileNavbar;
     },
+    toggleThemeMode: (state) => {
+      if (state.themeMode === ThemeModeEnum.DARK) {
+        state.themeMode = ThemeModeEnum.LIGHT;
+      } else {
+        state.themeMode = ThemeModeEnum.DARK;
+      }
+    },
     setThemeMode: (state, action: PayloadAction<ThemeModeEnum>) => {
       state.themeMode = action.payload;
     },
   },
 });
 
-export const { toggleLanguage, toggleDisplayMobileNavbar, setThemeMode } =
-  layoutSlice.actions;
+export const {
+  toggleLanguage,
+  toggleDisplayMobileNavbar,
+  setThemeMode,
+  toggleThemeMode,
+} = layoutSlice.actions;
 
 export const layoutReducer = layoutSlice.reducer;

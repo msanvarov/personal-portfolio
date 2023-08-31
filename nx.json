@@ -46,7 +46,9 @@
       "application": {
         "babel": true
       },
-      "library": {}
+      "library": {
+        "unitTestRunner": "none"
+      }
     },
     "@nx/next": {
       "application": {

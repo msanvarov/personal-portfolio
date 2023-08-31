@@ -1,9 +1,12 @@
-import { Layout } from '@msanvarov/core-components';
+import { Layout, getThemedContent } from '@msanvarov/core-components';
+import { en } from '@msanvarov/i18n';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { Fragment } from 'react';
-import content from './content/landing.json';
 
 const LandingPage = () => {
+  const { theme } = useTheme();
+
   return (
     <Layout>
       <section className="about-area">
@@ -18,22 +21,25 @@ const LandingPage = () => {
                   alt="background"
                 />
                 <div className="img-box">
-                  <img src={content.bio.media} alt="profile" />
+                  <img src={en.landing.bio.media} alt="profile" />
                 </div>
                 <div className="infos">
-                  <h4>{content.bio.caption}</h4>
-                  <h1>{content.bio.heading}</h1>
-                  <p>{content.bio.description}</p>
+                  <h4>{en.landing.bio.caption}</h4>
+                  <h1>{en.landing.bio.heading}</h1>
+                  <p>{en.landing.bio.description}</p>
                   <br />
                   <p
                     dangerouslySetInnerHTML={{
-                      __html: content.bio.descriptionExtended,
+                      __html: en.landing.bio.descriptionExtended,
                     }}
                   ></p>
                   <br />
-                  <p>{content.bio.location}</p>
-                  <Link href={content.bio.button.link} className="about-btn">
-                    <img src={content.bio.button.icon} alt="Button" />
+                  <p>{en.landing.bio.location}</p>
+                  <Link href={en.landing.bio.button.link} className="about-btn">
+                    <img
+                      src={getThemedContent(theme, en.landing.bio.button.icon)}
+                      alt="Button"
+                    />
                   </Link>
                 </div>
               </div>
@@ -69,18 +75,24 @@ const LandingPage = () => {
                         alt="background"
                         className="bg-img"
                       />
-                      <img src={content.credentials.media} alt="credentials" />
+                      <img
+                        src={en.landing.credentials.media}
+                        alt="credentials"
+                      />
                       <div className="d-flex align-items-center justify-content-between">
                         <div className="infos">
-                          <h4>{content.credentials.caption}</h4>
-                          <h1>{content.credentials.heading}</h1>
+                          <h4>{en.landing.credentials.caption}</h4>
+                          <h1>{en.landing.credentials.heading}</h1>
                         </div>
                         <Link
-                          href={content.credentials.button.link}
+                          href={en.landing.credentials.button.link}
                           className="about-btn"
                         >
                           <img
-                            src={content.credentials.button.icon}
+                            src={getThemedContent(
+                              theme,
+                              en.landing.credentials.button.icon
+                            )}
                             alt="button"
                           />
                         </Link>
@@ -91,17 +103,23 @@ const LandingPage = () => {
                     <div className="about-project-box info-box shadow-box h-full">
                       <Link className="overlay-link" href="/portfolio" />
                       <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                      <img src={content.cv.media} alt="My Works" />
+                      <img src={en.landing.cv.media} alt="My Works" />
                       <div className="d-flex align-items-center justify-content-between">
                         <div className="infos">
-                          <h4>{content.cv.caption}</h4>
-                          <h1>{content.cv.heading}</h1>
+                          <h4>{en.landing.cv.caption}</h4>
+                          <h1>{en.landing.cv.heading}</h1>
                         </div>
                         <Link
-                          href={content.cv.button.link}
+                          href={en.landing.cv.button.link}
                           className="about-btn"
                         >
-                          <img src={content.cv.button.icon} alt="button" />
+                          <img
+                            src={getThemedContent(
+                              theme,
+                              en.landing.cv.button.icon
+                            )}
+                            alt="button"
+                          />
                         </Link>
                       </div>
                     </div>
@@ -117,17 +135,23 @@ const LandingPage = () => {
                   <div className="about-blog-box info-box shadow-box h-full">
                     <Link href="/posts" className="overlay-link" />
                     <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                    <img src={content.blog.media} alt="thumbnail" />
+                    <img src={en.landing.blog.media} alt="thumbnail" />
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="infos">
-                        <h4>{content.blog.caption}</h4>
-                        <h1>{content.blog.heading}</h1>
+                        <h4>{en.landing.blog.caption}</h4>
+                        <h1>{en.landing.blog.heading}</h1>
                       </div>
                       <Link
-                        href={content.blog.button.link}
+                        href={en.landing.blog.button.link}
                         className="about-btn"
                       >
-                        <img src={content.blog.button.icon} alt="button" />
+                        <img
+                          src={getThemedContent(
+                            theme,
+                            en.landing.blog.button.icon
+                          )}
+                          alt="button"
+                        />
                       </Link>
                     </div>
                   </div>
@@ -135,11 +159,11 @@ const LandingPage = () => {
                 <div data-aos="zoom-in" className="flex-1">
                   <div className="about-services-box info-box shadow-box h-full">
                     <Link
-                      href={content.offerings.link}
+                      href={en.landing.offerings.link}
                       className="overlay-link"
                     />
                     <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                    <img src={content.offerings.media} alt="thumbnail" />
+                    <img src={en.landing.offerings.media} alt="thumbnail" />
                     {/* <div className="icon-boxes">
                       <i className="iconoir-codepen" />
                       <i className="iconoir-figma" />
@@ -148,14 +172,20 @@ const LandingPage = () => {
                     </div> */}
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="infos">
-                        <h4>{content.offerings.caption}</h4>
-                        <h1>{content.offerings.heading}</h1>
+                        <h4>{en.landing.offerings.caption}</h4>
+                        <h1>{en.landing.offerings.heading}</h1>
                       </div>
                       <Link
-                        href={content.offerings.button.link}
+                        href={en.landing.offerings.button.link}
                         className="about-btn"
                       >
-                        <img src={content.offerings.button.icon} alt="Button" />
+                        <img
+                          src={getThemedContent(
+                            theme,
+                            en.landing.offerings.button.icon
+                          )}
+                          alt="Button"
+                        />
                       </Link>
                     </div>
                   </div>
@@ -166,7 +196,9 @@ const LandingPage = () => {
 
                     {Array.from(
                       {
-                        length: Math.ceil(content.profiles.profiles.length / 2),
+                        length: Math.ceil(
+                          en.landing.profiles.profiles.length / 2
+                        ),
                       },
                       (_, i) => i * 2
                     ).map((startIndex, index) => (
@@ -174,7 +206,7 @@ const LandingPage = () => {
                         className="inner-profile-icons shadow-box"
                         key={index}
                       >
-                        {content.profiles.profiles
+                        {en.landing.profiles.profiles
                           .slice(startIndex, startIndex + 2)
                           .map((item, i) => (
                             <a
@@ -191,14 +223,20 @@ const LandingPage = () => {
 
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="infos">
-                        <h4>{content.profiles.caption}</h4>
-                        <h1>{content.profiles.heading}</h1>
+                        <h4>{en.landing.profiles.caption}</h4>
+                        <h1>{en.landing.profiles.heading}</h1>
                       </div>
                       <Link
-                        href={content.offerings.button.link}
+                        href={en.landing.profiles.button.link}
                         className="about-btn"
                       >
-                        <img src={content.offerings.button.icon} alt="Button" />
+                        <img
+                          src={getThemedContent(
+                            theme,
+                            en.landing.profiles.button.icon
+                          )}
+                          alt="Button"
+                        />
                       </Link>
                     </div>
                   </div>
@@ -211,7 +249,7 @@ const LandingPage = () => {
               <div className="about-client-box info-box shadow-box">
                 <img src="/assets/bg1.png" alt="BG" className="bg-img" />
                 <div className="clients d-flex align-items-start gap-24 justify-content-center">
-                  {content.facts.quickFacts.map((item, index) => (
+                  {en.landing.facts.quickFacts.map((item, index) => (
                     <div className="client-item" key={index}>
                       <h1>{item.count}</h1>
                       <p
@@ -235,11 +273,20 @@ const LandingPage = () => {
                 />
                 <h1
                   dangerouslySetInnerHTML={{
-                    __html: content.contact.heading,
+                    __html: en.landing.contact.heading,
                   }}
                 ></h1>
-                <Link href={content.contact.button.link} className="about-btn">
-                  <img src={content.contact.button.icon} alt="button" />
+                <Link
+                  href={en.landing.contact.button.link}
+                  className="about-btn"
+                >
+                  <img
+                    src={getThemedContent(
+                      theme,
+                      en.landing.contact.button.icon
+                    )}
+                    alt="button"
+                  />
                 </Link>
               </div>
             </div>

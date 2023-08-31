@@ -1,8 +1,8 @@
 import { ValidationError, useForm } from '@formspree/react';
 import { Layout } from '@msanvarov/core-components';
+import { en } from '@msanvarov/i18n';
 import { useEffect, useState } from 'react';
 import { Alert, Form } from 'reactstrap';
-import content from './content/contact.json';
 
 const ContactPage = () => {
   const [state, handleSubmit] = useForm('xeqbqqwj');
@@ -23,15 +23,15 @@ const ContactPage = () => {
         <div className="container">
           <div className="gx-row d-flex justify-content-between gap-24">
             <div className="contact-infos">
-              <h3 data-aos="fade-up">{content.contact.heading}</h3>
+              <h3 data-aos="fade-up">{en.contact.contact.heading}</h3>
               <ul className="contact-details">
                 <li className="d-flex align-items-center" data-aos="zoom-in">
                   <div className="icon-box shadow-box">
-                    <i className={content.contact.mail.icon} />
+                    <i className={en.contact.contact.mail.icon} />
                   </div>
                   <div className="right">
-                    <span>{content.contact.mail.heading}</span>
-                    {content.contact.mail.links.map((item, index) => (
+                    <span>{en.contact.contact.mail.heading}</span>
+                    {en.contact.contact.mail.links.map((item, index) => (
                       <h4 key={index}>
                         <a href={`mailto:${item}`}>{item}</a>
                       </h4>
@@ -40,11 +40,11 @@ const ContactPage = () => {
                 </li>
                 <li className="d-flex align-items-center" data-aos="zoom-in">
                   <div className="icon-box shadow-box">
-                    <i className={content.contact.phone.icon} />
+                    <i className={en.contact.contact.phone.icon} />
                   </div>
                   <div className="right">
-                    <span>{content.contact.phone.heading}</span>
-                    {content.contact.phone.links.map((item, index) => (
+                    <span>{en.contact.contact.phone.heading}</span>
+                    {en.contact.contact.phone.links.map((item, index) => (
                       <h4 key={index}>
                         <a href={item.href}>{item.text}</a>
                       </h4>
@@ -53,15 +53,15 @@ const ContactPage = () => {
                 </li>
                 <li className="d-flex align-items-center" data-aos="zoom-in">
                   <div className="icon-box shadow-box">
-                    <i className={content.contact.location.icon} />
+                    <i className={en.contact.contact.location.icon} />
                   </div>
                   <div className="right">
-                    <span>{content.contact.location.heading}</span>
-                    <h4>{content.contact.location.location}</h4>
+                    <span>{en.contact.contact.location.heading}</span>
+                    <h4>{en.contact.contact.location.location}</h4>
                   </div>
                 </li>
               </ul>
-              <h3 data-aos="fade-up">External</h3>
+              <h3 data-aos="fade-up">{en.contact.profiles.heading}</h3>
               <ul
                 className="social-links d-flex align-center"
                 data-aos="zoom-in"
@@ -92,9 +92,11 @@ const ContactPage = () => {
               <div className="shadow-box">
                 <img src="/assets/bg1.png" alt="BG" className="bg-img" />
                 <img src="/assets/icons/icon3.png" alt="Icon" />
-                <h1>
-                  Let’s work <span>together.</span>
-                </h1>
+                <h1
+                  dangerouslySetInnerHTML={{
+                    __html: en.contact.form.heading,
+                  }}
+                ></h1>
                 <Form onSubmit={handleSubmit}>
                   <Alert
                     className="messenger-box-contact__msg"
@@ -103,7 +105,7 @@ const ContactPage = () => {
                     isOpen={displayBanner}
                     toggle={() => setDisplayBanner(false)}
                   >
-                    Message has been dispatched!
+                    {en.contact.form.onCompletion}
                   </Alert>
 
                   <div className="input-group">
@@ -167,7 +169,7 @@ const ContactPage = () => {
                       type="submit"
                       disabled={state.submitting}
                     >
-                      Dispatch Message
+                      {en.contact.form.button.text}
                     </button>
                   </div>
                 </Form>

@@ -35,5 +35,12 @@
         "icon": "iconoir-linkedin"
       }
     ]
+  },
+  "form": {
+    "heading": "Let’s <span>chat.</span>",
+    "onCompletion": "Message has been dispatched!",
+    "button": {
+      "text": "Dispatch Message"
+    }
   }
 }

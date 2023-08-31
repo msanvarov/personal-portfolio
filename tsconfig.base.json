@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@msanvarov/core-components": ["libs/core-components/src/index.ts"],
+      "@msanvarov/i18n": ["libs/i18n/src/index.ts"],
       "@msanvarov/store": ["libs/store/src/index.ts"]
     }
   },

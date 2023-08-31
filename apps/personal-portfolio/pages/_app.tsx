@@ -74,6 +74,11 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
               rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/iconoir/6.9.0/css/iconoir.min.css"
             />
+            {/* RUM for DebugBear */}
+            <script
+              src="https://cdn.debugbear.com/H50JpacVHAon.js"
+              async
+            ></script>
             {/* Microsoft Clarity */}
             <script
               type="text/javascript"

@@ -41,13 +41,15 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
     };
 
     TagManager.initialize(tagManagerArgs);
+  }, []);
 
+  useEffect(() => {
     // Page transition
     const start = () => {
       setLoading(true);
     };
     const end = () => {
-      setLoading(false);
+      setTimeout(() => setLoading(false), 250);
     };
     Router.events.on('routeChangeStart', start);
     Router.events.on('routeChangeComplete', end);
@@ -58,7 +60,7 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
       Router.events.off('routeChangeComplete', end);
       Router.events.off('routeChangeError', end);
     };
-  }, []);
+  }, [Router]);
 
   return (
     <Provider {...{ store }}>

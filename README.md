@@ -99,7 +99,7 @@ By default, the application comes with a config module that can read in every en
 
 ---
 
-### 📁 Repo Files
+### 📁 Repository Files and Folders
 
 ```text
 .

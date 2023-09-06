@@ -37,7 +37,7 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
     Hotjar.init(siteId, hotjarVersion);
 
     const tagManagerArgs: TagManagerArgs = {
-      gtmId: process.env.GOOGLE_TAG_MANAGER_UID ?? 'G-6KFZ6YS2FJ',
+      gtmId: process.env.GOOGLE_TAG_MANAGER_UID ?? 'AW-779764156',
     };
 
     TagManager.initialize(tagManagerArgs);

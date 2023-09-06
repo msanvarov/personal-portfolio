@@ -11,8 +11,8 @@ import { AppProps } from 'next/app';
 import { Lato } from 'next/font/google';
 import Head from 'next/head';
 import Router from 'next/router';
+import Script from 'next/script';
 import { useEffect, useState } from 'react';
-import TagManager, { TagManagerArgs } from 'react-gtm-module';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import './styles-light.scss';
@@ -35,12 +35,6 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
     const hotjarVersion = parseInt(process.env.HOTJAR_VERSION ?? '6', 10);
 
     Hotjar.init(siteId, hotjarVersion);
-
-    const tagManagerArgs: TagManagerArgs = {
-      gtmId: process.env.GOOGLE_TAG_MANAGER_UID ?? 'AW-779764156',
-    };
-
-    TagManager.initialize(tagManagerArgs);
   }, []);
 
   useEffect(() => {
@@ -132,6 +126,23 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
               }}
             />
           </Head>
+          {/* Google Tag Manager */}
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${
+              process.env.GOOGLE_TAG_MANAGER_UID ?? 'AW-779764156'
+            }`}
+          />
+          <Script id="google-analytics">
+            {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+ 
+          gtag('config', '${
+            process.env.GOOGLE_TAG_MANAGER_UID ?? 'AW-779764156'
+          }');
+        `}
+          </Script>
           <AnimatePresence mode="wait" initial={false}>
             <main className={font.className}>
               {loading ? <Preloader /> : <Component {...pageProps} />}

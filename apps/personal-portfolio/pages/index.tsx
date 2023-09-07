@@ -163,13 +163,12 @@ const LandingPage = () => {
                       className="overlay-link"
                     />
                     <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                    <img src={en.landing.offerings.media} alt="thumbnail" />
-                    {/* <div className="icon-boxes">
-                      <i className="iconoir-codepen" />
-                      <i className="iconoir-figma" />
-                      <i className="iconoir-code" />
-                      <i className="iconoir-electronics-transistor" />
-                    </div> */}
+                    {/* <img src={en.landing.offerings.media} alt="thumbnail" /> */}
+                    <div className="icon-boxes">
+                      {en.landing.offerings.icons.map((item, index) => (
+                        <i key={index} className={item} />
+                      ))}
+                    </div>
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="infos">
                         <h4>{en.landing.offerings.caption}</h4>

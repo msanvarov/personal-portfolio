@@ -17,7 +17,7 @@
   "credentials": {
     "heading": "Credentials",
     "caption": "A little on Sal",
-    "media": "/assets/bio.png",
+    "media": "/assets/credentials.png",
     "button": {
       "link": "/credentials",
       "icon": {
@@ -54,7 +54,12 @@
     "heading": "Offerings",
     "caption": "Explore offerings",
     "link": "/offerings",
-    "media": "/assets/offerings.png",
+    "icons": [
+      "iconoir-figma",
+      "iconoir-input-output",
+      "iconoir-design-pencil",
+      "iconoir-code"
+    ],
     "button": {
       "link": "/offerings",
       "icon": {
@@ -81,7 +86,7 @@
       },
       {
         "link": "https://linkedin.com/in/sal-anvarov",
-        "icon": "iconoir-linkedin"
+        "icon": "iconoir-globe"
       }
     ]
   },

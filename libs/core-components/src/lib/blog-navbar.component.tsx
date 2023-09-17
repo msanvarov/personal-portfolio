@@ -28,7 +28,7 @@ export const BlogNavbar = ({ posts, categories, tags }: BlogNavbarProps) => {
           <div className="blog-sidebar-widget-inner shadow-box">
             <h3>Recent Posts</h3>
             <ul>
-              {posts.map((post, i) => (
+              {posts.slice(0, 5).map((post, i) => (
                 <li key={i}>
                   <Link
                     as={`/posts/${post.filePath.replace(/\.mdx?$/, '')}`}

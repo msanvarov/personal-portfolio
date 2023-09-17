@@ -17,21 +17,27 @@ import { Col, Container, Row } from 'reactstrap';
 import { POSTS_PATH, postFilePaths } from '../../utils/mdx.utils';
 
 export const getStaticProps: GetStaticProps<PostsPageProps> = () => {
-  const posts = postFilePaths.map((filePath) => {
-    const fileContents = fs.readFileSync(path.join(POSTS_PATH, filePath));
-    const fileMetadata = fs.statSync(path.join(POSTS_PATH, filePath));
-    const { content, data } = matter(fileContents);
+  const posts = postFilePaths
+    .map((filePath) => {
+      const fileContents = fs.readFileSync(path.join(POSTS_PATH, filePath));
+      const fileMetadata = fs.statSync(path.join(POSTS_PATH, filePath));
+      const { content, data } = matter(fileContents);
 
-    return {
-      content,
-      metadata: {
-        ...data,
-        created: fileMetadata.ctime.toISOString(),
-        modified: fileMetadata.mtime.toISOString(),
-      },
-      filePath,
-    };
-  });
+      return {
+        content,
+        metadata: {
+          ...data,
+          created: fileMetadata.ctime.toISOString(),
+          modified: fileMetadata.mtime.toISOString(),
+        },
+        filePath,
+      };
+    })
+    .sort((a, b) => {
+      const aDate = new Date(a.metadata.created).getTime();
+      const bDate = new Date(b.metadata.created).getTime();
+      return isNaN(aDate) || isNaN(bDate) ? 0 : bDate - aDate;
+    });
 
   return { props: { posts } };
 };

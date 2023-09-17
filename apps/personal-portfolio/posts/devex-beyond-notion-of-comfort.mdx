@@ -1,0 +1,102 @@
+---
+title: "Developer Experience: Beyond the Notion of 'Comfort'"
+uid: devex-beyond-notion-of-comfort
+thumbnail: /assets/thumbnails/developer.png
+category: Web Development
+tag: Software
+description: It's commonplace for software developers to gravitate towards tools that are egocentrically enjoyable to use, often referring to this as good Developer Experience (DX). However, this criteria largely depends on individual experience and familiarity, which can dilute the utility of the term "good DX" as a substantive measure.
+---
+
+It's commonplace for software developers to gravitate towards tools that are egocentrically enjoyable to use, often referring to this as good Developer Experience (DX). However, this criteria largely depends on individual experience and familiarity, which can dilute the utility of the term "good DX" as a substantive measure. This viewpoint has also been advocated by industry professionals like `ThePrimeagen`. Sole reliance on personal comfort zones can inadvertently inhibit innovation and limit broader perspectives. Therefore, a more rigorous and objective methodology for evaluating DX and code quality is imperative.
+
+Instead, I propose leveraging established User Experience (UX) principles as a more universal metric, applicable across various programming languages, frameworks, and paradigms. These principles can supplant or augment well-known software design principles such as [SOLID](https://en.wikipedia.org/wiki/SOLID), [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), and [Clean Code](https://books.google.no/books/about/Clean_Code.html?id=hjEFCAAAQBAJ&source=kp_book_description&redir_esc=y).
+
+To those who argue that UX principles are exclusively pertinent to user interface design, I assert that UX is far more versatile in application.
+
+## Comparative Case Study: Pydantic versus Dataclasses
+
+Consider two code implementations that achieve the same functionality but through distinct methodologies. The objective here is to evaluate the superiority of one over the other through UX principles, rather than relying on nebulous concepts like "which feels better."
+
+For illustration, let's consider two Python-based approaches for encoding and decoding a JSON object, one using Python's built-in `dataclasses` and the other using the `pydantic` library.
+
+```python
+# Dataclasses
+from dataclasses import dataclass, asdict
+import json
+
+@dataclass
+class Size:
+    width: int
+    height: int
+
+size = Size(width=10, height=20)
+size_json = json.dumps(asdict(size))
+reconstructed = Size(**json.loads(size_json))
+```
+
+```python
+# Pydantic
+from pydantic import BaseModel
+import json
+
+class Size(BaseModel):
+    width: int
+    height: int
+
+size = Size(width=10, height=20)
+size_json = size.json()
+reconstructed = Size.parse_raw(size_json)
+```
+
+The key difference lies in the inherent validation that Pydantic offers. An argument could be made against Pydantic for its external dependency and the need to subclass `BaseModel`. However, these criticisms could be superficial when assessed against a comprehensive set of UX principles.
+
+## Evaluation Through UX Frameworks
+
+For the purpose of this evaluation, I primarily employ [Nilsens Heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/), a set of general-purpose UX guidelines. While they are broad in nature, they offer a flexible framework for assessing developer experience.
+
+## Error Prevention
+
+Both implementations have distinctive approaches to error handling. Pydantic inherently includes data validation, thereby mitigating potential downstream errors.
+
+## System Status Visibility
+
+While code is generally a static artifact, we can still provide feedback to developers via type systems, compilers, and linters, thereby improving system status visibility. Pydantic, for example, ensures that an object is in an expected state before allowing further operations.
+
+## Guiding Error Recovery
+
+Precise and informative error messages are crucial. Pydantic’s detailed error feedback contrasts sharply with Dataclasses' more generic error messages, making the former more instructive for debugging.
+
+With these UX principles, it becomes evident that my initial preference for what "feels good" may have led to a suboptimal choice, potentially causing greater long-term inefficiencies.
+
+## A Streamlined and Simple Design
+
+As mentioned by [NN Group's guidelines](https://www.nngroup.com/articles/ten-usability-heuristics/), an interface should be free of unnecessary or seldom-used information. The `pandas` approach might require fewer keystrokes, but it includes redundant information like repeated references to `df["..."]`. In contrast, `vaex` is cleaner and less cluttered. For instance:
+
+```python
+# Pandas
+df["lat_diff"] = (df["pickup_latitude"] - df["dropoff_latitude"]) ** 2
+```
+
+## Easy Recognition Over Memory
+
+The guidelines suggest minimizing cognitive load by making actions and options visible so that users don't have to remember previous steps. The `pandas` approach relies on string-based or dictionary-like methods, hiding important information from Language Server Protocols (LSP).
+
+## Standardization and Uniformity
+
+According to NN Group, consistency across words, situations, and actions is crucial. While both `pandas` and `vaex` offer different levels of consistency depending on the use case, neither can be declared universally better.
+
+## Speed and Adaptability
+
+Both `pandas` and `vaex` offer shortcuts for common tasks. For example, `pandas` simplifies SQL database interactions. However, it is not tailored for machine learning tasks, unlike `vaex`, which is more applicable for these cases. The idea is to pick tools that allow you to work quickly but are also adaptable to specific needs.
+
+## Latency as a Key Factor
+
+Although not a formal heuristic, latency or performance can significantly influence Developer Experience (DX). Poor performance can degrade DX, while good performance might go unnoticed. The author recounts their experience of moving from `pandas` to `vaex` for improved performance, illustrating the importance of adaptability in technology choices.
+
+## The Rich Landscape of Heuristics
+
+The article touches on several key heuristics but acknowledges that more exist, such as "User control and freedom," "Help and documentation," and "Match between system and the real world." These could be topics for future discussions.
+
+## Final Thoughts
+
+The traditional understanding of Developer Experience has often been reduced to what feels familiar or comfortable. However, for meaningful innovation and discussion, it's crucial to apply a more structured, UX-based framework to evaluate coding practices and tools. This allows for a more balanced and educated selection of technologies, even those that might initially seem unfamiliar or counterintuitive.

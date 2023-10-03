@@ -85,6 +85,8 @@ By default, the application comes with a config module that can read in every en
 
 **APP_ENV** - the application environment to execute as, either in development or production. Determines the type of logging options to utilize. Options: `development` or `production`.
 
+**ENABLE_TRACKING** - enables tracking tools. Options: `true` or `false`.
+
 **HOTJAR_WEBSITE_UID** - hotjar website uid, requires a HotJar account (**free**)
 
 **HOTJAR_VERSION** - hotjar version

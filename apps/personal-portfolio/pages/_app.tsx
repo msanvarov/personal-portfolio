@@ -83,7 +83,7 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
             />
             <meta
               property="og:image"
-              content="https://www.sal-anvarov.com/assets/logo/logo-lg.png"
+              content="https://www.sal-anvarov.com/assets/3d-headshot.png"
             />
 
             {/* <!-- Twitter --> */}
@@ -99,7 +99,7 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
             />
             <meta
               property="twitter:image"
-              content="https://www.sal-anvarov.com/assets/logo/logo-lg.png"
+              content="https://www.sal-anvarov.com/assets/3d-headshot.png"
             />
 
             <link

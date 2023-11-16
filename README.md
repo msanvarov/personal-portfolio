@@ -9,6 +9,8 @@
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmsanvarov%2Fpersonal-portfolio&env=ENABLE_TRACKING,HOTJAR_WEBSITE_UID,HOTJAR_VERSION,GOOGLE_TAG_MANAGER_UID,MICROSOFT_CLARITY_UID,DEBUGBEAR_RUM_UID&envDescription=Environment%20Configs%20for%20Website&envLink=https%3A%2F%2Fgithub.com%2Fmsanvarov%2Fpersonal-portfolio%23-environment-configuration&project-name=personal-portfolio&repository-name=personal-portfolio&redirect-url=https%3A%2F%2Fgithub.com%2Fmsanvarov%2Fpersonal-portfolio&demo-title=Sal's%20Personal%20Website&demo-url=https%3A%2F%2Fwww.sal-anvarov.com&demo-image=https%3A%2F%2Fwww.sal-anvarov.com%2Fassets%2Fthumbnails%2Fwebsite.png)
 
+> Remark: Deploying on Vercel will **FAIL** as **Nx** has the output directory as **dist** on builds by default. To fix this - navigate to the **Build and Development Settings** and change the **Output Directory** to `dist/apps/personal-portfolio/.next`. Documentation: https://vercel.com/docs/deployments/configure-a-build#build-and-development-settings
+
 Table of Contents:
 
 1. [Description](#-description)

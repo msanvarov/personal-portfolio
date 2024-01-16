@@ -37,7 +37,7 @@ export const BlogNavbar = ({ posts, categories, tags }: BlogNavbarProps) => {
                     {post.metadata.title}
                   </Link>
                   <p>
-                    <Moment format="LLL">{post.metadata.created}</Moment>
+                    <Moment format="LLL">{post.metadata.modified}</Moment>
                   </p>
                 </li>
               ))}

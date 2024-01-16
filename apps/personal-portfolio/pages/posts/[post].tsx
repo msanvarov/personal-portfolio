@@ -3,6 +3,7 @@ import { Post } from '@msanvarov/store';
 import { DiscussionEmbed } from 'disqus-react';
 import fs from 'fs';
 import matter from 'gray-matter';
+import moment from 'moment';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
@@ -28,21 +29,21 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<PostPageProps> = async ({
   params,
 }) => {
-  const posts = postFilePaths.map((filePath) => {
-    const fileContents = fs.readFileSync(path.join(POSTS_PATH, filePath));
-    const fileMetadata = fs.statSync(path.join(POSTS_PATH, filePath));
-    const { content, data } = matter(fileContents);
+  const posts = postFilePaths
+    .map((filePath) => {
+      const fileContents = fs.readFileSync(path.join(POSTS_PATH, filePath));
+      const { content, data } = matter(fileContents);
 
-    return {
-      content,
-      metadata: {
-        ...data,
-        created: fileMetadata.ctime.toISOString(),
-        modified: fileMetadata.mtime.toISOString(),
-      },
-      filePath,
-    };
-  });
+      return {
+        content,
+        metadata: data,
+        filePath,
+      };
+    })
+    .sort(
+      (a, b) =>
+        moment(b.metadata.created).unix() - moment(a.metadata.created).unix()
+    );
 
   const postFilePath = path.join(POSTS_PATH, `${params?.post}.mdx`);
   const source = fs.readFileSync(postFilePath);

@@ -8,6 +8,7 @@ import {
 } from '@msanvarov/store';
 import fs from 'fs';
 import matter from 'gray-matter';
+import moment from 'moment';
 import { GetStaticProps } from 'next';
 import Link from 'next/link';
 import path from 'path';
@@ -20,24 +21,18 @@ export const getStaticProps: GetStaticProps<PostsPageProps> = () => {
   const posts = postFilePaths
     .map((filePath) => {
       const fileContents = fs.readFileSync(path.join(POSTS_PATH, filePath));
-      const fileMetadata = fs.statSync(path.join(POSTS_PATH, filePath));
       const { content, data } = matter(fileContents);
 
       return {
         content,
-        metadata: {
-          ...data,
-          created: fileMetadata.ctime.toISOString(),
-          modified: fileMetadata.mtime.toISOString(),
-        },
+        metadata: data,
         filePath,
       };
     })
-    .sort((a, b) => {
-      const aDate = new Date(a.metadata.created).getTime();
-      const bDate = new Date(b.metadata.created).getTime();
-      return isNaN(aDate) || isNaN(bDate) ? 0 : bDate - aDate;
-    });
+    .sort(
+      (a, b) =>
+        moment(b.metadata.created).unix() - moment(a.metadata.created).unix()
+    );
 
   return { props: { posts } };
 };

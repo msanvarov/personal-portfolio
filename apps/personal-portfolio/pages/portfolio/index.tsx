@@ -165,6 +165,45 @@ const PortfolioPage = ({ caseStudies }: PortfolioPageProps) => {
                   </div>
                 ))}
               </div>
+              <div className="d-flex align-items-start gap-24">
+                {caseStudies.slice(6, 8).map((study, i) => (
+                  <div data-aos="zoom-in" className="flex-1" key={i}>
+                    <div className="project-item shadow-box">
+                      <Link
+                        className="overlay-link"
+                        as={`/portfolio/${study.filePath.replace(
+                          /\.mdx?$/,
+                          ''
+                        )}`}
+                        href={`/portfolio/[entry]`}
+                      />
+                      <img src="/assets/bg1.png" alt="BG" className="bg-img" />
+                      <div className="project-img">
+                        <img src={study.metadata.thumbnail} alt="thumbnail" />
+                      </div>
+                      <div className="d-flex align-items-center justify-content-between">
+                        <div className="project-info">
+                          <p>{study.metadata.category}</p>
+                          <h1>{study.metadata.title}</h1>
+                          <Moment format="L - h:mm a">
+                            {study.metadata.created}
+                          </Moment>
+                        </div>
+                        <Link
+                          as={`/portfolio/${study.filePath.replace(
+                            /\.mdx?$/,
+                            ''
+                          )}`}
+                          href={`/portfolio/[entry]`}
+                          className="project-btn"
+                        >
+                          <img src="/assets/icons/cta-icon.svg" alt="Button" />
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

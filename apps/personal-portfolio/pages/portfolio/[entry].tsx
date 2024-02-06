@@ -70,9 +70,40 @@ const components = {
   PortfolioFooter: PortfolioFooter,
 };
 
-const PortfolioEntryPage = ({ content }: PortfolioEntryPageProps) => {
+const PortfolioEntryPage = ({
+  content,
+  frontMatter,
+}: PortfolioEntryPageProps) => {
+  const origin =
+    typeof window !== 'undefined' && window.location.origin
+      ? window.location.origin
+      : '';
+
   return (
-    <Layout>
+    <Layout
+      title={`${frontMatter.title}`}
+      head={
+        <>
+          <meta name="description" content={frontMatter.description} />
+          <meta name="keywords" content={frontMatter.category} />
+          <meta name="author" content={'Sal Anvarov'} />
+          <meta property="og:title" content={frontMatter.title} />
+          <meta property="og:description" content={frontMatter.description} />
+          <meta
+            property="og:image"
+            content={`${origin}${frontMatter.thumbnail}`}
+          />
+          <meta property="og:url" content={`${origin}${frontMatter.uid}`} />
+          <meta name="twitter:title" content={frontMatter.title} />
+          <meta name="twitter:description" content={frontMatter.description} />
+          <meta
+            name="twitter:image"
+            content={`${origin}${frontMatter.thumbnail}`}
+          />
+          <meta name="twitter:card" content="summary_large_image" />
+        </>
+      }
+    >
       <section className="project-details-wrap">
         <MDXRemote {...content} components={components} />
       </section>

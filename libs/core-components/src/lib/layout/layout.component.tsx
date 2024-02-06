@@ -12,6 +12,7 @@ type LayoutProps = {
   heading?: string;
   wrapperClass?: string;
   children: ReactNode;
+  head?: ReactNode;
 };
 
 const DynamicPopupButton = dynamic(
@@ -26,11 +27,12 @@ export const Layout = ({
   breadcrumb,
   heading,
   wrapperClass,
+  head,
   children,
 }: LayoutProps) => {
   return (
     <>
-      <Head {...{ title }} />
+      <Head {...{ title }}>{head}</Head>
       <section
         className={classNames(wrapperClass ? wrapperClass : 'main-homepage')}
       >

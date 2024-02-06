@@ -94,7 +94,31 @@ const PostPage = ({ content, frontMatter, posts }: PostPageProps) => {
   const tags = Array.from(new Set(posts.map((post) => post.metadata.tag)));
 
   return (
-    <Layout wrapperClass="main-workdetails-page">
+    <Layout
+      title={`${frontMatter.title}`}
+      wrapperClass="main-workdetails-page"
+      head={
+        <>
+          <meta name="description" content={frontMatter.description} />
+          <meta name="keywords" content={frontMatter.category} />
+          <meta name="author" content={'Sal Anvarov'} />
+          <meta property="og:title" content={frontMatter.title} />
+          <meta property="og:description" content={frontMatter.description} />
+          <meta
+            property="og:image"
+            content={`${origin}${frontMatter.thumbnail}`}
+          />
+          <meta property="og:url" content={`${origin}${frontMatter.uid}`} />
+          <meta name="twitter:title" content={frontMatter.title} />
+          <meta name="twitter:description" content={frontMatter.description} />
+          <meta
+            name="twitter:image"
+            content={`${origin}${frontMatter.thumbnail}`}
+          />
+          <meta name="twitter:card" content="summary_large_image" />
+        </>
+      }
+    >
       <section className="blog-details-area">
         <div className="container">
           <div className="row">

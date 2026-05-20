@@ -11,6 +11,10 @@
   <a href="https://app.netlify.com/start/deploy?repository=https://github.com/msanvarov/personal-portfolio">
     <img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" />
   </a>
+  &nbsp;
+  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmsanvarov%2Fpersonal-portfolio&project-name=personal-portfolio&repository-name=personal-portfolio&env=VITE_ENABLE_TRACKING,VITE_HOTJAR_WEBSITE_UID,VITE_HOTJAR_VERSION,VITE_GOOGLE_TAG_MANAGER_UID,VITE_MICROSOFT_CLARITY_UID,VITE_DEBUGBEAR_RUM_UID,VITE_FORMSPREE_FORM_ID,VITE_DISQUS_SHORTNAME,VITE_CALENDLY_URL,VITE_SITE_URL&envDescription=VITE_-prefixed%20integration%20IDs.%20All%20optional%20%E2%80%94%20see%20.env.example.&envLink=https%3A%2F%2Fgithub.com%2Fmsanvarov%2Fpersonal-portfolio%23-environment-configuration&demo-title=Sal%20Anvarov&demo-url=https%3A%2F%2Fwww.sal-anvarov.com">
+    <img src="https://vercel.com/button" alt="Deploy with Vercel" />
+  </a>
 </p>
 
 Table of contents:
@@ -50,9 +54,9 @@ Optional integrations:
 
 #### One-click deploy
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/msanvarov/personal-portfolio)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/msanvarov/personal-portfolio) [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmsanvarov%2Fpersonal-portfolio&project-name=personal-portfolio&repository-name=personal-portfolio&env=VITE_ENABLE_TRACKING,VITE_HOTJAR_WEBSITE_UID,VITE_HOTJAR_VERSION,VITE_GOOGLE_TAG_MANAGER_UID,VITE_MICROSOFT_CLARITY_UID,VITE_DEBUGBEAR_RUM_UID,VITE_FORMSPREE_FORM_ID,VITE_DISQUS_SHORTNAME,VITE_CALENDLY_URL,VITE_SITE_URL&envDescription=VITE_-prefixed%20integration%20IDs.%20All%20optional%20%E2%80%94%20see%20.env.example.)
 
-The repo ships with a `netlify.toml` that builds with `npm run build`, publishes the `dist/` directory, and adds an SPA fallback redirect so React Router handles deep links. See [Netlify deploy docs](https://docs.netlify.com/deploy/create-deploys/) for the manual flow.
+The repo ships with both a `netlify.toml` and a `vercel.json` configured for a Vite SPA: build with `npm run build`, publish `dist/`, and add a `/* → /index.html` rewrite so React Router handles deep links. See [Netlify deploy docs](https://docs.netlify.com/deploy/create-deploys/) and [Vercel deploy docs](https://vercel.com/docs/deployments/overview).
 
 #### Local development
 

@@ -2604,6 +2604,21 @@ html[data-theme='light'][data-theme='light'] {
     color: #5a5e66;
   }
 
+  // Blog card description (the one-liner under each card title) was
+  // black at opacity: 0.4 — effective ~#999, illegible on white. Pin
+  // to near-black at full opacity to match the rest of the grid.
+  .blog-area .blog-items .blog-item .content p {
+    color: #0f0f0f;
+    opacity: 1;
+  }
+
+  // Blog list h1 title link — defeat any low-opacity inherit.
+  .blog-area .blog-items .blog-item .content h1,
+  .blog-area .blog-items .blog-item .content h1 a {
+    color: #0f0f0f;
+    opacity: 1;
+  }
+
   // Hover state on links bumps to the brand blue with sufficient contrast.
   a:hover {
     color: #3b58da;

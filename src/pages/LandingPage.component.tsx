@@ -155,7 +155,7 @@ const LandingPage = () => {
                 <div data-aos="zoom-in">
                   <div className="about-blog-box info-box shadow-box h-full">
                     <Link
-                      to="/posts"
+                      to="/blog"
                       className="overlay-link"
                       aria-label="Open blog"
                     />

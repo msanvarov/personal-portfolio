@@ -21,11 +21,11 @@ Sal builds production software across the stack: TypeScript / React / Next.js on
 
 ## Blog posts
 
-- [The Art of Software Architecture](https://www.sal-anvarov.com/posts/art-of-software-architecture): A decentralized approach to software architecture aligned with larger organizational goals and the Advice Process.
-- [Developer Experience: Beyond the Notion of 'Comfort'](https://www.sal-anvarov.com/posts/devex-beyond-notion-of-comfort): Why DevEx based on what "feels good" can be a poor signal and how to use UX principles to evaluate developer tools.
-- [Safety Threats in Front-End Development and Mitigation Strategies](https://www.sal-anvarov.com/posts/safety-threats-in-front-end-development-and-mitigation-strategies): XSS, CSRF, and other browser-side threats with concrete mitigations.
-- [Understanding PyTorch Hooks](https://www.sal-anvarov.com/posts/understanding-pytorch-hooks): How forward / backward hooks unlock advanced debugging in PyTorch without polluting the forward() function.
-- [Portfolio template for developers](https://www.sal-anvarov.com/posts/free-dev-website-template): The open-source template that powers this site.
+- [The Art of Software Architecture](https://www.sal-anvarov.com/blog/art-of-software-architecture): A decentralized approach to software architecture aligned with larger organizational goals and the Advice Process.
+- [Developer Experience: Beyond the Notion of 'Comfort'](https://www.sal-anvarov.com/blog/devex-beyond-notion-of-comfort): Why DevEx based on what "feels good" can be a poor signal and how to use UX principles to evaluate developer tools.
+- [Safety Threats in Front-End Development and Mitigation Strategies](https://www.sal-anvarov.com/blog/safety-threats-in-front-end-development-and-mitigation-strategies): XSS, CSRF, and other browser-side threats with concrete mitigations.
+- [Understanding PyTorch Hooks](https://www.sal-anvarov.com/blog/understanding-pytorch-hooks): How forward / backward hooks unlock advanced debugging in PyTorch without polluting the forward() function.
+- [Portfolio template for developers](https://www.sal-anvarov.com/blog/free-dev-website-template): The open-source template that powers this site.
 
 ## Discovery
 

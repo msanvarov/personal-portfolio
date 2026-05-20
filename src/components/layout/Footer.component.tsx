@@ -19,7 +19,7 @@ export const Footer = () => {
               <Link to="/portfolio">Portfolio</Link>
             </li>
             <li>
-              <Link to="/posts">Blog</Link>
+              <Link to="/blog">Blog</Link>
             </li>
             <li>
               <Link to="/contact">Contact</Link>

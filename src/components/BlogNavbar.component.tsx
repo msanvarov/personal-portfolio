@@ -31,7 +31,7 @@ export const BlogNavbar = ({ posts, categories, tags }: BlogNavbarProps) => {
               {posts.slice(0, 5).map((post, i) => (
                 <li key={i}>
                   <Link
-                    to="/posts/$post"
+                    to="/blog/$post"
                     params={{ post: post.filePath.replace(/\.mdx?$/, '') }}
                   >
                     {post.metadata.title}
@@ -53,7 +53,7 @@ export const BlogNavbar = ({ posts, categories, tags }: BlogNavbarProps) => {
             <ul>
               {categories.map((category, i) => (
                 <li key={i}>
-                  <Link to="/posts">- {category}</Link>
+                  <Link to="/blog">- {category}</Link>
                 </li>
               ))}
             </ul>
@@ -65,7 +65,7 @@ export const BlogNavbar = ({ posts, categories, tags }: BlogNavbarProps) => {
             <ul>
               {tags.map((tag, i) => (
                 <li key={i}>
-                  <Link className="theme-btn" to="/posts">
+                  <Link className="theme-btn" to="/blog">
                     {tag}
                   </Link>
                 </li>

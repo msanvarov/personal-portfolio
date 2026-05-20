@@ -14,7 +14,7 @@ import { useEffect, useMemo } from 'react';
 const disqusShortname = import.meta.env.VITE_DISQUS_SHORTNAME;
 
 const PostPage = () => {
-  const { post } = useParams({ from: '/posts/$post' });
+  const { post } = useParams({ from: '/blog/$post' });
   const entry = post ? getPostBySlug(post) : undefined;
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -30,13 +30,13 @@ const PostPage = () => {
   );
 
   useEffect(() => {
-    if (!entry) navigate({ to: '/posts', replace: true });
+    if (!entry) navigate({ to: '/blog', replace: true });
   }, [entry, navigate]);
 
   if (!entry) return null;
 
   const { metadata, Component, slug } = entry;
-  const path = `/posts/${slug}`;
+  const path = `/blog/${slug}`;
   const image = metadata.thumbnail ? `${SITE_URL}${metadata.thumbnail}` : undefined;
   const url = `${SITE_URL}${pathname}`;
 
@@ -62,7 +62,7 @@ const PostPage = () => {
           }),
           breadcrumbLd([
             { name: 'Home', path: '/' },
-            { name: 'Blog', path: '/posts' },
+            { name: 'Blog', path: '/blog' },
             { name: metadata.title, path },
           ]),
         ]}

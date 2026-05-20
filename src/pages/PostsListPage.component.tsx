@@ -32,22 +32,22 @@ const PostsListPage = () => {
       <Seo
         title="Blog"
         description="Long-form posts by Sal Anvarov: software architecture, developer experience, PyTorch internals, frontend safety, and the trade-offs behind every line of code."
-        path="/posts"
+        path="/blog"
         jsonLd={[
           breadcrumbLd([
             { name: 'Home', path: '/' },
-            { name: 'Blog', path: '/posts' },
+            { name: 'Blog', path: '/blog' },
           ]),
           {
             '@context': 'https://schema.org',
             '@type': 'Blog',
-            url: `${SITE_URL}/posts`,
+            url: `${SITE_URL}/blog`,
             name: 'Sal Anvarov — Blog',
             author: { '@type': 'Person', name: 'Sal Anvarov', url: SITE_URL },
             blogPost: posts.map((p) => ({
               '@type': 'BlogPosting',
               headline: p.metadata.title,
-              url: `${SITE_URL}/posts/${p.filePath.replace(/\.mdx?$/, '')}`,
+              url: `${SITE_URL}/blog/${p.filePath.replace(/\.mdx?$/, '')}`,
               datePublished: p.metadata.created,
               dateModified: p.metadata.modified ?? p.metadata.created,
             })),
@@ -67,7 +67,7 @@ const PostsListPage = () => {
                   const slug = post.filePath.replace(/\.mdx?$/, '');
                   return (
                     <div className="blog-item" data-aos="zoom-in" key={i}>
-                      <Link to="/posts/$post" params={{ post: slug }}>
+                      <Link to="/blog/$post" params={{ post: slug }}>
                         <div className="img-box">
                           <img
                             src={post.metadata.thumbnail}
@@ -80,7 +80,7 @@ const PostsListPage = () => {
                           Category: {post.metadata.category}
                         </span>
                         <h1>
-                          <Link to="/posts/$post" params={{ post: slug }}>
+                          <Link to="/blog/$post" params={{ post: slug }}>
                             {post.metadata.title}
                           </Link>
                         </h1>

@@ -15,7 +15,7 @@ const STATIC_ROUTES: Array<Omit<Entry, 'lastmod'>> = [
   { loc: '/credentials', changefreq: 'yearly', priority: 0.7 },
   { loc: '/offerings', changefreq: 'yearly', priority: 0.7 },
   { loc: '/portfolio', changefreq: 'monthly', priority: 0.9 },
-  { loc: '/posts', changefreq: 'weekly', priority: 0.9 },
+  { loc: '/blog', changefreq: 'weekly', priority: 0.9 },
   { loc: '/contact', changefreq: 'yearly', priority: 0.6 },
 ];
 
@@ -77,7 +77,7 @@ export const buildSitemap = (
   );
   const posts = collectMdxEntries(
     join(projectRoot, 'content/posts'),
-    '/posts',
+    '/blog',
     'monthly',
     0.7
   );

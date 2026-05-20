@@ -5,7 +5,21 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# SPA fallback — let React Router handle every unknown URL.
+# Permanent redirects: old /posts URLs preserved as 301 → /blog so any
+# inbound link or indexed page keeps its ranking signal.
+[[redirects]]
+  from = "/posts"
+  to = "/blog"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/posts/*"
+  to = "/blog/:splat"
+  status = 301
+  force = true
+
+# SPA fallback — let the TanStack router handle every other unknown URL.
 [[redirects]]
   from = "/*"
   to = "/index.html"

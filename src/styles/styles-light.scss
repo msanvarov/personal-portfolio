@@ -2585,7 +2585,9 @@ html[data-theme='light'][data-theme='light'] {
 
   // Sidebar / blog navbar links were inheriting opacity: 0.4 from the
   // dark base. Pin them back to full opacity so they read as links.
-  .blog-sidebar .blog-sidebar-widget ul li a,
+  // Exclude `.theme-btn` — those are the dark tag chips and need to
+  // keep their white-on-dark contrast (handled below).
+  .blog-sidebar .blog-sidebar-widget ul li a:not(.theme-btn),
   .recent-post-widget ul li a,
   .categories-widget ul li a {
     opacity: 1;
@@ -2593,6 +2595,22 @@ html[data-theme='light'][data-theme='light'] {
 
     &:hover {
       color: #3b58da;
+    }
+  }
+
+  // Tag chips in the TAGS sidebar (and the inline tag on the article
+  // body) use `.theme-btn`, which is a dark pill. The earlier broad
+  // sidebar-link override painted their text near-black, making them
+  // invisible. Restore white text and a brand-tinted hover.
+  .blog-sidebar .tags-widget ul li a.theme-btn,
+  .blog-details-content .tags .theme-btn {
+    color: #ffffff;
+    opacity: 1;
+
+    &:hover {
+      color: #ffffff;
+      background: #3b58da;
+      border-color: #3b58da;
     }
   }
 

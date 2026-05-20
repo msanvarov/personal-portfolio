@@ -1,5 +1,6 @@
 import { Layout } from '@/components/layout/Layout';
 import { en } from '@/i18n';
+import { breadcrumbLd, personLd, Seo } from '@/utils/seo';
 import classNames from 'classnames';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
@@ -8,6 +9,18 @@ import { Container } from 'reactstrap';
 const OfferingsPage = () => {
   return (
     <Layout>
+      <Seo
+        title="Offerings"
+        description="Consulting and contract offerings: full-stack web product development, AI-powered B2B tooling, and DevOps for high-velocity startups. Engagements run by Sal Anvarov."
+        path="/offerings"
+        jsonLd={[
+          personLd(),
+          breadcrumbLd([
+            { name: 'Home', path: '/' },
+            { name: 'Offerings', path: '/offerings' },
+          ]),
+        ]}
+      />
       <section className="service-area">
         <div className="container">
           <h1 className="section-heading" data-aos="fade-up">

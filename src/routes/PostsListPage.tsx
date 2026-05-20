@@ -3,6 +3,7 @@ import { FormattedDate } from '@/components/FormattedDate';
 import { Layout } from '@/components/layout/Layout';
 import { setCategories, setPosts, setTags, useAppDispatch } from '@/store';
 import { postsAsStoreShape } from '@/utils/content';
+import { breadcrumbLd, Seo, SITE_URL } from '@/utils/seo';
 import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Container, Row } from 'reactstrap';
@@ -28,6 +29,31 @@ const PostsListPage = () => {
 
   return (
     <Layout>
+      <Seo
+        title="Blog"
+        description="Long-form posts by Sal Anvarov: software architecture, developer experience, PyTorch internals, frontend safety, and the trade-offs behind every line of code."
+        path="/posts"
+        jsonLd={[
+          breadcrumbLd([
+            { name: 'Home', path: '/' },
+            { name: 'Blog', path: '/posts' },
+          ]),
+          {
+            '@context': 'https://schema.org',
+            '@type': 'Blog',
+            url: `${SITE_URL}/posts`,
+            name: 'Sal Anvarov — Blog',
+            author: { '@type': 'Person', name: 'Sal Anvarov', url: SITE_URL },
+            blogPost: posts.map((p) => ({
+              '@type': 'BlogPosting',
+              headline: p.metadata.title,
+              url: `${SITE_URL}/posts/${p.filePath.replace(/\.mdx?$/, '')}`,
+              datePublished: p.metadata.created,
+              dateModified: p.metadata.modified ?? p.metadata.created,
+            })),
+          },
+        ]}
+      />
       <section className="blog-area">
         <Container>
           <h1 className="section-heading" data-aos="fade-up">

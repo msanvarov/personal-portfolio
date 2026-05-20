@@ -1,10 +1,10 @@
 import { BlogNavbar } from '@/components/BlogNavbar';
 import { Layout } from '@/components/layout/Layout';
 import { getPostBySlug, postsAsStoreShape } from '@/utils/content';
+import { articleLd, breadcrumbLd, Seo, SITE_URL } from '@/utils/seo';
 import { MDXProvider } from '@mdx-js/react';
 import { DiscussionEmbed } from 'disqus-react';
 import { useMemo } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 
 const disqusShortname = import.meta.env.VITE_DISQUS_SHORTNAME;
@@ -28,39 +28,45 @@ const PostPage = () => {
     return <Navigate to="/posts" replace />;
   }
 
-  const { metadata, Component } = entry;
-  const origin = typeof window !== 'undefined' ? window.location.origin : '';
-  const url = `${origin}${pathname}`;
+  const { metadata, Component, slug } = entry;
+  const path = `/posts/${slug}`;
+  const image = metadata.thumbnail ? `${SITE_URL}${metadata.thumbnail}` : undefined;
+  const url = `${SITE_URL}${pathname}`;
 
   return (
     <Layout title={metadata.title} wrapperClass="main-workdetails-page">
-      <Helmet>
-        <meta name="description" content={metadata.description} />
-        <meta name="keywords" content={metadata.category} />
-        <meta name="author" content="Sal Anvarov" />
-        <meta property="og:title" content={metadata.title} />
-        <meta property="og:description" content={metadata.description} />
-        {metadata.thumbnail ? (
-          <meta property="og:image" content={`${origin}${metadata.thumbnail}`} />
-        ) : null}
-        <meta property="og:url" content={`${origin}${metadata.uid ?? ''}`} />
-        <meta name="twitter:title" content={metadata.title} />
-        <meta name="twitter:description" content={metadata.description} />
-        {metadata.thumbnail ? (
-          <meta
-            name="twitter:image"
-            content={`${origin}${metadata.thumbnail}`}
-          />
-        ) : null}
-        <meta name="twitter:card" content="summary_large_image" />
-      </Helmet>
+      <Seo
+        title={metadata.title}
+        description={metadata.description}
+        path={path}
+        type="article"
+        keywords={[metadata.category, metadata.tag].filter(Boolean).join(', ')}
+        image={image}
+        jsonLd={[
+          articleLd({
+            title: metadata.title,
+            description: metadata.description,
+            path,
+            image,
+            created: metadata.created,
+            modified: metadata.modified,
+            category: metadata.category,
+            tag: metadata.tag,
+          }),
+          breadcrumbLd([
+            { name: 'Home', path: '/' },
+            { name: 'Blog', path: '/posts' },
+            { name: metadata.title, path },
+          ]),
+        ]}
+      />
       <section className="blog-details-area">
         <div className="container">
           <div className="row">
             <div className="col-md-8">
-              <div className="blog-details-content">
+              <article className="blog-details-content">
                 <div className="img-box">
-                  <img src={metadata.thumbnail} alt="Blog" />
+                  <img src={metadata.thumbnail} alt={metadata.title} />
                 </div>
                 <span className="meta">{metadata.category}</span>
                 <h1>{metadata.title}</h1>
@@ -82,7 +88,7 @@ const PostPage = () => {
                     }}
                   />
                 ) : null}
-              </div>
+              </article>
             </div>
             <div className="col-md-4">
               <BlogNavbar posts={posts} categories={categories} tags={tags} />

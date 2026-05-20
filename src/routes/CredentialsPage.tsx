@@ -1,10 +1,24 @@
 import { Layout } from '@/components/layout/Layout';
 import { en } from '@/i18n';
+import { breadcrumbLd, personLd, Seo } from '@/utils/seo';
 import { Link } from 'react-router-dom';
 
 const CredentialsPage = () => {
   return (
     <Layout wrapperClass="main-aboutpage">
+      <Seo
+        title="Credentials"
+        description="Resume and capabilities of Sal Anvarov: experience at Oproma, Cleanlist.ai, Permion.ai, and prior roles; expertise across React, TypeScript, Node.js, NestJS, AWS, GCP, and AI engineering."
+        path="/credentials"
+        type="profile"
+        jsonLd={[
+          personLd(),
+          breadcrumbLd([
+            { name: 'Home', path: '/' },
+            { name: 'Credentials', path: '/credentials' },
+          ]),
+        ]}
+      />
       <section className="credential-area">
         <div className="container">
           <div className="gx-row d-flex">

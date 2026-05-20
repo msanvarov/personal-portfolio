@@ -1,6 +1,7 @@
 import { Layout } from '@/components/layout/Layout';
 import { en } from '@/i18n';
 import { useTheme } from '@/providers/ThemeProvider';
+import { breadcrumbLd, personLd, Seo } from '@/utils/seo';
 import { getThemedContent } from '@/utils/themed-asset';
 import { Link } from 'react-router-dom';
 
@@ -8,6 +9,19 @@ const BioPage = () => {
   const { theme } = useTheme();
   return (
     <Layout wrapperClass="main-aboutpage">
+      <Seo
+        title="Bio"
+        description="The story behind Sal Anvarov — full stack developer and Co-founder of Cleanlist.ai. Education, work history, and the path from CS undergrad to building AI-powered B2B tooling."
+        path="/bio"
+        type="profile"
+        jsonLd={[
+          personLd(),
+          breadcrumbLd([
+            { name: 'Home', path: '/' },
+            { name: 'Bio', path: '/bio' },
+          ]),
+        ]}
+      />
       <section className="about-area">
         <div className="container">
           <div className="d-flex about-me-wrap align-items-start gap-24">

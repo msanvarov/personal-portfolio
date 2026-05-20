@@ -4,7 +4,20 @@ import path from 'node:path';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
+import { writeSitemap } from './scripts/build-sitemap';
+
+const SITE_URL = process.env.VITE_SITE_URL ?? 'https://www.sal-anvarov.com';
+
+const sitemapPlugin = (): Plugin => ({
+  name: 'sal-portfolio:sitemap',
+  apply: 'build',
+  closeBundle() {
+    const outDir = path.resolve(__dirname, 'dist');
+    writeSitemap(outDir, __dirname, SITE_URL);
+    this.info?.(`sitemap written to ${path.join(outDir, 'sitemap.xml')}`);
+  },
+});
 
 export default defineConfig({
   plugins: [
@@ -20,6 +33,7 @@ export default defineConfig({
       }),
     },
     react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
+    sitemapPlugin(),
   ],
   resolve: {
     alias: {

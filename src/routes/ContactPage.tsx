@@ -1,15 +1,29 @@
 import { Layout } from '@/components/layout/Layout';
 import { en } from '@/i18n';
+import { breadcrumbLd, Seo } from '@/utils/seo';
 import { ValidationError, useForm } from '@formspree/react';
 import { useEffect, useState } from 'react';
 import { Alert, Form } from 'reactstrap';
 
 const formId = import.meta.env.VITE_FORMSPREE_FORM_ID;
 
+const ContactSeo = () => (
+  <Seo
+    title="Contact"
+    description="Reach out to Sal Anvarov — drop a message via the contact form, email, or schedule a chat on Calendly. Available for consulting and full stack engagements."
+    path="/contact"
+    jsonLd={breadcrumbLd([
+      { name: 'Home', path: '/' },
+      { name: 'Contact', path: '/contact' },
+    ])}
+  />
+);
+
 const ContactPage = () => {
   if (!formId) {
     return (
       <Layout wrapperClass="main-aboutpage">
+        <ContactSeo />
         <section className="contact-area">
           <div className="container">
             <p>
@@ -35,6 +49,7 @@ const ContactForm = () => {
 
   return (
     <Layout wrapperClass="main-aboutpage">
+      <ContactSeo />
       <section className="contact-area">
         <div className="container">
           <div className="gx-row d-flex justify-content-between gap-24">

@@ -57,6 +57,54 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/iconoir/6.9.0/css/iconoir.min.css"
     />
+    <link rel="canonical" href="https://www.sal-anvarov.com/" />
+
+    <!--
+      Site-level structured data: rendered statically so non-JS-rendering
+      crawlers (GPTBot, ClaudeBot, Perplexity, etc.) get a Person + WebSite
+      signal on the first byte without waiting for client-side hydration.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "https://www.sal-anvarov.com/#sal",
+            "name": "Sal Anvarov",
+            "alternateName": "Salimjon Anvarov",
+            "url": "https://www.sal-anvarov.com/",
+            "image": "https://www.sal-anvarov.com/assets/3d-headshot.png",
+            "jobTitle": "Full Stack Developer & Co-founder",
+            "sameAs": [
+              "https://github.com/msanvarov",
+              "https://linkedin.com/in/sal-anvarov",
+              "https://cleanlist.ai"
+            ],
+            "knowsAbout": [
+              "TypeScript",
+              "React",
+              "Next.js",
+              "Node.js",
+              "NestJS",
+              "AWS",
+              "GCP",
+              "AI engineering",
+              "Full stack web development"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://www.sal-anvarov.com/#site",
+            "name": "Sal Anvarov",
+            "url": "https://www.sal-anvarov.com/",
+            "inLanguage": "en",
+            "author": { "@id": "https://www.sal-anvarov.com/#sal" },
+            "publisher": { "@id": "https://www.sal-anvarov.com/#sal" }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

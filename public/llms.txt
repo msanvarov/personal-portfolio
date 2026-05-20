@@ -1,0 +1,37 @@
+# Sal Anvarov
+
+> Personal portfolio of Sal Anvarov — full stack developer and Co-founder of Cleanlist.ai, based in Toronto. The site catalogs hands-on case studies (Cleanlist, Hopin Technologies, Flurrish, Hellotax, Natura Market) and long-form writing on software architecture, developer experience, frontend safety, and ML internals.
+
+Sal builds production software across the stack: TypeScript / React / Next.js on the frontend, Node.js / NestJS / FastAPI on the backend, with deployments on AWS and GCP. Recent focus: AI-powered B2B tooling (Cleanlist.ai), Chrome extension engineering, and lead-enrichment data pipelines.
+
+## About
+
+- [Bio](https://www.sal-anvarov.com/bio): Background, work history, and how Sal moved from a CS undergrad in Ontario into AI-powered B2B tooling.
+- [Credentials](https://www.sal-anvarov.com/credentials): Resume — current role at Cleanlist.ai (Co-founder), prior roles at Oproma, Permion.ai, and earlier positions, plus capabilities and expertise breakdown.
+- [Offerings](https://www.sal-anvarov.com/offerings): Consulting offerings — full stack product development, AI-powered B2B tooling, and DevOps for startups.
+- [Contact](https://www.sal-anvarov.com/contact): Reach Sal via Formspree, email, or schedule a chat on Calendly.
+
+## Portfolio case studies
+
+- [Cleanlist.ai](https://www.sal-anvarov.com/portfolio/cleanlist): SaaS platform for cleaning leads and enriching LinkedIn contacts. Stack: Next.js, React, TypeScript, FastAPI, MongoDB. Includes a Chrome extension for LinkedIn extraction.
+- [Hopin Technologies](https://www.sal-anvarov.com/portfolio/hopin-technologies): Tailored shuttle transportation for daily commutes. Stack: React Native, Expo, Firebase, TypeScript, Samsara.
+- [Flurrish](https://www.sal-anvarov.com/portfolio/flurrish): Campus-focused social media app for personalized, interest-based experiences.
+- [Hellotax](https://www.sal-anvarov.com/portfolio/hellotax): VAT compliance automation for multi-channel traders across Europe.
+- [Natura Market](https://www.sal-anvarov.com/portfolio/natura-market): Canadian e-commerce business specializing in wholesale distribution of perishable goods.
+
+## Blog posts
+
+- [The Art of Software Architecture](https://www.sal-anvarov.com/posts/art-of-software-architecture): A decentralized approach to software architecture aligned with larger organizational goals and the Advice Process.
+- [Developer Experience: Beyond the Notion of 'Comfort'](https://www.sal-anvarov.com/posts/devex-beyond-notion-of-comfort): Why DevEx based on what "feels good" can be a poor signal and how to use UX principles to evaluate developer tools.
+- [Safety Threats in Front-End Development and Mitigation Strategies](https://www.sal-anvarov.com/posts/safety-threats-in-front-end-development-and-mitigation-strategies): XSS, CSRF, and other browser-side threats with concrete mitigations.
+- [Understanding PyTorch Hooks](https://www.sal-anvarov.com/posts/understanding-pytorch-hooks): How forward / backward hooks unlock advanced debugging in PyTorch without polluting the forward() function.
+- [Portfolio template for developers](https://www.sal-anvarov.com/posts/free-dev-website-template): The open-source template that powers this site.
+
+## Discovery
+
+- [robots.txt](https://www.sal-anvarov.com/robots.txt)
+- [sitemap.xml](https://www.sal-anvarov.com/sitemap.xml)
+
+## Notes for crawlers
+
+This site is a Vite + React 18 SPA, so the most reliable representation of each page for ingestion is the URL above plus the canonical link tag in the HTML head. Per-route JSON-LD (Person, WebSite, BlogPosting, CreativeWork, BreadcrumbList) is injected at runtime via react-helmet-async; the static index.html additionally embeds a Person + WebSite graph for non-JS-rendering crawlers.

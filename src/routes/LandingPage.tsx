@@ -1,6 +1,7 @@
 import { Layout } from '@/components/layout/Layout';
 import { en } from '@/i18n';
 import { useTheme } from '@/providers/ThemeProvider';
+import { personLd, Seo, websiteLd } from '@/utils/seo';
 import { getThemedContent } from '@/utils/themed-asset';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
@@ -10,6 +11,13 @@ const LandingPage = () => {
 
   return (
     <Layout>
+      <Seo
+        title="Sal Anvarov — Full Stack Developer & Co-founder of Cleanlist.ai"
+        description="Sal Anvarov is a full stack developer and Co-founder of Cleanlist.ai based in Toronto. Portfolio of React, TypeScript, Node.js, and AI-engineering work, plus a writing archive on software architecture, devex, and frontend safety."
+        path="/"
+        keywords="Sal Anvarov, full stack developer, Toronto, React, TypeScript, Next.js, Cleanlist.ai, AI engineer, portfolio"
+        jsonLd={[personLd(), websiteLd()]}
+      />
       <section className="about-area">
         <div className="container">
           <div className="row">

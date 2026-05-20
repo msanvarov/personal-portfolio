@@ -1,6 +1,7 @@
 import { FormattedDate } from '@/components/FormattedDate';
 import { Layout } from '@/components/layout/Layout';
 import { caseStudies } from '@/utils/content';
+import { breadcrumbLd, Seo } from '@/utils/seo';
 import { Link } from 'react-router-dom';
 
 type Group = typeof caseStudies;
@@ -48,6 +49,30 @@ const PortfolioListPage = () => {
 
   return (
     <Layout wrapperClass="main-workspage">
+      <Seo
+        title="Portfolio"
+        description="Selected case studies from Sal Anvarov — full stack engagements across SaaS, logistics, e-commerce, and AI tooling. Includes Cleanlist.ai, Hopin Technologies, Flurrish, Hellotax, and Natura Market."
+        path="/portfolio"
+        jsonLd={[
+          breadcrumbLd([
+            { name: 'Home', path: '/' },
+            { name: 'Portfolio', path: '/portfolio' },
+          ]),
+          {
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            itemListElement: caseStudies.map((entry, idx) => ({
+              '@type': 'ListItem',
+              position: idx + 1,
+              url: `${
+                (import.meta.env.VITE_SITE_URL ??
+                  'https://www.sal-anvarov.com').replace(/\/+$/, '')
+              }/portfolio/${entry.slug}`,
+              name: entry.metadata.title,
+            })),
+          },
+        ]}
+      />
       <section className="projects-area">
         <div className="container">
           <h1 className="section-heading" data-aos="fade-up">

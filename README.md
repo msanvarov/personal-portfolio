@@ -90,6 +90,18 @@ Vite only exposes variables prefixed with `VITE_` to the client. All integration
 
 > No secrets ever ship to the client by design — these are all public IDs intended to be read at runtime by their respective scripts. Still, keep your real `.env.local` out of version control (it is git-ignored).
 
+### 🔍 SEO and AI-SEO
+
+The site ships ready for both classic search-engine indexing and AI-crawler discovery:
+
+- **`/robots.txt`** — explicit `Allow: /` for Googlebot, Bingbot, DuckDuckBot, Applebot, Yandex, Baidu, plus AI crawlers (GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-Web, anthropic-ai, PerplexityBot, Google-Extended, Meta-ExternalAgent, Amazonbot, Bytespider, YouBot, Mistral-AI-User). Edit any user-agent block to `Disallow: /` to opt out.
+- **`/sitemap.xml`** — generated at build time from the static routes plus every MDX file under `content/case-studies/` and `content/posts/`, with `lastmod` taken from frontmatter or file mtime.
+- **`/llms.txt`** — curated index (per the [llmstxt.org](https://llmstxt.org) convention) that lists each portfolio entry and blog post with a one-line summary, so AI agents that respect the file can fetch a clean table of contents.
+- **Per-route metadata** — unique `<title>`, `<meta name="description">`, `<link rel="canonical">`, Open Graph, Twitter Card, and JSON-LD on every route. Case studies emit `CreativeWork`, blog posts emit `BlogPosting`, list pages emit `ItemList`/`Blog`, and detail pages add `BreadcrumbList`.
+- **Static-HTML JSON-LD** — `index.html` embeds a Person + WebSite `@graph` so non-JS-rendering crawlers see Sal's identity on the first byte without waiting for hydration.
+
+When the canonical URL changes, update `VITE_SITE_URL` and the hardcoded `https://www.sal-anvarov.com` references in `public/robots.txt`, `public/llms.txt`, and `index.html`.
+
 ### 📁 Repository layout
 
 ```text

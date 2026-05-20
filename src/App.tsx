@@ -1,14 +1,17 @@
+// Third-party CSS must import BEFORE our SCSS so our rules can override
+// Bootstrap/AOS defaults (body font-family, colors, etc.). Do not reorder.
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'aos/dist/aos.css';
+import '@/styles/styles.scss';
+import '@/styles/styles-light.scss';
+
 import { Preloader } from '@/components/Preloader.component';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { router } from '@/router';
 import { persistor, store } from '@/store';
-import '@/styles/styles-light.scss';
-import '@/styles/styles.scss';
 import { TrackingProvider } from '@/utils/tracking';
 import { RouterProvider } from '@tanstack/react-router';
 import AOS from 'aos';
-import 'aos/dist/aos.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider } from 'react-redux';

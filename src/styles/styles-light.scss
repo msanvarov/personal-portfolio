@@ -2495,3 +2495,86 @@
     background: #ffffff;
   }
 }
+
+/* =========================================================
+   Light theme — contrast pass
+   Pulls body / caption / card colors toward WCAG AA so the
+   page reads on a screen instead of bleaching into the bg.
+   ========================================================= */
+
+// Selectors below are intentionally rooted at the data-theme attribute
+// repeated twice so every rule has +1,0,0 over the corresponding
+// non-doubled `[data-theme='light']` rules earlier in this file. This is
+// the cleanest way to override the deeply-nested defaults (e.g.
+// `.about-area .about-me-box .infos h4`,
+// `.footer-area .footer-content .copyright`) without rewriting them in place.
+html[data-theme='light'][data-theme='light'] {
+  // Backdrop: a very subtle cool shade of white. Card borders and shadows
+  // below do the work of separating panels from the surface.
+  body {
+    background: #f5f6fa;
+    color: #4a4d52; // ~8.6:1 vs background, AAA
+  }
+
+  // Eyebrows / captions inside info-box / about-me-box. The pre-existing
+  // rule at `.info-box .infos h4` set #bcbcbc — barely legible on white,
+  // and the dark base layered `opacity: 0.5/0.7` on top which dragged
+  // them even further down. Override both color and opacity.
+  .info-box .infos h4,
+  .about-me-box .infos h4,
+  .about-services-box .infos h4,
+  .about-project-box .infos h4,
+  .about-blog-box .infos h4,
+  .about-crenditials-box .infos h4,
+  .about-profile-box .infos h4,
+  .project-item .project-info p,
+  .blog-item .content .meta,
+  .blog-details-content .meta,
+  .project-details-info h3,
+  .project-about-2 .left-details ul li p {
+    color: #5a5e66; // ~5.6:1 on white card, AA
+    opacity: 1;
+  }
+
+  // Body copy.
+  body p,
+  .about-details-inner p,
+  .credential-edc-exp-item p,
+  .credential-about p,
+  .credential-edc-exp-item h5,
+  .service-item p,
+  .blog-item .content p {
+    color: #4a4d52;
+  }
+
+  // Footer copyright (defeats the 0,4,0 `.footer-area .footer-content .copyright`).
+  .footer-area .footer-content .copyright {
+    color: #4a4d52;
+  }
+
+  // Cards: solid white with a firmer border + lift so they still read as
+  // distinct cards against the near-white #f5f6fa surface.
+  .shadow-box {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    box-shadow: 0 18px 40px -22px rgba(15, 23, 42, 0.22);
+  }
+
+  // Sidebars / inner panels: solid white so they don't disappear into the bg.
+  .blog-sidebar-widget-inner,
+  .service-sidebar-inner,
+  .credential-sidebar .shadow-box {
+    background: #ffffff;
+  }
+
+  // Marquee / dark CTA cards keep their bright text but firm up their bg.
+  .banner.shadow-box {
+    background: #1a1a1f;
+    color: #ffffff;
+  }
+
+  // Hover state on links bumps to the brand blue with sufficient contrast.
+  a:hover {
+    color: #3b58da;
+  }
+}

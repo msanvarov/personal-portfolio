@@ -23,7 +23,11 @@ const LandingPage = () => {
           <div className="row">
             <div className="col-md-6" data-aos="zoom-in">
               <div className="about-me-box shadow-box">
-                <Link className="overlay-link" to="/bio" />
+                <Link
+                  className="overlay-link"
+                  to="/bio"
+                  aria-label="Open bio"
+                />
                 <img
                   className="bg-img"
                   src="/assets/bg1.png"
@@ -78,7 +82,11 @@ const LandingPage = () => {
                 <div className="gx-row d-flex gap-24">
                   <div data-aos="zoom-in">
                     <div className="about-crenditials-box info-box shadow-box h-full">
-                      <Link className="overlay-link" to="/credentials" />
+                      <Link
+                        className="overlay-link"
+                        to="/credentials"
+                        aria-label="Open credentials"
+                      />
                       <img
                         src="/assets/bg1.png"
                         alt="background"
@@ -110,7 +118,11 @@ const LandingPage = () => {
                   </div>
                   <div data-aos="zoom-in">
                     <div className="about-project-box info-box shadow-box h-full">
-                      <Link className="overlay-link" to="/portfolio" />
+                      <Link
+                        className="overlay-link"
+                        to="/portfolio"
+                        aria-label="Open portfolio"
+                      />
                       <img src="/assets/bg1.png" alt="BG" className="bg-img" />
                       <img src={en.landing.cv.media} alt="My Works" />
                       <div className="d-flex align-items-center justify-content-between">
@@ -142,7 +154,11 @@ const LandingPage = () => {
               <div className="blog-service-profile-wrap d-flex gap-24">
                 <div data-aos="zoom-in">
                   <div className="about-blog-box info-box shadow-box h-full">
-                    <Link to="/posts" className="overlay-link" />
+                    <Link
+                      to="/posts"
+                      className="overlay-link"
+                      aria-label="Open blog"
+                    />
                     <img src="/assets/bg1.png" alt="BG" className="bg-img" />
                     <img src={en.landing.blog.media} alt="thumbnail" />
                     <div className="d-flex align-items-center justify-content-between">
@@ -170,6 +186,7 @@ const LandingPage = () => {
                     <Link
                       to={en.landing.offerings.link}
                       className="overlay-link"
+                      aria-label="Open offerings"
                     />
                     <img src="/assets/bg1.png" alt="BG" className="bg-img" />
                     <div className="icon-boxes">
@@ -271,7 +288,11 @@ const LandingPage = () => {
             </div>
             <div className="col-md-6" data-aos="zoom-in">
               <div className="about-contact-box info-box shadow-box">
-                <Link className="overlay-link" to="/contact" />
+                <Link
+                  className="overlay-link"
+                  to="/contact"
+                  aria-label="Open contact"
+                />
                 <img src="/assets/bg1.png" alt="BG" className="bg-img" />
                 <img
                   src="/assets/icons/icon2.png"

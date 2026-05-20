@@ -18,6 +18,9 @@ export const layoutSlice = createSlice({
     toggleDisplayMobileNavbar: (state) => {
       state.displayMobileNavbar = !state.displayMobileNavbar;
     },
+    closeMobileNavbar: (state) => {
+      state.displayMobileNavbar = false;
+    },
     toggleThemeMode: (state) => {
       state.themeMode =
         state.themeMode === ThemeModeEnum.DARK
@@ -33,6 +36,7 @@ export const layoutSlice = createSlice({
 export const {
   toggleLanguage,
   toggleDisplayMobileNavbar,
+  closeMobileNavbar,
   setThemeMode,
   toggleThemeMode,
 } = layoutSlice.actions;

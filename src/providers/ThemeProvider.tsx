@@ -22,9 +22,15 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 const readInitialTheme = (defaultTheme: Theme): Theme => {
   if (typeof window === 'undefined') return defaultTheme;
-  const stored = window.localStorage.getItem(STORAGE_KEY);
-  if (stored === 'light' || stored === 'dark') return stored;
-  return defaultTheme;
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    if (stored === 'light' || stored === 'dark') return stored;
+    return defaultTheme;
+  } catch {
+    // localStorage can throw in private mode, sandboxed iframes, or when
+    // the user has disabled site storage. Fall back to the default.
+    return defaultTheme;
+  }
 };
 
 type ThemeProviderProps = {

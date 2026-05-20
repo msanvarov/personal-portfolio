@@ -19,7 +19,7 @@ const sitemapPlugin = (): Plugin => ({
   },
 });
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     {
       enforce: 'pre',
@@ -46,6 +46,9 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    // 'hidden' emits .map files but omits the `//# sourceMappingURL=` comment
+    // from the JS, so the maps are uploaded for Sentry/etc. but the browser
+    // devtools do not auto-fetch original sources from users in the wild.
+    sourcemap: mode === 'production' ? 'hidden' : true,
   },
-});
+}));

@@ -1,5 +1,6 @@
 import { ThemeConfigurator } from '@/components/ThemeConfigurator';
 import {
+  closeMobileNavbar,
   toggleDisplayMobileNavbar,
   useAppDispatch,
   useAppSelector,
@@ -22,6 +23,10 @@ export const Header = () => {
     dispatch(toggleDisplayMobileNavbar());
   };
 
+  const handleClose = () => {
+    dispatch(closeMobileNavbar());
+  };
+
   return (
     <header className="header-area">
       <div className="container">
@@ -35,7 +40,7 @@ export const Header = () => {
             <ul className="menu">
               {menu.map((entry, i) => (
                 <li className={isOnPath(entry.path)} key={i}>
-                  <Link to={entry.path} onClick={handleToggle}>
+                  <Link to={entry.path} onClick={handleClose}>
                     {entry.label}
                   </Link>
                 </li>

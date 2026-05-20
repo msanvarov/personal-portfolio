@@ -2,9 +2,7 @@ import { Layout } from '@/components/layout/Layout';
 import { en } from '@/i18n';
 import { breadcrumbLd, personLd, Seo } from '@/utils/seo';
 import classNames from 'classnames';
-import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { Container } from 'reactstrap';
 
 const OfferingsPage = () => {
   return (
@@ -33,19 +31,17 @@ const OfferingsPage = () => {
                 <div className="service-sidebar-inner shadow-box">
                   <ul>
                     {en.offerings.navbar.entries.map((item, index) => (
-                      <Fragment key={index}>
-                        <li>
-                          <i className={classNames('icon', item.icon)} />
-                          {item.text}
-                        </li>
-                        <Container>
+                      <li key={index}>
+                        <i className={classNames('icon', item.icon)} />
+                        {item.text}
+                        <ul className="service-sidebar-topics">
                           {item.topics.map((topic, j) => (
-                            <p key={j}>
+                            <li key={j}>
                               - <b>{topic}</b>
-                            </p>
+                            </li>
                           ))}
-                        </Container>
-                      </Fragment>
+                        </ul>
+                      </li>
                     ))}
                   </ul>
                 </div>

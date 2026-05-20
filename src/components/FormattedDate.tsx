@@ -9,7 +9,7 @@ export const FormattedDate = ({
   value,
   format = 'LLL',
 }: FormattedDateProps) => {
-  if (!value) return null;
+  if (value == null) return null;
   const m = moment(value);
   if (!m.isValid()) return null;
   return <time dateTime={m.toISOString()}>{m.format(format)}</time>;

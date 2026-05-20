@@ -6,11 +6,17 @@ const env = import.meta.env;
 
 export const trackingEnabled = env.VITE_ENABLE_TRACKING === 'true';
 
+const toPositiveInt = (raw: string | undefined): number | null => {
+  if (!raw) return null;
+  const n = Number.parseInt(raw, 10);
+  return Number.isInteger(n) && n > 0 ? n : null;
+};
+
 export const registerHotjar = () => {
   if (!trackingEnabled) return;
-  const siteId = Number(env.VITE_HOTJAR_WEBSITE_UID);
-  const version = Number(env.VITE_HOTJAR_VERSION);
-  if (!Number.isFinite(siteId) || !Number.isFinite(version)) return;
+  const siteId = toPositiveInt(env.VITE_HOTJAR_WEBSITE_UID);
+  const version = toPositiveInt(env.VITE_HOTJAR_VERSION);
+  if (siteId === null || version === null) return;
   Hotjar.init(siteId, version);
 };
 
@@ -39,18 +45,18 @@ const registerGTM = () => {
   if (!trackingEnabled) return;
   const id = env.VITE_GOOGLE_TAG_MANAGER_UID;
   if (!id) return;
-  injectScript({
-    id: 'gtm-loader',
-    src: `https://www.googletagmanager.com/gtag/js?id=${id}`,
-  });
+  // Standard GTM container bootstrap (see https://developers.google.com/tag-manager/quickstart).
+  // The container itself is responsible for loading any downstream GA4 tags.
   injectScript({
     id: 'gtm-init',
     inline: `
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '${id}');
+      window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
     `,
+  });
+  injectScript({
+    id: 'gtm-loader',
+    src: `https://www.googletagmanager.com/gtm.js?id=${id}`,
   });
 };
 

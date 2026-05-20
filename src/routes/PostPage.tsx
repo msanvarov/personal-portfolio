@@ -65,9 +65,11 @@ const PostPage = () => {
           <div className="row">
             <div className="col-md-8">
               <article className="blog-details-content">
-                <div className="img-box">
-                  <img src={metadata.thumbnail} alt={metadata.title} />
-                </div>
+                {metadata.thumbnail ? (
+                  <div className="img-box">
+                    <img src={metadata.thumbnail} alt={metadata.title} />
+                  </div>
+                ) : null}
                 <span className="meta">{metadata.category}</span>
                 <h1>{metadata.title}</h1>
                 <MDXProvider>

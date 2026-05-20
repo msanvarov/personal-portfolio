@@ -5,7 +5,7 @@ import { setCategories, setPosts, setTags, useAppDispatch } from '@/store';
 import { postsAsStoreShape } from '@/utils/content';
 import { breadcrumbLd, Seo, SITE_URL } from '@/utils/seo';
 import { useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 import { Col, Container, Row } from 'reactstrap';
 
 const PostsListPage = () => {
@@ -67,7 +67,7 @@ const PostsListPage = () => {
                   const slug = post.filePath.replace(/\.mdx?$/, '');
                   return (
                     <div className="blog-item" data-aos="zoom-in" key={i}>
-                      <Link to={`/posts/${slug}`}>
+                      <Link to="/posts/$post" params={{ post: slug }}>
                         <div className="img-box">
                           <img
                             src={post.metadata.thumbnail}
@@ -80,7 +80,7 @@ const PostsListPage = () => {
                           Category: {post.metadata.category}
                         </span>
                         <h1>
-                          <Link to={`/posts/${slug}`}>
+                          <Link to="/posts/$post" params={{ post: slug }}>
                             {post.metadata.title}
                           </Link>
                         </h1>

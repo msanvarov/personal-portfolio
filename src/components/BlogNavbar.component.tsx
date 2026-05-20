@@ -1,6 +1,6 @@
 import { FormattedDate } from '@/components/FormattedDate.component';
 import type { Post } from '@/store';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 import { Form } from 'reactstrap';
 
 type BlogNavbarProps = {
@@ -30,7 +30,10 @@ export const BlogNavbar = ({ posts, categories, tags }: BlogNavbarProps) => {
             <ul>
               {posts.slice(0, 5).map((post, i) => (
                 <li key={i}>
-                  <Link to={`/posts/${post.filePath.replace(/\.mdx?$/, '')}`}>
+                  <Link
+                    to="/posts/$post"
+                    params={{ post: post.filePath.replace(/\.mdx?$/, '') }}
+                  >
                     {post.metadata.title}
                   </Link>
                   <p>

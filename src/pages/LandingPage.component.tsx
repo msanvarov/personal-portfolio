@@ -4,7 +4,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { personLd, Seo, websiteLd } from '@/utils/seo';
 import { getThemedContent } from '@/utils/themed-asset';
 import { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 
 const LandingPage = () => {
   const { theme } = useTheme();

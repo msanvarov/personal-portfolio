@@ -2,7 +2,7 @@ import { FormattedDate } from '@/components/FormattedDate.component';
 import { Layout } from '@/components/layout/Layout.component';
 import { caseStudies } from '@/utils/content';
 import { breadcrumbLd, Seo } from '@/utils/seo';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 
 type Group = typeof caseStudies;
 
@@ -11,7 +11,12 @@ const CaseStudyCard = ({ entry }: { entry: Group[number] }) => {
   return (
     <div data-aos="zoom-in" className="flex-1">
       <div className="project-item shadow-box">
-        <Link className="overlay-link" to={`/portfolio/${entry.slug}`} />
+        <Link
+          className="overlay-link"
+          to="/portfolio/$entry"
+          params={{ entry: entry.slug }}
+          aria-label={`Open ${entry.metadata.title} case study`}
+        />
         <img src="/assets/bg1.png" alt="BG" className="bg-img" />
         <div className="project-img">
           <img src={entry.metadata.thumbnail} alt="thumbnail" />
@@ -22,7 +27,11 @@ const CaseStudyCard = ({ entry }: { entry: Group[number] }) => {
             <h1>{entry.metadata.title}</h1>
             <FormattedDate value={dateValue} format="L - h:mm a" />
           </div>
-          <Link to={`/portfolio/${entry.slug}`} className="project-btn">
+          <Link
+            to="/portfolio/$entry"
+            params={{ entry: entry.slug }}
+            className="project-btn"
+          >
             <img src="/assets/icons/cta-icon.svg" alt="Button" />
           </Link>
         </div>

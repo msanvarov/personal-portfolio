@@ -3,16 +3,21 @@ import { Layout } from '@/components/layout/Layout.component';
 import { getPostBySlug, postsAsStoreShape } from '@/utils/content';
 import { articleLd, breadcrumbLd, Seo, SITE_URL } from '@/utils/seo';
 import { MDXProvider } from '@mdx-js/react';
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+} from '@tanstack/react-router';
 import { DiscussionEmbed } from 'disqus-react';
-import { useMemo } from 'react';
-import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
+import { useEffect, useMemo } from 'react';
 
 const disqusShortname = import.meta.env.VITE_DISQUS_SHORTNAME;
 
 const PostPage = () => {
-  const { post } = useParams();
+  const { post } = useParams({ from: '/posts/$post' });
   const entry = post ? getPostBySlug(post) : undefined;
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const posts = postsAsStoreShape;
   const categories = useMemo(
@@ -24,9 +29,11 @@ const PostPage = () => {
     [posts]
   );
 
-  if (!entry) {
-    return <Navigate to="/posts" replace />;
-  }
+  useEffect(() => {
+    if (!entry) navigate({ to: '/posts', replace: true });
+  }, [entry, navigate]);
+
+  if (!entry) return null;
 
   const { metadata, Component, slug } = entry;
   const path = `/posts/${slug}`;
@@ -76,9 +83,7 @@ const PostPage = () => {
                   <Component />
                 </MDXProvider>
                 <div className="tags">
-                  <Link to="#" className="theme-btn my-4">
-                    {metadata.tag}
-                  </Link>
+                  <span className="theme-btn my-4">{metadata.tag}</span>
                 </div>
                 {disqusShortname ? (
                   <DiscussionEmbed

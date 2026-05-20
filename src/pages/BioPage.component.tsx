@@ -3,7 +3,7 @@ import { en } from '@/i18n';
 import { useTheme } from '@/providers/ThemeProvider';
 import { breadcrumbLd, personLd, Seo } from '@/utils/seo';
 import { getThemedContent } from '@/utils/themed-asset';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 
 const BioPage = () => {
   const { theme } = useTheme();

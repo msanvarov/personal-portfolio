@@ -4,7 +4,8 @@ import { PortfolioHeader } from '@/components/portfolio/PortfolioHeader.componen
 import { getCaseStudyBySlug } from '@/utils/content';
 import { breadcrumbLd, caseStudyLd, Seo, SITE_URL } from '@/utils/seo';
 import { MDXProvider } from '@mdx-js/react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from '@tanstack/react-router';
+import { useEffect } from 'react';
 
 const mdxComponents = {
   PortfolioHeader,
@@ -12,12 +13,15 @@ const mdxComponents = {
 };
 
 const PortfolioEntryPage = () => {
-  const { entry } = useParams();
+  const { entry } = useParams({ from: '/portfolio/$entry' });
   const study = entry ? getCaseStudyBySlug(entry) : undefined;
+  const navigate = useNavigate();
 
-  if (!study) {
-    return <Navigate to="/portfolio" replace />;
-  }
+  useEffect(() => {
+    if (!study) navigate({ to: '/portfolio', replace: true });
+  }, [study, navigate]);
+
+  if (!study) return null;
 
   const { metadata, Component, slug } = study;
   const path = `/portfolio/${slug}`;

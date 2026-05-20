@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from '@tanstack/react-router';
 
 export const SITE_URL = (
   import.meta.env.VITE_SITE_URL ?? 'https://www.sal-anvarov.com'

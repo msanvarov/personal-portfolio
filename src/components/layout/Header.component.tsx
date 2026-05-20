@@ -6,7 +6,7 @@ import {
   useAppSelector,
 } from '@/store';
 import classNames from 'classnames';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from '@tanstack/react-router';
 import { menu } from './menu';
 
 const calendlyUrl = import.meta.env.VITE_CALENDLY_URL;

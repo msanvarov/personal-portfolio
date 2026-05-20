@@ -1,4 +1,5 @@
 import mdx from '@mdx-js/rollup';
+import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import remarkFrontmatter from 'remark-frontmatter';
@@ -32,6 +33,15 @@ export default defineConfig(({ mode }) => ({
         ],
       }),
     },
+    // Generates src/routeTree.gen.ts from files in src/routes/. Must run
+    // before @vitejs/plugin-react so the generated file is in place when
+    // React's transform sees the entrypoint.
+    TanStackRouterVite({
+      target: 'react',
+      routesDirectory: './src/routes',
+      generatedRouteTree: './src/routeTree.gen.ts',
+      autoCodeSplitting: true,
+    }),
     react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
     sitemapPlugin(),
   ],

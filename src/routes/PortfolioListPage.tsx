@@ -1,0 +1,79 @@
+import { FormattedDate } from '@/components/FormattedDate';
+import { Layout } from '@/components/layout/Layout';
+import { caseStudies } from '@/utils/content';
+import { Link } from 'react-router-dom';
+
+type Group = typeof caseStudies;
+
+const CaseStudyCard = ({ entry }: { entry: Group[number] }) => {
+  const dateValue = entry.metadata.modified ?? entry.metadata.created ?? '';
+  return (
+    <div data-aos="zoom-in" className="flex-1">
+      <div className="project-item shadow-box">
+        <Link className="overlay-link" to={`/portfolio/${entry.slug}`} />
+        <img src="/assets/bg1.png" alt="BG" className="bg-img" />
+        <div className="project-img">
+          <img src={entry.metadata.thumbnail} alt="thumbnail" />
+        </div>
+        <div className="d-flex align-items-center justify-content-between">
+          <div className="project-info">
+            <p>{entry.metadata.category}</p>
+            <h1>{entry.metadata.title}</h1>
+            <FormattedDate value={dateValue} format="L - h:mm a" />
+          </div>
+          <Link to={`/portfolio/${entry.slug}`} className="project-btn">
+            <img src="/assets/icons/cta-icon.svg" alt="Button" />
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Row = ({ entries }: { entries: Group }) => (
+  <div className="d-flex align-items-start gap-24">
+    {entries.map((entry, i) => (
+      <CaseStudyCard entry={entry} key={i} />
+    ))}
+  </div>
+);
+
+const PortfolioListPage = () => {
+  const left = caseStudies.slice(0, 2);
+  const remaining = caseStudies.slice(2);
+  const rows: Group[] = [];
+  for (let i = 0; i < remaining.length; i += 2) {
+    rows.push(remaining.slice(i, i + 2));
+  }
+
+  return (
+    <Layout wrapperClass="main-workspage">
+      <section className="projects-area">
+        <div className="container">
+          <h1 className="section-heading" data-aos="fade-up">
+            <img src="/assets/star-2.png" alt="Star" /> Portfolio{' '}
+            <img src="/assets/star-2.png" alt="Star" />
+          </h1>
+          <div className="row">
+            <div className="col-md-4">
+              {left.map((entry, i) => (
+                <CaseStudyCard entry={entry} key={i} />
+              ))}
+            </div>
+            <div className="col-md-8">
+              <h1 className="section-heading" data-aos="fade-up">
+                <img src="/assets/star-2.png" alt="Star" /> Portfolio{' '}
+                <img src="/assets/star-2.png" alt="Star" />
+              </h1>
+              {rows.map((row, i) => (
+                <Row entries={row} key={i} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    </Layout>
+  );
+};
+
+export default PortfolioListPage;

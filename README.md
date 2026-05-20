@@ -35,6 +35,8 @@ This portfolio site was rebuilt on Vite + React 18 + TypeScript with TanStack Ro
 
 All third-party identifiers (Hotjar, GTM, Microsoft Clarity, DebugBear, Formspree, Disqus, Calendly) are read from `VITE_*` environment variables — nothing is hardcoded. Integrations gracefully no-op when their env var is not set.
 
+---
+
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/en/download/) 20+
@@ -50,6 +52,8 @@ Optional integrations:
 - [Formspree](https://formspree.io) (contact form)
 - [Disqus](https://disqus.com) (blog comments)
 - [Calendly](https://calendly.com) ("Chat with Sal" CTA)
+
+---
 
 ### Deployment
 
@@ -76,6 +80,8 @@ npm run build      # type-check + production bundle to ./dist
 npm run preview    # serve the production bundle locally
 ```
 
+---
+
 ### Environment configuration
 
 Vite only exposes variables prefixed with `VITE_` to the client. All integrations are optional — if the env var is missing or `VITE_ENABLE_TRACKING` is not `true`, the associated script simply will not load.
@@ -95,6 +101,8 @@ Vite only exposes variables prefixed with `VITE_` to the client. All integration
 
 > No secrets ever ship to the client by design — these are all public IDs intended to be read at runtime by their respective scripts. Still, keep your real `.env.local` out of version control (it is git-ignored).
 
+---
+
 ### SEO and AI-SEO
 
 The site ships ready for both classic search-engine indexing and AI-crawler discovery:
@@ -106,6 +114,8 @@ The site ships ready for both classic search-engine indexing and AI-crawler disc
 - **Static-HTML JSON-LD** — `index.html` embeds a Person + WebSite `@graph` so non-JS-rendering crawlers see Sal's identity on the first byte without waiting for hydration.
 
 When the canonical URL changes, update `VITE_SITE_URL` and the hardcoded `https://www.sal-anvarov.com` references in `public/robots.txt`, `public/llms.txt`, and `index.html`.
+
+---
 
 ### Repository layout
 
@@ -136,6 +146,8 @@ When the canonical URL changes, update `VITE_SITE_URL` and the hardcoded `https:
 └── vite.config.ts
 ```
 
+---
+
 ### Testing
 
 ```bash
@@ -143,9 +155,13 @@ npm run lint        # eslint
 npm run typecheck   # tsc --noEmit
 ```
 
+---
+
 ### Help
 
 PRs are appreciated.
+
+---
 
 ## License
 

@@ -2663,6 +2663,16 @@ html[data-theme='light'][data-theme='light'] {
     }
   }
 
+  // Quick-facts card on the landing page (Years Experience /
+  // Consultations Conducted / Production Applications). The labels
+  // were #bcbcbc × opacity: 0.5 — barely a whisper on white. Pin to
+  // near-black at full opacity so they read like the numbers.
+  .about-client-box .clients .client-item p,
+  .info-box.about-client-box .clients .client-item p {
+    color: #0f0f0f;
+    opacity: 1;
+  }
+
   // Hover state on links bumps to the brand blue with sufficient contrast.
   a:hover {
     color: #3b58da;

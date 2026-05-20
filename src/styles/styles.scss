@@ -3053,3 +3053,133 @@ html[data-theme] .blog-area .container > .section-heading {
     }
   }
 }
+
+/* =========================================================
+   Blog article body — typography rhythm
+
+   The global `* { margin: 0 }` reset strips heading and list
+   margins which MDX content relies on, so every <h2>, <h3>,
+   numbered list, code block etc. ended up mashed against the
+   surrounding paragraphs. This block re-establishes vertical
+   rhythm only inside the article body so the rest of the
+   site's bespoke layouts aren't affected.
+   ========================================================= */
+
+html[data-theme] .blog-details-area .blog-details-content {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin-top: 1.8em;
+    margin-bottom: 0.5em;
+
+    // first heading after the meta/title shouldn't double-space
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  h2 {
+    font-size: 28px;
+  }
+
+  h3 {
+    font-size: 22px;
+    margin-top: 1.6em;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-size: 18px;
+    margin-top: 1.4em;
+  }
+
+  // Reset the title's inherited UPPERCASE styling and add room beneath.
+  > h1 {
+    text-transform: none;
+    font-size: 32px;
+    margin-bottom: 24px;
+  }
+
+  // Body paragraphs and lists.
+  p {
+    margin-top: 0;
+    margin-bottom: 1em;
+    line-height: 1.7;
+  }
+
+  ul,
+  ol {
+    margin: 1em 0 1.2em;
+    padding-left: 1.5em;
+
+    li {
+      margin-bottom: 0.5em;
+      line-height: 1.65;
+    }
+  }
+
+  // Inline + block code.
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(91, 120, 246, 0.12);
+    color: var(--primary_color);
+  }
+
+  pre {
+    margin: 1.2em 0 1.6em;
+    padding: 16px 18px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    overflow-x: auto;
+    line-height: 1.55;
+
+    code {
+      background: transparent;
+      padding: 0;
+      color: inherit;
+      font-size: 0.88em;
+    }
+  }
+
+  // Block quotes / asides.
+  blockquote {
+    margin: 1.2em 0;
+    padding: 14px 20px;
+    border-left: 3px solid var(--primary_color);
+    background: rgba(91, 120, 246, 0.06);
+    border-radius: 0 8px 8px 0;
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  // Inline strong becomes the bold label seen in the screenshots
+  // (Example:, Real-Life Example:, …). Lift its color slightly.
+  strong {
+    font-weight: 600;
+  }
+}
+
+// Light theme tones for code blocks and quotes.
+html[data-theme='light'][data-theme='light'] .blog-details-area .blog-details-content {
+  pre {
+    background: #f0f3fa;
+    border-color: rgba(15, 23, 42, 0.08);
+    color: #0f0f0f;
+  }
+
+  blockquote {
+    background: rgba(91, 120, 246, 0.05);
+  }
+}

@@ -4,13 +4,14 @@ import { Layout } from '@/components/layout/Layout.component';
 import { setCategories, setPosts, setTags, useAppDispatch } from '@/store';
 import { postsAsStoreShape } from '@/utils/content';
 import { breadcrumbLd, Seo, SITE_URL } from '@/utils/seo';
+import { Link, useSearch } from '@tanstack/react-router';
 import { useEffect, useMemo } from 'react';
-import { Link } from '@tanstack/react-router';
 import { Col, Container, Row } from 'reactstrap';
 
 const PostsListPage = () => {
   const dispatch = useAppDispatch();
   const posts = postsAsStoreShape;
+  const { q } = useSearch({ from: '/blog/' });
 
   const categories = useMemo(
     () => Array.from(new Set(posts.map((post) => post.metadata.category))),
@@ -20,6 +21,23 @@ const PostsListPage = () => {
     () => Array.from(new Set(posts.map((post) => post.metadata.tag))),
     [posts]
   );
+
+  // Filter against title / category / description / tag (case-insensitive).
+  // Sidebar widgets keep the full list so categories and tags don't collapse
+  // as the user narrows results.
+  const visiblePosts = useMemo(() => {
+    if (!q) return posts;
+    const needle = q.toLowerCase();
+    return posts.filter((post) => {
+      const meta = post.metadata;
+      return (
+        meta.title?.toLowerCase().includes(needle) ||
+        meta.category?.toLowerCase().includes(needle) ||
+        meta.description?.toLowerCase().includes(needle) ||
+        meta.tag?.toLowerCase().includes(needle)
+      );
+    });
+  }, [posts, q]);
 
   useEffect(() => {
     dispatch(setPosts(posts));
@@ -63,7 +81,13 @@ const PostsListPage = () => {
           <Row>
             <Col md="8">
               <div className="blog-items">
-                {posts.map((post, i) => {
+                {visiblePosts.length === 0 ? (
+                  <p className="blog-empty-state">
+                    No posts match <strong>“{q}”</strong>. Try a different
+                    keyword, category, or tag.
+                  </p>
+                ) : null}
+                {visiblePosts.map((post, i) => {
                   const slug = post.filePath.replace(/\.mdx?$/, '');
                   return (
                     <div className="blog-item" data-aos="zoom-in" key={i}>

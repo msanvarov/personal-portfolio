@@ -1,6 +1,7 @@
 import { FormattedDate } from '@/components/FormattedDate.component';
 import type { Post } from '@/store';
-import { Link } from '@tanstack/react-router';
+import { Link, useLocation, useNavigate } from '@tanstack/react-router';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Form } from 'reactstrap';
 
 type BlogNavbarProps = {
@@ -9,15 +10,52 @@ type BlogNavbarProps = {
   tags: string[];
 };
 
+const readQ = (locationSearch: string): string =>
+  new URLSearchParams(locationSearch).get('q') ?? '';
+
 export const BlogNavbar = ({ posts, categories, tags }: BlogNavbarProps) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Keep the input in sync with the current ?q= so deep-linking and the
+  // back button feel right.
+  const [query, setQuery] = useState<string>(() =>
+    readQ(typeof location.searchStr === 'string' ? location.searchStr : '')
+  );
+
+  useEffect(() => {
+    const urlQ =
+      typeof location.searchStr === 'string'
+        ? readQ(location.searchStr)
+        : '';
+    setQuery(urlQ);
+  }, [location.searchStr]);
+
+  const submit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const trimmed = query.trim();
+    navigate({
+      to: '/blog',
+      search: trimmed ? { q: trimmed } : {},
+    });
+  };
+
   return (
     <div className="blog-sidebar">
       <div className="blog-sidebar-inner">
         <div className="blog-sidebar-widget search-widget">
           <div className="blog-sidebar-widget-inner" data-aos="zoom-in">
-            <Form className="shadow-box">
-              <input type="text" placeholder="Find blog by name or category" />
-              <button className="theme-btn">Find</button>
+            <Form className="shadow-box" onSubmit={submit} role="search">
+              <input
+                type="text"
+                placeholder="Find blog by name or category"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                aria-label="Find blog by name or category"
+              />
+              <button className="theme-btn" type="submit">
+                Find
+              </button>
             </Form>
           </div>
         </div>
@@ -53,7 +91,12 @@ export const BlogNavbar = ({ posts, categories, tags }: BlogNavbarProps) => {
             <ul>
               {categories.map((category, i) => (
                 <li key={i}>
-                  <Link to="/blog">- {category}</Link>
+                  <Link
+                    to="/blog"
+                    search={{ q: category }}
+                  >
+                    - {category}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -65,7 +108,11 @@ export const BlogNavbar = ({ posts, categories, tags }: BlogNavbarProps) => {
             <ul>
               {tags.map((tag, i) => (
                 <li key={i}>
-                  <Link className="theme-btn" to="/blog">
+                  <Link
+                    className="theme-btn"
+                    to="/blog"
+                    search={{ q: tag }}
+                  >
                     {tag}
                   </Link>
                 </li>

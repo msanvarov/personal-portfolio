@@ -3177,3 +3177,32 @@ html[data-theme='light'][data-theme='light'] .blog-details-area .blog-details-co
     background: rgba(91, 120, 246, 0.05);
   }
 }
+
+/* =========================================================
+   Search pill — fix white overflow at the rounded corners
+   ========================================================= */
+
+// The `.blog-sidebar-widget-inner` inside the search widget is a
+// square white box that the form's 30px border-radius sits on top
+// of, so the corners bled a white sliver past the pill. Round the
+// inner to match and clip overflow.
+html[data-theme] .blog-sidebar .search-widget .blog-sidebar-widget-inner {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+// Make the input text inherit the surrounding color so it reads in
+// either theme (dark base set it to #ffffff, illegible on the white
+// pill in light mode).
+html[data-theme='light'][data-theme='light']
+  .blog-sidebar .search-widget form input {
+  color: #0f0f0f;
+
+  &::placeholder {
+    color: #5a5e66;
+    opacity: 1;
+  }
+}

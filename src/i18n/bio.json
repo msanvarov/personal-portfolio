@@ -1,0 +1,105 @@
+{
+  "bio": {
+    "media": "/assets/3d-headshot-lg.png",
+    "details": {
+      "heading": "Bio",
+      "name": "Sal Anvarov",
+      "description": "Hard-working developer with a flair for creating elegant solutions to complex problems. Team player with a can-do attitude and a strong focus on client satisfaction. Diverse experience with modern technologies and cloud providers like AWS and GCP with enterprise DevOps experience. Likes to contribute to open-source and create apps on his free time."
+    }
+  },
+  "experience": {
+    "heading": "Experience",
+    "experience": [
+      {
+        "date": "2026 - Present",
+        "title": "Partner",
+        "company": "TANNED TO"
+      },
+      {
+        "date": "2025 - Present",
+        "title": "Senior Software Engineer",
+        "company": "Loblaw Digital"
+      },
+      {
+        "date": "2025 - Present",
+        "title": "Co-founder",
+        "company": "Cleanlist AI"
+      },
+      {
+        "date": "2024 - 2025",
+        "title": "Senior Software Engineer",
+        "company": "Cooperators — Amy Wang Insurance & Investment Inc."
+      },
+      {
+        "date": "2022 - 2024",
+        "title": "Lead Full Stack Developer",
+        "company": "Oproma Inc."
+      }
+    ]
+  },
+  "education": {
+    "heading": "Education",
+    "education": [
+      {
+        "date": "Professional Certificate",
+        "degree": "Meta Front-End Developer",
+        "university": "Coursera"
+      },
+      {
+        "date": "Professional Certificate",
+        "degree": "Meta Back-End Developer",
+        "university": "Coursera"
+      },
+      {
+        "date": "Degree",
+        "degree": "Bachelor Degree in CS and Stats",
+        "university": "University of Toronto"
+      }
+    ]
+  },
+  "profiles": {
+    "heading": "Profiles",
+    "caption": "Stay Connected",
+    "media": null,
+    "button": {
+      "link": "/contact",
+      "icon": {
+        "light": "/assets/icons/icon-2.svg",
+        "dark": "/assets/icons/icon.svg"
+      }
+    },
+    "profiles": [
+      {
+        "link": "https://github.com/msanvarov",
+        "icon": "iconoir-github"
+      },
+      {
+        "link": "https://linkedin.com/in/sal-anvarov",
+        "icon": "iconoir-linkedin"
+      }
+    ]
+  },
+  "contact": {
+    "heading": "Let's <br /> <span>collaborate.</span>",
+    "media": "/assets/icons/icon2.png",
+    "button": {
+      "link": "/contact",
+      "icon": {
+        "light": "/assets/icons/icon-2.svg",
+        "dark": "/assets/icons/icon.svg"
+      }
+    }
+  },
+  "credentials": {
+    "heading": "Qualifications",
+    "caption": "A little on Sal",
+    "media": "/assets/signature.png",
+    "button": {
+      "link": "/credentials",
+      "icon": {
+        "light": "/assets/icons/icon-2.svg",
+        "dark": "/assets/icons/icon.svg"
+      }
+    }
+  }
+}

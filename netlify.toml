@@ -1,0 +1,31 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Permanent redirects: old /posts URLs preserved as 301 → /blog so any
+# inbound link or indexed page keeps its ranking signal.
+[[redirects]]
+  from = "/posts"
+  to = "/blog"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/posts/*"
+  to = "/blog/:splat"
+  status = 301
+  force = true
+
+# SPA fallback — let the TanStack router handle every other unknown URL.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

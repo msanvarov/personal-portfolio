@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="The Art of Software Architecture thumbnail">
+  <defs>
+    <linearGradient id="archBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e0d12"/>
+      <stop offset="1" stop-color="#1d2336"/>
+    </linearGradient>
+    <linearGradient id="archCube1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5b78f6"/>
+      <stop offset="1" stop-color="#3b58da"/>
+    </linearGradient>
+    <linearGradient id="archCube2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9aa9ff"/>
+      <stop offset="1" stop-color="#5b78f6"/>
+    </linearGradient>
+    <linearGradient id="archCube3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2c3556"/>
+      <stop offset="1" stop-color="#1a2040"/>
+    </linearGradient>
+    <pattern id="archGrid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0 L0 0 0 48" fill="none" stroke="#5b78f6" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#archBg)"/>
+  <rect width="1200" height="675" fill="url(#archGrid)"/>
+
+  <!-- connecting lines suggesting a graph / decision flow -->
+  <g stroke="#5b78f6" stroke-opacity="0.35" stroke-width="2" fill="none">
+    <path d="M860,260 C940,260 940,420 1020,420"/>
+    <path d="M340,420 C420,420 420,260 500,260"/>
+    <path d="M600,470 L600,560"/>
+  </g>
+  <g fill="#5b78f6">
+    <circle cx="1020" cy="420" r="6" opacity="0.6"/>
+    <circle cx="340"  cy="420" r="6" opacity="0.6"/>
+    <circle cx="600"  cy="560" r="6" opacity="0.6"/>
+  </g>
+
+  <!-- isometric cubes -->
+  <g transform="translate(600 320)">
+    <!-- bottom-left cube (smaller) -->
+    <g transform="translate(-220 60)">
+      <polygon points="0,30 70,-10 140,30 70,70" fill="url(#archCube3)"/>
+      <polygon points="0,30 0,110 70,150 70,70" fill="#252b4a"/>
+      <polygon points="140,30 140,110 70,150 70,70" fill="#1a2040"/>
+    </g>
+    <!-- bottom-right cube (smaller) -->
+    <g transform="translate(80 60)">
+      <polygon points="0,30 70,-10 140,30 70,70" fill="url(#archCube3)"/>
+      <polygon points="0,30 0,110 70,150 70,70" fill="#252b4a"/>
+      <polygon points="140,30 140,110 70,150 70,70" fill="#1a2040"/>
+    </g>
+    <!-- center top cube (largest, accent) -->
+    <g transform="translate(-100 -80)">
+      <polygon points="0,40 100,-20 200,40 100,100" fill="url(#archCube2)"/>
+      <polygon points="0,40 0,160 100,220 100,100" fill="url(#archCube1)"/>
+      <polygon points="200,40 200,160 100,220 100,100" fill="#3b58da"/>
+      <!-- inner highlight edge -->
+      <polyline points="0,40 100,100 200,40" fill="none" stroke="#ffffff" stroke-opacity="0.18" stroke-width="2"/>
+      <polyline points="100,100 100,220" fill="none" stroke="#ffffff" stroke-opacity="0.10" stroke-width="2"/>
+    </g>
+  </g>
+
+  <!-- corner annotations -->
+  <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="22" fill="#5b78f6" fill-opacity="0.35">
+    <text x="80"   y="120">// architecture</text>
+    <text x="1040" y="600" text-anchor="end">// decentralized</text>
+  </g>
+
+  <!-- title -->
+  <g font-family="'Space Grotesk', 'Inter', system-ui, sans-serif" fill="#f6f1ea">
+    <text x="80" y="535" font-size="22" letter-spacing="6" fill-opacity="0.55">ENGINEERING · DECISIONS</text>
+    <text x="80" y="582" font-size="44" font-weight="600">The Art of Software Architecture</text>
+  </g>
+</svg>

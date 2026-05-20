@@ -1,205 +1,147 @@
 <h1 align="center">Sal's Personal Portfolio Website</h1>
 
 <p align="center">
-  <a href="http://sal-anvarov.com/" target="blank"><img src="./apps/personal-portfolio/public/assets/thumbnails/website.png" width="320" alt="portfolio website" /></a>
+  <a href="https://www.sal-anvarov.com/" target="_blank"><img src="./public/assets/thumbnails/website.png" width="320" alt="portfolio website" /></a>
 </p>
 
-<p align="center">A modern <a href="https://www.nextjs.org" target="blank" rel="noreferrer noopener">Next.js</a> portfolio website built with 💙 and ☕ by Sal Anvarov. <a href="https://www.sal-anvarov.com" target="blank" rel="noreferrer noopener">Deployed</a> with <a href="https://www.hotjar.com/" target="blank" rel="noreferrer noopener">HotJar</a>, <a href="https://tagmanager.google.com/#/home" target="blank" rel="noreferrer noopener">GTM</a>, and <a href="https://formspree.io/" target="blank" rel="noreferrer noopener">Formspree</a> tools for analytics and form tracking.
+<p align="center">A modern <a href="https://vitejs.dev" target="_blank" rel="noreferrer noopener">Vite</a> + <a href="https://react.dev" target="_blank" rel="noreferrer noopener">React 18</a> portfolio site built with 💙 and ☕ by Sal Anvarov. Optionally wired up to <a href="https://www.hotjar.com/" target="_blank" rel="noreferrer noopener">HotJar</a>, <a href="https://tagmanager.google.com/#/home" target="_blank" rel="noreferrer noopener">GTM</a>, and <a href="https://formspree.io/" target="_blank" rel="noreferrer noopener">Formspree</a> via environment variables.
 </p>
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmsanvarov%2Fpersonal-portfolio&env=ENABLE_TRACKING,HOTJAR_WEBSITE_UID,HOTJAR_VERSION,GOOGLE_TAG_MANAGER_UID,MICROSOFT_CLARITY_UID,DEBUGBEAR_RUM_UID&envDescription=Environment%20Configs%20for%20Website&envLink=https%3A%2F%2Fgithub.com%2Fmsanvarov%2Fpersonal-portfolio%23-environment-configuration&project-name=personal-portfolio&repository-name=personal-portfolio&redirect-url=https%3A%2F%2Fgithub.com%2Fmsanvarov%2Fpersonal-portfolio&demo-title=Sal's%20Personal%20Website&demo-url=https%3A%2F%2Fwww.sal-anvarov.com&demo-image=https%3A%2F%2Fwww.sal-anvarov.com%2Fassets%2Fthumbnails%2Fwebsite.png)
+<p align="center">
+  <a href="https://app.netlify.com/start/deploy?repository=https://github.com/msanvarov/personal-portfolio">
+    <img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" />
+  </a>
+  &nbsp;
+  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmsanvarov%2Fpersonal-portfolio&project-name=personal-portfolio&repository-name=personal-portfolio&env=VITE_ENABLE_TRACKING,VITE_HOTJAR_WEBSITE_UID,VITE_HOTJAR_VERSION,VITE_GOOGLE_TAG_MANAGER_UID,VITE_MICROSOFT_CLARITY_UID,VITE_DEBUGBEAR_RUM_UID,VITE_FORMSPREE_FORM_ID,VITE_DISQUS_SHORTNAME,VITE_CALENDLY_URL,VITE_SITE_URL&envDescription=VITE_-prefixed%20integration%20IDs.%20All%20optional%20%E2%80%94%20see%20.env.example.&envLink=https%3A%2F%2Fgithub.com%2Fmsanvarov%2Fpersonal-portfolio%23-environment-configuration&demo-title=Sal%20Anvarov&demo-url=https%3A%2F%2Fwww.sal-anvarov.com">
+    <img src="https://vercel.com/button" alt="Deploy with Vercel" />
+  </a>
+</p>
 
-> Remark: Deploying on Vercel will **FAIL** as **Nx** has the output directory as **dist** on builds by default. To fix this - navigate to the **Build and Development Settings** and change the **Output Directory** to `dist/apps/personal-portfolio/.next`. Documentation: https://vercel.com/docs/deployments/configure-a-build#build-and-development-settings
-
-Table of Contents:
+Table of contents:
 
 1. [Description](#-description)
 2. [Prerequisites](#%EF%B8%8F-prerequisites)
 3. [Deployment](#-deployment)
-4. [Environment Configuration](#-environment-configuration)
-5. [Repository Files and Folders](#-repository-files-and-folders)
+4. [Environment configuration](#-environment-configuration)
+5. [Repository layout](#-repository-layout)
 6. [Testing](#-testing)
-
-🔎 This repo was created with [Nx](https://nx.dev/).
 
 ### 📚 Description
 
 Preview: https://www.sal-anvarov.com/
 
-This portfolio website was built with ease of extensibility in mind. This app comes with **MDX** for case-studies and blog management and **Bootstrap** for styling. The app has redux state management via **Redux Toolkit** and **React Hooks**.
+This portfolio site was rebuilt on Vite + React 18 + TypeScript with React Router v6 for client-side routing. Case studies and blog posts live as MDX files under `content/` and are bundled at build time via `@mdx-js/rollup` + `import.meta.glob`. State management is Redux Toolkit with `redux-persist`; styling is SCSS + Bootstrap 5 + Iconoir; animations use Framer Motion + AOS.
 
-> Remark: Given **App Router** is not fully stable, I opted to stay with **Pages Router** until further notice. The plan is to eventually migrate to **App Router**.
-
----
+All third-party identifiers (Hotjar, GTM, Microsoft Clarity, DebugBear, Formspree, Disqus, Calendly) are read from `VITE_*` environment variables — nothing is hardcoded. Integrations gracefully no-op when their env var is not set.
 
 ### 🛠️ Prerequisites
 
-#### Tracking Tools
+- [Node.js](https://nodejs.org/en/download/) 20+
+- [npm](https://www.npmjs.com/) 9+ (or pnpm / yarn)
+
+Optional integrations:
 
 - [HotJar](https://www.hotjar.com/)
-- [Google Analytics](https://www.marketingplatform.google.com)
+- [Google Tag Manager](https://www.marketingplatform.google.com)
 - [Microsoft Clarity](https://clarity.microsoft.com)
 - [DebugBear RUM](https://www.debugbear.com/docs/rum/real-user-monitoring)
 - [Vercel Analytics](https://vercel.com/docs/analytics/quickstart)
-
-#### Non Docker
-
-- Please make sure to have [Node.js](https://nodejs.org/en/download/) (16+) locally by downloading the Javascript runtime via `brew`, `choco`, or `apt-get`.
-
-#### Docker 🐳
-
-- Please make sure to have [Docker Desktop](https://www.docker.com/products/docker-desktop/) operational to quickly compose the required dependencies. Then follow the docker procedure outlined below.
-
----
+- [Formspree](https://formspree.io) (contact form)
+- [Disqus](https://disqus.com) (blog comments)
+- [Calendly](https://calendly.com) ("Chat with Sal" CTA)
 
 ### 🚀 Deployment
 
-#### Manual Deployment without Docker
+#### One-click deploy
 
-- Clone the repo via `git clone https://github.com/msanvarov/personal-portfolio`.
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/msanvarov/personal-portfolio) [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmsanvarov%2Fpersonal-portfolio&project-name=personal-portfolio&repository-name=personal-portfolio&env=VITE_ENABLE_TRACKING,VITE_HOTJAR_WEBSITE_UID,VITE_HOTJAR_VERSION,VITE_GOOGLE_TAG_MANAGER_UID,VITE_MICROSOFT_CLARITY_UID,VITE_DEBUGBEAR_RUM_UID,VITE_FORMSPREE_FORM_ID,VITE_DISQUS_SHORTNAME,VITE_CALENDLY_URL,VITE_SITE_URL&envDescription=VITE_-prefixed%20integration%20IDs.%20All%20optional%20%E2%80%94%20see%20.env.example.)
 
-- Navigate to the root directory of repo via `cd personal-portfolio`.
+The repo ships with both a `netlify.toml` and a `vercel.json` configured for a Vite SPA: build with `npm run build`, publish `dist/`, and add a `/* → /index.html` rewrite so React Router handles deep links. See [Netlify deploy docs](https://docs.netlify.com/deploy/create-deploys/) and [Vercel deploy docs](https://vercel.com/docs/deployments/overview).
 
-- Download dependencies via `npm i` or `yarn`.
-
-- Create a **.env file** via the `cp apps/personal-portfolio/.env.example .env` command and replace the example environment variables with valid ones.
-
-- Start the app in development mode via `npm run start` (the app will be exposed on http://localhost:4200; not to conflict with the default React, Angular, or Vue ports).
-
-> Remark: In the docker deployment, the UI is automatically started and served by the API.
-
-#### Deploying with Docker 🐳
-
-[Open in Docker Dev Environments <img src="assets/open-link.svg" alt="Open in Docker Dev Environments" align="top"/>](https://open.docker.com/dashboard/dev-envs?url=https://github.com/msanvarov/personal-portfolio/tree/master)
-
-- Execute the following command in-app directory:
+#### Local development
 
 ```bash
-# creates and loads the docker container in detached mode with the required configuration
-$ docker-compose up -d
+git clone https://github.com/msanvarov/personal-portfolio
+cd personal-portfolio
+cp .env.example .env.local   # fill in the integrations you actually use
+npm install
+npm run dev                  # http://localhost:4200
 ```
 
-- The following command will download dependencies and execute the web application on http://localhost:80 (deployed behind a Nginx reverse proxy).
+#### Build
 
----
+```bash
+npm run build      # type-check + production bundle to ./dist
+npm run preview    # serve the production bundle locally
+```
 
-### 🔒 Environment Configuration
+### 🔒 Environment configuration
 
-By default, the application comes with a config module that can read in every environment variable from the `.env` file.
+Vite only exposes variables prefixed with `VITE_` to the client. All integrations are optional — if the env var is missing or `VITE_ENABLE_TRACKING` is not `true`, the associated script simply will not load.
 
-**APP_ENV** - the application environment to execute as, either in development or production. Determines the type of logging options to utilize. Options: `development` or `production`.
+| Variable                       | Purpose                                          |
+| ------------------------------ | ------------------------------------------------ |
+| `VITE_ENABLE_TRACKING`         | Master switch for analytics. `true` / `false`.   |
+| `VITE_HOTJAR_WEBSITE_UID`      | Hotjar site ID                                   |
+| `VITE_HOTJAR_VERSION`          | Hotjar script version (typically `6`)            |
+| `VITE_GOOGLE_TAG_MANAGER_UID`  | GTM / GA4 measurement ID                         |
+| `VITE_MICROSOFT_CLARITY_UID`   | Clarity project ID                               |
+| `VITE_DEBUGBEAR_RUM_UID`       | DebugBear RUM script ID                          |
+| `VITE_FORMSPREE_FORM_ID`       | Formspree form ID for `/contact`                 |
+| `VITE_DISQUS_SHORTNAME`        | Disqus shortname for blog comments               |
+| `VITE_CALENDLY_URL`            | Calendly URL for the "Chat with Sal" popup       |
+| `VITE_SITE_URL`                | Canonical site URL used in OG metadata           |
 
-**ENABLE_TRACKING** - enables tracking tools. Options: `true` or `false`.
+> No secrets ever ship to the client by design — these are all public IDs intended to be read at runtime by their respective scripts. Still, keep your real `.env.local` out of version control (it is git-ignored).
 
-**HOTJAR_WEBSITE_UID** - hotjar website uid, requires a HotJar account (**free**)
+### 🔍 SEO and AI-SEO
 
-**HOTJAR_VERSION** - hotjar version
+The site ships ready for both classic search-engine indexing and AI-crawler discovery:
 
-**GOOGLE_TAG_MANAGER_UID** - google tag manager uid, requires google analytics to be onboarded.
+- **`/robots.txt`** — explicit `Allow: /` for Googlebot, Bingbot, DuckDuckBot, Applebot, Yandex, Baidu, plus AI crawlers (GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-Web, anthropic-ai, PerplexityBot, Google-Extended, Meta-ExternalAgent, Amazonbot, Bytespider, YouBot, Mistral-AI-User). Edit any user-agent block to `Disallow: /` to opt out.
+- **`/sitemap.xml`** — generated at build time from the static routes plus every MDX file under `content/case-studies/` and `content/posts/`, with `lastmod` taken from frontmatter or file mtime.
+- **`/llms.txt`** — curated index (per the [llmstxt.org](https://llmstxt.org) convention) that lists each portfolio entry and blog post with a one-line summary, so AI agents that respect the file can fetch a clean table of contents.
+- **Per-route metadata** — unique `<title>`, `<meta name="description">`, `<link rel="canonical">`, Open Graph, Twitter Card, and JSON-LD on every route. Case studies emit `CreativeWork`, blog posts emit `BlogPosting`, list pages emit `ItemList`/`Blog`, and detail pages add `BreadcrumbList`.
+- **Static-HTML JSON-LD** — `index.html` embeds a Person + WebSite `@graph` so non-JS-rendering crawlers see Sal's identity on the first byte without waiting for hydration.
 
-**MICROSOFT_CLARITY_UID** - microsoft clarity uid, manages heatmaps and events. requires a Microsoft account (**free**)
+When the canonical URL changes, update `VITE_SITE_URL` and the hardcoded `https://www.sal-anvarov.com` references in `public/robots.txt`, `public/llms.txt`, and `index.html`.
 
-> Remark: DebugBear can be easy onboarded via [Vercel](https://vercel.com/integrations/debugbear)
-
-**DEBUGBEAR_RUM_UID** - debugbear real user monitoring (RUM) uid, requires DebugBear to be onboarded (**free**).
-
----
-
-### 📁 Repository Files and Folders
+### 📁 Repository layout
 
 ```text
 .
-├── Dockerfile
-├── README.md
-├── apps
-│   ├── personal-portfolio
-│   │   ├── case-studies
-│   │   ├── index.d.ts
-│   │   ├── jest.config.ts
-│   │   ├── next-env.d.ts
-│   │   ├── next.config.js
-│   │   ├── pages
-│   │   ├── posts
-│   │   ├── project.json
-│   │   ├── public
-│   │   ├── tests
-│   │   ├── tsconfig.json
-│   │   ├── tsconfig.spec.json
-│   │   └── utils
-│   └── personal-portfolio-e2e
-│       ├── cypress.config.ts
-│       ├── project.json
-│       ├── src
-│       └── tsconfig.json
-├── assets
-│   └── open-link.svg
-├── compose.yaml
-├── dist
-│   └── apps
-│       └── personal-portfolio
-├── jest.config.ts
-├── jest.preset.js
-├── libs
-│   ├── core-components
-│   │   ├── README.md
-│   │   ├── project.json
-│   │   ├── src
-│   │   ├── tsconfig.json
-│   │   └── tsconfig.lib.json
-│   └── store
-│       ├── README.md
-│       ├── project.json
-│       ├── src
-│       ├── tsconfig.json
-│       └── tsconfig.lib.json
-├── nx.json
-├── package-lock.json
+├── content/
+│   ├── case-studies/     # portfolio MDX entries
+│   └── posts/            # blog MDX entries
+├── public/               # static assets served from /
+├── src/
+│   ├── components/       # Layout, Header, Footer, BlogNavbar, ...
+│   ├── i18n/             # English copy (JSON)
+│   ├── providers/        # ThemeProvider
+│   ├── routes/           # React Router page components
+│   ├── store/            # Redux Toolkit slices + hooks
+│   ├── styles/           # global SCSS (dark + light)
+│   ├── utils/            # tracking, content loader, themed assets
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── vite-env.d.ts
+├── index.html
+├── netlify.toml
 ├── package.json
-├── tools
-│   └── tsconfig.tools.json
-└── tsconfig.base.json
+├── tsconfig.json
+└── vite.config.ts
 ```
-
----
 
 ### ✅ Testing
 
-#### Docker 🐳
-
 ```bash
-# Start the docker container if it's not running
-$ docker start frontend
-
-# unit tests
-$ docker exec -it frontend npm run test
-
+npm run lint        # eslint
+npm run typecheck   # tsc --noEmit
 ```
-
-#### Non-Docker
-
-```bash
-# execute test
-$ npm run test
-```
-
----
-
-### 🏗️ Progress
-
-|                                                            Branches | Status |
-| ------------------------------------------------------------------: | :----- |
-|             [main](https://github.com/msanvarov/personal-portfolio) | ✅     |
-| [feat/\*](https://github.com/msanvarov/personal-portfolio/branches) | 🚧     |
-
-<!-- > Remark: This template was employed to create a [Real World example app](https://github.com/gothinkster/realworld) on [Github](). -->
-
----
 
 ### 👥 Help
 
-PRs are appreciated, I fully rely on the passion ❤️ of the OS developers.
-
----
+PRs are appreciated.
 
 ## License
 

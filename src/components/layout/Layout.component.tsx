@@ -1,5 +1,7 @@
 import { DocumentHead } from '@/components/DocumentHead.component';
+import { useLocation } from '@tanstack/react-router';
 import classNames from 'classnames';
+import { motion, useReducedMotion } from 'framer-motion';
 import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
 import { Breadcrumb } from './Breadcrumb.component';
 import { Footer } from './Footer.component';
@@ -29,23 +31,37 @@ export const Layout = ({
   children,
 }: LayoutProps) => {
   const [rootEl, setRootEl] = useState<HTMLElement | null>(null);
+  const { pathname } = useLocation();
+  const reduce = useReducedMotion();
 
   useEffect(() => {
     setRootEl(document.getElementById('root'));
   }, []);
 
+  // Soft route transition: small fade + lift on the main section. Skip
+  // entirely when the user has prefers-reduced-motion turned on.
+  const motionProps = reduce
+    ? {}
+    : {
+        initial: { opacity: 0, y: 12 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.45, ease: [0.2, 0.7, 0.2, 1] as const },
+      };
+
   return (
     <>
       <DocumentHead title={title}>{head}</DocumentHead>
-      <section
+      <motion.section
+        key={pathname}
         className={classNames(wrapperClass ? wrapperClass : 'main-homepage')}
+        {...motionProps}
       >
         <Header />
         {breadcrumb ? (
           <Breadcrumb breadcrumb={breadcrumb} heading={heading} />
         ) : null}
         {children}
-      </section>
+      </motion.section>
       {calendlyUrl && rootEl ? (
         <Suspense fallback={null}>
           <PopupWidget

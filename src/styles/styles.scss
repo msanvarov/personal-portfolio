@@ -2824,3 +2824,114 @@ ol {
     transition: none !important;
   }
 }
+
+/* =========================================================
+   Motion polish — global animations + micro-interactions
+   ========================================================= */
+
+@keyframes floatSubtle {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(91, 120, 246, 0); }
+  50%      { box-shadow: 0 0 0 12px rgba(91, 120, 246, 0.08); }
+}
+
+@keyframes shimmerSweep {
+  0%   { transform: translateX(-120%) skewX(-15deg); }
+  100% { transform: translateX(220%) skewX(-15deg); }
+}
+
+@keyframes underlineGrow {
+  0% { transform: scaleX(0); transform-origin: left center; }
+  100% { transform: scaleX(1); transform-origin: left center; }
+}
+
+/* Hero portrait sways gently */
+.about-me-box .img-box img {
+  animation: floatSubtle 7s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Marquee banner gets a subtle outer glow pulse so it feels alive */
+.banner.shadow-box {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+/* `.theme-btn` (primary CTA) gets a shine sweep on hover */
+.theme-btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.28) 50%,
+      transparent 100%
+    );
+    transform: translateX(-120%) skewX(-15deg);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  &:hover::after {
+    animation: shimmerSweep 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+}
+
+/* Navigation links: subtle underline grow on hover */
+.menu li a {
+  position: relative;
+  transition: color 0.25s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  &:hover::after,
+  &.active::after {
+    transform: scaleX(1);
+  }
+}
+
+/* Quick-fact numbers get a fade-up entrance when scrolled into view */
+.about-client-box .client-item h1 {
+  animation: floatSubtle 5s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * 0.4s);
+}
+
+/* Stagger the icon row in the offerings card */
+.about-services-box .icon-boxes i {
+  display: inline-block;
+  animation: floatSubtle 6s ease-in-out infinite;
+}
+.about-services-box .icon-boxes i:nth-child(2) { animation-delay: 0.6s; }
+.about-services-box .icon-boxes i:nth-child(3) { animation-delay: 1.2s; }
+.about-services-box .icon-boxes i:nth-child(4) { animation-delay: 1.8s; }
+
+/* Honour user preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+  }
+}

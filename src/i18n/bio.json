@@ -11,19 +11,29 @@
     "heading": "Experience",
     "experience": [
       {
-        "date": "2022 - Present",
-        "title": "Lead Full Stack Developer",
-        "company": "Oproma"
+        "date": "2026 - Present",
+        "title": "Partner",
+        "company": "TANNED TO"
       },
       {
-        "date": "2022 - Present",
+        "date": "2025 - Present",
+        "title": "Senior Software Engineer",
+        "company": "Loblaw Digital"
+      },
+      {
+        "date": "2025 - Present",
         "title": "Co-founder",
-        "company": "Cleanlist.ai"
+        "company": "Cleanlist AI"
       },
       {
-        "date": "2020 - 2022",
-        "title": "Lead Software Developer",
-        "company": "Permion.ai"
+        "date": "2024 - 2025",
+        "title": "Senior Software Engineer",
+        "company": "Cooperators — Amy Wang Insurance & Investment Inc."
+      },
+      {
+        "date": "2022 - 2024",
+        "title": "Lead Full Stack Developer",
+        "company": "Oproma Inc."
       }
     ]
   },

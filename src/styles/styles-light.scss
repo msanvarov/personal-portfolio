@@ -2637,6 +2637,32 @@ html[data-theme='light'][data-theme='light'] {
     opacity: 1;
   }
 
+  // Contact page: the "MAIL" / "CONTACT" / "LOCATION" eyebrows above
+  // each contact item were #bcbcbc with opacity: 0.5, and the email /
+  // Calendly / Toronto h4 values were `#000` × opacity: 0.4 — both
+  // washed out. Pin everything to near-black at full opacity per
+  // request ("make headings black and text too").
+  .contact-area .contact-infos .contact-details li .right span {
+    color: #0f0f0f;
+    opacity: 1;
+  }
+
+  .contact-area .contact-infos .contact-details li .right h4 {
+    color: #0f0f0f;
+    opacity: 1;
+  }
+
+  // The mailto / Calendly anchors should hint at being links — brand
+  // blue at full opacity, deeper on hover.
+  .contact-area .contact-infos .contact-details li .right h4 a {
+    color: #3b58da;
+    opacity: 1;
+
+    &:hover {
+      color: #1e3ab0;
+    }
+  }
+
   // Hover state on links bumps to the brand blue with sufficient contrast.
   a:hover {
     color: #3b58da;

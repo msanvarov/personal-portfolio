@@ -3029,18 +3029,12 @@ html[data-theme] .blog-area .blog-items {
   }
 }
 
-/* Section heading on the blog page: was huge + asterisks; tighten it up. */
+/* Blog section heading inherits the same 74px display size used on
+   Portfolio and Bio for visual consistency across landing pages.
+   Only the bottom margin is custom — needs a bit more room before the
+   compact card grid starts. */
 html[data-theme] .blog-area .container > .section-heading {
   margin-bottom: 32px;
-  font-size: 30px;
-  letter-spacing: -0.015em;
-  text-transform: uppercase;
-
-  img {
-    width: 16px;
-    height: 16px;
-    opacity: 0.6;
-  }
 }
 
 @media (max-width: 768px) {

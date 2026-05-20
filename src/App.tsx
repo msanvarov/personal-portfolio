@@ -1,4 +1,4 @@
-import { Preloader } from '@/components/Preloader';
+import { Preloader } from '@/components/Preloader.component';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { persistor, store } from '@/store';
 import { TrackingProvider } from '@/utils/tracking';
@@ -14,15 +14,15 @@ import { PersistGate } from 'redux-persist/integration/react';
 import '@/styles/styles.scss';
 import '@/styles/styles-light.scss';
 
-const LandingPage = lazy(() => import('@/routes/LandingPage'));
-const BioPage = lazy(() => import('@/routes/BioPage'));
-const CredentialsPage = lazy(() => import('@/routes/CredentialsPage'));
-const ContactPage = lazy(() => import('@/routes/ContactPage'));
-const OfferingsPage = lazy(() => import('@/routes/OfferingsPage'));
-const PortfolioListPage = lazy(() => import('@/routes/PortfolioListPage'));
-const PortfolioEntryPage = lazy(() => import('@/routes/PortfolioEntryPage'));
-const PostsListPage = lazy(() => import('@/routes/PostsListPage'));
-const PostPage = lazy(() => import('@/routes/PostPage'));
+const LandingPage = lazy(() => import('@/pages/LandingPage.component'));
+const BioPage = lazy(() => import('@/pages/BioPage.component'));
+const CredentialsPage = lazy(() => import('@/pages/CredentialsPage.component'));
+const ContactPage = lazy(() => import('@/pages/ContactPage.component'));
+const OfferingsPage = lazy(() => import('@/pages/OfferingsPage.component'));
+const PortfolioListPage = lazy(() => import('@/pages/PortfolioListPage.component'));
+const PortfolioEntryPage = lazy(() => import('@/pages/PortfolioEntryPage.component'));
+const PostsListPage = lazy(() => import('@/pages/PostsListPage.component'));
+const PostPage = lazy(() => import('@/pages/PostPage.component'));
 
 const App = () => {
   useEffect(() => {

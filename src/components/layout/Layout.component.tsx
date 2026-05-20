@@ -1,9 +1,9 @@
-import { DocumentHead } from '@/components/DocumentHead';
+import { DocumentHead } from '@/components/DocumentHead.component';
 import classNames from 'classnames';
 import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
-import { Breadcrumb } from './Breadcrumb';
-import { Footer } from './Footer';
-import { Header } from './Header';
+import { Breadcrumb } from './Breadcrumb.component';
+import { Footer } from './Footer.component';
+import { Header } from './Header.component';
 
 const PopupWidget = lazy(() =>
   import('react-calendly').then((mod) => ({ default: mod.PopupWidget }))

@@ -1,6 +1,6 @@
-import { BlogNavbar } from '@/components/BlogNavbar';
-import { FormattedDate } from '@/components/FormattedDate';
-import { Layout } from '@/components/layout/Layout';
+import { BlogNavbar } from '@/components/BlogNavbar.component';
+import { FormattedDate } from '@/components/FormattedDate.component';
+import { Layout } from '@/components/layout/Layout.component';
 import { setCategories, setPosts, setTags, useAppDispatch } from '@/store';
 import { postsAsStoreShape } from '@/utils/content';
 import { breadcrumbLd, Seo, SITE_URL } from '@/utils/seo';

@@ -1,4 +1,4 @@
-import { Layout } from '@/components/layout/Layout';
+import { Layout } from '@/components/layout/Layout.component';
 import { en } from '@/i18n';
 import { breadcrumbLd, Seo } from '@/utils/seo';
 import { ValidationError, useForm } from '@formspree/react';

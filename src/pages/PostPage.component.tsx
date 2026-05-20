@@ -1,5 +1,5 @@
-import { BlogNavbar } from '@/components/BlogNavbar';
-import { Layout } from '@/components/layout/Layout';
+import { BlogNavbar } from '@/components/BlogNavbar.component';
+import { Layout } from '@/components/layout/Layout.component';
 import { getPostBySlug, postsAsStoreShape } from '@/utils/content';
 import { articleLd, breadcrumbLd, Seo, SITE_URL } from '@/utils/seo';
 import { MDXProvider } from '@mdx-js/react';

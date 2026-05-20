@@ -1,5 +1,5 @@
-import { FormattedDate } from '@/components/FormattedDate';
-import { Layout } from '@/components/layout/Layout';
+import { FormattedDate } from '@/components/FormattedDate.component';
+import { Layout } from '@/components/layout/Layout.component';
 import { caseStudies } from '@/utils/content';
 import { breadcrumbLd, Seo } from '@/utils/seo';
 import { Link } from 'react-router-dom';

@@ -1,6 +1,6 @@
-import { Layout } from '@/components/layout/Layout';
-import { PortfolioFooter } from '@/components/portfolio/PortfolioFooter';
-import { PortfolioHeader } from '@/components/portfolio/PortfolioHeader';
+import { Layout } from '@/components/layout/Layout.component';
+import { PortfolioFooter } from '@/components/portfolio/PortfolioFooter.component';
+import { PortfolioHeader } from '@/components/portfolio/PortfolioHeader.component';
 import { getCaseStudyBySlug } from '@/utils/content';
 import { breadcrumbLd, caseStudyLd, Seo, SITE_URL } from '@/utils/seo';
 import { MDXProvider } from '@mdx-js/react';

@@ -1,4 +1,4 @@
-import { FormattedDate } from '@/components/FormattedDate';
+import { FormattedDate } from '@/components/FormattedDate.component';
 import type { Post } from '@/store';
 import { Link } from 'react-router-dom';
 import { Form } from 'reactstrap';

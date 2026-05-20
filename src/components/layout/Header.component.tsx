@@ -1,4 +1,4 @@
-import { ThemeConfigurator } from '@/components/ThemeConfigurator';
+import { ThemeConfigurator } from '@/components/ThemeConfigurator.component';
 import {
   closeMobileNavbar,
   toggleDisplayMobileNavbar,

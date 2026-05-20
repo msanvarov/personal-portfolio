@@ -1,4 +1,4 @@
-import { Layout } from '@/components/layout/Layout';
+import { Layout } from '@/components/layout/Layout.component';
 import { en } from '@/i18n';
 import { breadcrumbLd, personLd, Seo } from '@/utils/seo';
 import classNames from 'classnames';

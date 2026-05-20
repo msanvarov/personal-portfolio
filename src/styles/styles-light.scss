@@ -2567,10 +2567,41 @@ html[data-theme='light'][data-theme='light'] {
     background: #ffffff;
   }
 
-  // Marquee / dark CTA cards keep their bright text but firm up their bg.
+  // Marquee banner — use the brand accent instead of jet black so it
+  // doesn't read as a foreign element on the otherwise near-white page.
   .banner.shadow-box {
-    background: #1a1a1f;
+    background: linear-gradient(120deg, #5b78f6 0%, #3b58da 100%);
     color: #ffffff;
+    border-color: rgba(91, 120, 246, 0.4);
+
+    b {
+      color: #ffffff;
+    }
+
+    img {
+      filter: brightness(0) invert(1);
+    }
+  }
+
+  // Sidebar / blog navbar links were inheriting opacity: 0.4 from the
+  // dark base. Pin them back to full opacity so they read as links.
+  .blog-sidebar .blog-sidebar-widget ul li a,
+  .recent-post-widget ul li a,
+  .categories-widget ul li a {
+    opacity: 1;
+    color: #0f0f0f;
+
+    &:hover {
+      color: #3b58da;
+    }
+  }
+
+  .blog-sidebar .blog-sidebar-widget-inner h3 {
+    color: #0f0f0f;
+  }
+
+  .recent-post-widget ul li p {
+    color: #5a5e66;
   }
 
   // Hover state on links bumps to the brand blue with sufficient contrast.

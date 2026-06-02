@@ -32,13 +32,13 @@ const OfferingsPage = () => {
                   <ul>
                     {en.offerings.navbar.entries.map((item, index) => (
                       <li key={index}>
-                        <i className={classNames('icon', item.icon)} />
-                        {item.text}
+                        <div className="service-sidebar-head">
+                          <i className={classNames('icon', item.icon)} />
+                          <span>{item.text}</span>
+                        </div>
                         <ul className="service-sidebar-topics">
                           {item.topics.map((topic, j) => (
-                            <li key={j}>
-                              - <b>{topic}</b>
-                            </li>
+                            <li key={j}>{topic}</li>
                           ))}
                         </ul>
                       </li>

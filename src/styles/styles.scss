@@ -1376,47 +1376,80 @@ ol {
 
     .service-sidebar-inner {
       height: 100%;
-      padding: 91px 24px 90px 60px;
+      padding: 56px 44px;
 
-      ul {
+      > ul {
         display: flex;
         flex-direction: column;
         height: 100%;
-        justify-content: space-between;
+        justify-content: center;
 
-        li {
-          font-size: 16px;
-          line-height: 16.8px;
-          letter-spacing: -1%;
-          font-weight: 400;
-          color: #ffffff;
-          display: flex;
-          flex-wrap: wrap;
-          align-items: center;
-          gap: 16px 50px;
+        > li {
+          display: block;
 
-          i {
-            color: #ffffff;
-            font-size: 30px;
-            display: block;
+          & + li {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
           }
         }
+      }
 
-        .service-sidebar-topics {
+      .service-sidebar-head {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 20px;
+
+        i {
+          color: #ffffff;
+          font-size: 26px;
+          line-height: 1;
           display: block;
-          flex-basis: 100%;
-          width: 100%;
-          height: auto;
+        }
 
-          li {
-            display: list-item;
-            align-items: initial;
-            gap: 0;
-            line-height: 1.4;
-            overflow-wrap: break-word;
+        span {
+          font-size: 18px;
+          font-weight: 500;
+          letter-spacing: -0.02em;
+          color: #ffffff;
+        }
+      }
 
-            & + li {
-              margin-top: 6px;
+      .service-sidebar-topics {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding-left: 44px;
+
+        li {
+          position: relative;
+          padding-left: 20px;
+          font-size: 14px;
+          line-height: 1.5;
+          font-weight: 400;
+          letter-spacing: -0.01em;
+          color: rgba(255, 255, 255, 0.55);
+          overflow-wrap: break-word;
+          transition: color 0.25s ease;
+
+          &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.55em;
+            width: 10px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.45);
+            transition: background 0.25s ease, width 0.25s ease;
+          }
+
+          &:hover {
+            color: rgba(255, 255, 255, 0.92);
+
+            &::before {
+              width: 14px;
+              background: rgba(255, 255, 255, 0.85);
             }
           }
         }
@@ -2125,9 +2158,8 @@ ol {
       padding: 50px 24px;
       height: auto;
 
-      ul {
+      > ul {
         justify-content: center;
-        gap: 114px;
       }
     }
 
@@ -2355,9 +2387,8 @@ ol {
       width: 100%;
       margin: auto auto 30px auto;
 
-      ul {
-        gap: 50px;
-        max-width: 220px;
+      > ul {
+        max-width: 260px;
         margin: auto;
       }
     }

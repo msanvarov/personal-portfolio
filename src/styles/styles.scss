@@ -1391,13 +1391,33 @@ ol {
           font-weight: 400;
           color: #ffffff;
           display: flex;
+          flex-wrap: wrap;
           align-items: center;
-          gap: 50px;
+          gap: 16px 50px;
 
           i {
             color: #ffffff;
             font-size: 30px;
             display: block;
+          }
+        }
+
+        .service-sidebar-topics {
+          display: block;
+          flex-basis: 100%;
+          width: 100%;
+          height: auto;
+
+          li {
+            display: list-item;
+            align-items: initial;
+            gap: 0;
+            line-height: 1.4;
+            overflow-wrap: break-word;
+
+            & + li {
+              margin-top: 6px;
+            }
           }
         }
       }

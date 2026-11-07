@@ -1,3 +1,5 @@
+import '@/styles/case-study.css';
+
 import { Layout } from '@/components/layout/Layout.component';
 import { PortfolioFooter } from '@/components/portfolio/PortfolioFooter.component';
 import { PortfolioHeader } from '@/components/portfolio/PortfolioHeader.component';
@@ -54,11 +56,11 @@ const PortfolioEntryPage = () => {
           ]),
         ]}
       />
-      <section className="project-details-wrap">
+      <article className="case-study">
         <MDXProvider components={mdxComponents}>
           <Component />
         </MDXProvider>
-      </section>
+      </article>
     </Layout>
   );
 };

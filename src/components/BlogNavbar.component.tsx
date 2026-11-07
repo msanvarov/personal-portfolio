@@ -1,8 +1,12 @@
 import { FormattedDate } from '@/components/FormattedDate.component';
+import { Reveal } from '@/components/motion/Reveal';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import type { Post } from '@/store';
 import { Link, useLocation, useNavigate } from '@tanstack/react-router';
-import { useEffect, useState, type FormEvent } from 'react';
-import { Form } from 'reactstrap';
+import { Search } from 'lucide-react';
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 
 type BlogNavbarProps = {
   posts: Post[];
@@ -12,6 +16,21 @@ type BlogNavbarProps = {
 
 const readQ = (locationSearch: string): string =>
   new URLSearchParams(locationSearch).get('q') ?? '';
+
+const Widget = ({
+  title,
+  delay,
+  children,
+}: {
+  title: string;
+  delay: number;
+  children: ReactNode;
+}) => (
+  <Reveal delay={delay} className="bento p-6">
+    <h3 className="mb-4 text-lg font-semibold text-foreground">{title}</h3>
+    {children}
+  </Reveal>
+);
 
 export const BlogNavbar = ({ posts, categories, tags }: BlogNavbarProps) => {
   const location = useLocation();
@@ -41,86 +60,83 @@ export const BlogNavbar = ({ posts, categories, tags }: BlogNavbarProps) => {
   };
 
   return (
-    <div className="blog-sidebar">
-      <div className="blog-sidebar-inner">
-        <div className="blog-sidebar-widget search-widget">
-          <div className="blog-sidebar-widget-inner" data-aos="zoom-in">
-            <Form className="shadow-box" onSubmit={submit} role="search">
-              <input
-                type="text"
-                placeholder="Find blog by name or category"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                aria-label="Find blog by name or category"
-              />
-              <button className="theme-btn" type="submit">
-                Find
-              </button>
-            </Form>
-          </div>
-        </div>
-        <div
-          className="blog-sidebar-widget recent-post-widget"
-          data-aos="zoom-in"
+    <aside className="flex flex-col gap-5 lg:sticky lg:top-28">
+      <Reveal>
+        <form
+          onSubmit={submit}
+          role="search"
+          className="bento flex items-center gap-2 p-2"
         >
-          <div className="blog-sidebar-widget-inner shadow-box">
-            <h3>Recent Posts</h3>
-            <ul>
-              {posts.slice(0, 5).map((post, i) => (
-                <li key={i}>
-                  <Link
-                    to="/blog/$post"
-                    params={{ post: post.filePath.replace(/\.mdx?$/, '') }}
-                  >
-                    {post.metadata.title}
-                  </Link>
-                  <p>
-                    <FormattedDate value={post.metadata.modified} />
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <div
-          className="blog-sidebar-widget categories-widget"
-          data-aos="zoom-in"
-        >
-          <div className="blog-sidebar-widget-inner shadow-box">
-            <h3>Categories</h3>
-            <ul>
-              {categories.map((category, i) => (
-                <li key={i}>
-                  <Link
-                    to="/blog"
-                    search={{ q: category }}
-                  >
-                    - {category}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <div className="blog-sidebar-widget tags-widget" data-aos="zoom-in">
-          <div className="blog-sidebar-widget-inner shadow-box">
-            <h3>Tags</h3>
-            <ul>
-              {tags.map((tag, i) => (
-                <li key={i}>
-                  <Link
-                    className="theme-btn"
-                    to="/blog"
-                    search={{ q: tag }}
-                  >
-                    {tag}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+          <Search className="ml-3 size-4 shrink-0 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Find blog by name or category"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label="Find blog by name or category"
+            className="h-11 border-0 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent"
+          />
+          <Button
+            type="submit"
+            className="h-11 rounded-full bg-brand px-5 text-brand-foreground hover:bg-brand/90"
+          >
+            Find
+          </Button>
+        </form>
+      </Reveal>
+
+      <Widget title="Recent Posts" delay={0.05}>
+        <ul className="flex flex-col gap-4">
+          {posts.slice(0, 5).map((post, i) => (
+            <li key={i} className="group">
+              <Link
+                to="/blog/$post"
+                params={{ post: post.filePath.replace(/\.mdx?$/, '') }}
+                className="text-sm font-medium leading-snug text-foreground transition-colors group-hover:text-brand"
+              >
+                {post.metadata.title}
+              </Link>
+              <p className="mt-1 text-xs text-muted-foreground">
+                <FormattedDate value={post.metadata.modified} />
+              </p>
+            </li>
+          ))}
+        </ul>
+      </Widget>
+
+      <Widget title="Categories" delay={0.1}>
+        <ul className="flex flex-col gap-2">
+          {categories.map((category, i) => (
+            <li key={i}>
+              <Link
+                to="/blog"
+                search={{ q: category }}
+                className="text-sm text-muted-foreground transition-colors hover:text-brand"
+              >
+                - {category}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Widget>
+
+      <Widget title="Tags" delay={0.15}>
+        <ul className="flex flex-wrap gap-2">
+          {tags.map((tag, i) => (
+            <li key={i}>
+              <Badge
+                asChild
+                variant="outline"
+                className="h-7 rounded-full px-3 transition-colors hover:border-brand hover:bg-brand hover:text-brand-foreground"
+              >
+                <Link to="/blog" search={{ q: tag }}>
+                  {tag}
+                </Link>
+              </Badge>
+            </li>
+          ))}
+        </ul>
+      </Widget>
+    </aside>
   );
 };

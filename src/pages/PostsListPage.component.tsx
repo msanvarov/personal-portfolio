@@ -1,12 +1,15 @@
+import { ArrowChip, BentoCard } from '@/components/bento/BentoCard';
 import { BlogNavbar } from '@/components/BlogNavbar.component';
 import { FormattedDate } from '@/components/FormattedDate.component';
 import { Layout } from '@/components/layout/Layout.component';
+import { Reveal } from '@/components/motion/Reveal';
+import { SectionHeading } from '@/components/SectionHeading';
+import { Badge } from '@/components/ui/badge';
 import { setCategories, setPosts, setTags, useAppDispatch } from '@/store';
 import { postsAsStoreShape } from '@/utils/content';
 import { breadcrumbLd, Seo, SITE_URL } from '@/utils/seo';
-import { Link, useSearch } from '@tanstack/react-router';
+import { useSearch } from '@tanstack/react-router';
 import { useEffect, useMemo } from 'react';
-import { Col, Container, Row } from 'reactstrap';
 
 const PostsListPage = () => {
   const dispatch = useAppDispatch();
@@ -72,56 +75,56 @@ const PostsListPage = () => {
           },
         ]}
       />
-      <section className="blog-area">
-        <Container>
-          <h1 className="section-heading" data-aos="fade-up">
-            <img src="/assets/star-2.png" alt="star" /> Blog Posts{' '}
-            <img src="/assets/star-2.png" alt="star" />
-          </h1>
-          <Row>
-            <Col md="8">
-              <div className="blog-items">
-                {visiblePosts.length === 0 ? (
-                  <p className="blog-empty-state">
-                    No posts match <strong>“{q}”</strong>. Try a different
-                    keyword, category, or tag.
+      <SectionHeading>Blog Posts</SectionHeading>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+        <div className="flex flex-col gap-5">
+          {visiblePosts.length === 0 ? (
+            <Reveal className="bento p-8 text-center text-muted-foreground">
+              No posts match <strong className="text-foreground">“{q}”</strong>
+              . Try a different keyword, category, or tag.
+            </Reveal>
+          ) : null}
+          {visiblePosts.map((post, i) => {
+            const slug = post.filePath.replace(/\.mdx?$/, '');
+            return (
+              <BentoCard
+                key={slug}
+                to={`/blog/${slug}`}
+                label={post.metadata.title}
+                delay={Math.min(i, 3) * 0.06}
+                tilt={2}
+                className="grid gap-5 p-4 md:grid-cols-[15rem_minmax(0,1fr)] md:p-5"
+              >
+                <div className="bento-well aspect-[16/9] overflow-hidden md:aspect-auto md:min-h-44">
+                  <img
+                    src={post.metadata.thumbnail}
+                    alt="thumbnail"
+                    className="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                </div>
+                <div className="flex flex-col gap-3 px-1 py-1 md:pr-2">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                    <Badge variant="secondary" className="rounded-full">
+                      Category: {post.metadata.category}
+                    </Badge>
+                    <FormattedDate value={post.metadata.modified} />
+                  </div>
+                  <h2 className="text-xl font-semibold leading-snug text-foreground transition-colors group-hover:text-brand md:text-2xl">
+                    {post.metadata.title}
+                  </h2>
+                  <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                    {post.metadata.description}
                   </p>
-                ) : null}
-                {visiblePosts.map((post, i) => {
-                  const slug = post.filePath.replace(/\.mdx?$/, '');
-                  return (
-                    <div className="blog-item" data-aos="zoom-in" key={i}>
-                      <Link to="/blog/$post" params={{ post: slug }}>
-                        <div className="img-box">
-                          <img
-                            src={post.metadata.thumbnail}
-                            alt="thumbnail"
-                          />
-                        </div>
-                      </Link>
-                      <div className="content">
-                        <span className="meta">
-                          Category: {post.metadata.category}
-                        </span>
-                        <h1>
-                          <Link to="/blog/$post" params={{ post: slug }}>
-                            {post.metadata.title}
-                          </Link>
-                        </h1>
-                        <FormattedDate value={post.metadata.modified} />
-                        <p>{post.metadata.description}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </Col>
-            <Col md="4">
-              <BlogNavbar posts={posts} categories={categories} tags={tags} />
-            </Col>
-          </Row>
-        </Container>
-      </section>
+                  <div className="mt-auto flex justify-end">
+                    <ArrowChip className="size-10" />
+                  </div>
+                </div>
+              </BentoCard>
+            );
+          })}
+        </div>
+        <BlogNavbar posts={posts} categories={categories} tags={tags} />
+      </div>
     </Layout>
   );
 };

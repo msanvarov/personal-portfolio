@@ -1,63 +1,86 @@
+import { BentoCard, CardMeta } from '@/components/bento/BentoCard';
 import { FormattedDate } from '@/components/FormattedDate.component';
 import { Layout } from '@/components/layout/Layout.component';
+import { SectionHeading } from '@/components/SectionHeading';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import { caseStudies } from '@/utils/content';
 import { breadcrumbLd, Seo } from '@/utils/seo';
-import { Link } from '@tanstack/react-router';
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
+import { useRef } from 'react';
 
 type Group = typeof caseStudies;
 
-const CaseStudyCard = ({ entry }: { entry: Group[number] }) => {
+const CaseStudyCard = ({
+  entry,
+  index,
+}: {
+  entry: Group[number];
+  index: number;
+}) => {
+  const featured = index === 0;
+  // Photo thumbnails (frontmatter `cover: true`) fill the frame; logos sit centered.
+  const cover = featured || Boolean(entry.metadata.cover);
   const dateValue = entry.metadata.modified ?? entry.metadata.created ?? '';
+  const imageRef = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  // Thumbnail drifts against the scroll for a little depth.
+  const { scrollYProgress } = useScroll({
+    target: imageRef,
+    offset: ['start end', 'end start'],
+  });
+  const y = useTransform(scrollYProgress, [0, 1], ['-6%', '6%']);
+
   return (
-    <div data-aos="zoom-in" className="flex-1">
-      <div className="project-item shadow-box">
-        <Link
-          className="overlay-link"
-          to="/portfolio/$entry"
-          params={{ entry: entry.slug }}
-          aria-label={`Open ${entry.metadata.title} case study`}
+    <BentoCard
+      to={`/portfolio/${entry.slug}`}
+      label={`Open ${entry.metadata.title} case study`}
+      delay={(index % 3) * 0.08}
+      className={cn(
+        'flex flex-col gap-5 p-4 md:p-5',
+        featured && 'md:col-span-2 lg:row-span-2'
+      )}
+    >
+      <div
+        ref={imageRef}
+        className={cn(
+          'bento-well relative grid flex-1 place-items-center overflow-hidden',
+          featured ? 'min-h-56 md:min-h-80' : 'aspect-[16/10]'
+        )}
+      >
+        <motion.img
+          src={entry.metadata.thumbnail}
+          alt="thumbnail"
+          style={reduce ? undefined : { y }}
+          className={cn(
+            'transition-[scale] duration-700 ease-out group-hover:scale-105',
+            cover
+              ? 'absolute inset-x-0 -top-[8%] h-[116%] w-full object-cover'
+              : 'max-h-24 w-auto max-w-[75%] object-contain'
+          )}
         />
-        <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-        <div className="project-img">
-          <img src={entry.metadata.thumbnail} alt="thumbnail" />
-        </div>
-        <div className="d-flex align-items-center justify-content-between">
-          <div className="project-info">
-            <p>{entry.metadata.category}</p>
-            <h1>{entry.metadata.title}</h1>
-            <FormattedDate value={dateValue} format="L - h:mm a" />
-          </div>
-          <Link
-            to="/portfolio/$entry"
-            params={{ entry: entry.slug }}
-            className="project-btn"
-          >
-            <img src="/assets/icons/cta-icon.svg" alt="Button" />
-          </Link>
-        </div>
       </div>
-    </div>
+      <div className="flex flex-col gap-3 px-1 pb-1">
+        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+          <Badge variant="secondary" className="rounded-full">
+            {entry.metadata.category}
+          </Badge>
+          <FormattedDate value={dateValue} format="L - h:mm a" />
+        </div>
+        <CardMeta heading={entry.metadata.title} />
+      </div>
+    </BentoCard>
   );
 };
 
-const Row = ({ entries }: { entries: Group }) => (
-  <div className="d-flex align-items-start gap-24">
-    {entries.map((entry, i) => (
-      <CaseStudyCard entry={entry} key={i} />
-    ))}
-  </div>
-);
-
 const PortfolioListPage = () => {
-  const left = caseStudies.slice(0, 2);
-  const remaining = caseStudies.slice(2);
-  const rows: Group[] = [];
-  for (let i = 0; i < remaining.length; i += 2) {
-    rows.push(remaining.slice(i, i + 2));
-  }
-
   return (
-    <Layout wrapperClass="main-workspage">
+    <Layout>
       <Seo
         title="Portfolio"
         description="Selected case studies from Sal Anvarov — full stack engagements across SaaS, logistics, e-commerce, and AI tooling. Includes Cleanlist.ai, Hopin Technologies, Flurrish, Hellotax, and Natura Market."
@@ -82,30 +105,12 @@ const PortfolioListPage = () => {
           },
         ]}
       />
-      <section className="projects-area">
-        <div className="container">
-          <h1 className="section-heading" data-aos="fade-up">
-            <img src="/assets/star-2.png" alt="Star" /> Portfolio{' '}
-            <img src="/assets/star-2.png" alt="Star" />
-          </h1>
-          <div className="row">
-            <div className="col-md-4">
-              {left.map((entry, i) => (
-                <CaseStudyCard entry={entry} key={i} />
-              ))}
-            </div>
-            <div className="col-md-8">
-              <h1 className="section-heading" data-aos="fade-up">
-                <img src="/assets/star-2.png" alt="Star" /> Portfolio{' '}
-                <img src="/assets/star-2.png" alt="Star" />
-              </h1>
-              {rows.map((row, i) => (
-                <Row entries={row} key={i} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      <SectionHeading>Portfolio</SectionHeading>
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+        {caseStudies.map((entry, i) => (
+          <CaseStudyCard entry={entry} index={i} key={entry.slug} />
+        ))}
+      </div>
     </Layout>
   );
 };

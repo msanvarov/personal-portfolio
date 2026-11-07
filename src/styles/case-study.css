@@ -1,0 +1,233 @@
+/* Case-study MDX files (content/case-studies) are authored with the old
+   template's class names. These rules restyle that markup in the bento
+   design, scoped to the .case-study wrapper on PortfolioEntryPage.
+   Plain (unlayered) CSS on purpose: it outranks Tailwind's same-named
+   utilities such as `.container` and `.flex-1`. */
+
+.case-study .container {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.case-study .mb-24 {
+  margin-bottom: 1.5rem;
+}
+
+.case-study .bg-img {
+  display: none;
+}
+
+.case-study .d-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.case-study .row {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.case-study .flex-1 {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .case-study .d-flex {
+    flex-direction: row;
+  }
+  .case-study .row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Bento-style card, matching .bento in globals.css */
+.case-study .shadow-box {
+  position: relative;
+  isolation: isolate;
+  padding: 1.75rem;
+  border-radius: var(--radius-bento);
+  background:
+    linear-gradient(140deg, var(--bento-sheen), transparent 38%),
+    var(--card);
+  color: var(--card-foreground);
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.04) inset,
+    0 30px 60px -30px rgb(0 0 0 / 0.35);
+}
+
+.case-study .shadow-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(140deg, var(--bento-edge-hi), var(--bento-edge) 45%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+@media (min-width: 768px) {
+  .case-study .shadow-box {
+    padding: 2.5rem;
+  }
+}
+
+/* Shared type inside the cards */
+.case-study h3 {
+  margin-bottom: 0.9rem;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.case-study p {
+  color: var(--muted-foreground);
+  line-height: 1.75;
+}
+
+.case-study p + p {
+  margin-top: 0.9rem;
+}
+
+.case-study b {
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.case-study .shadow-box a {
+  color: var(--brand);
+  text-underline-offset: 4px;
+}
+
+.case-study .shadow-box a:hover {
+  text-decoration: underline;
+}
+
+.case-study ul {
+  display: grid;
+  gap: 0.45rem;
+  color: var(--muted-foreground);
+}
+
+/* Intro card: star icon + description + technologies */
+.case-study .project-infos-wrap > img:not(.bg-img),
+.case-study .left-details > img {
+  align-self: flex-start;
+  width: auto;
+  height: 4rem;
+  opacity: 0.9;
+}
+
+.case-study .project-details-info + .project-details-info {
+  border-top: 1px solid var(--border);
+  padding-top: 1.75rem;
+}
+
+@media (min-width: 768px) {
+  .case-study .project-details-info + .project-details-info {
+    border-top: 0;
+    border-left: 1px solid var(--border);
+    padding-top: 0;
+    padding-left: 2rem;
+  }
+}
+
+/* Full-width banner and two-up images */
+.case-study .project-details-2-img,
+.case-study .project-details-3-img {
+  overflow: hidden;
+  border-radius: var(--radius-bento);
+  box-shadow: 0 0 0 1px var(--bento-edge);
+}
+
+.case-study .project-details-2-img img,
+.case-study .project-details-3-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.case-study .project-details-2-img:hover img,
+.case-study .project-details-3-img:hover img {
+  transform: scale(1.03);
+}
+
+/* Phone screenshot grid (TANNED TO) */
+.case-study .project-screens {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .case-study .project-screens {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+.case-study .project-screens img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 1.5rem;
+  box-shadow: 0 0 0 1px var(--bento-edge), 0 24px 48px -28px rgb(0 0 0 / 0.45);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.case-study .project-screens img:hover {
+  transform: translateY(-6px);
+}
+
+/* Year / client / role + contribution */
+.case-study .left-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.case-study .left-details ul {
+  gap: 1.25rem;
+}
+
+.case-study .left-details li p {
+  margin-bottom: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.case-study .left-details h4 {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.case-study .right-details {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .case-study .left-details {
+    width: 17rem;
+    flex-shrink: 0;
+  }
+  .case-study .right-details {
+    border-left: 1px solid var(--border);
+    padding-left: 2.5rem;
+  }
+}

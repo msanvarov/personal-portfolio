@@ -1,50 +1,34 @@
+import { Button } from '@/components/ui/button';
 import { useTheme } from '@/providers/ThemeProvider';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Moon, Sun } from 'lucide-react';
 
 export const ThemeConfigurator = () => {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
 
   return (
-    <button
+    <Button
       type="button"
-      className="switcher__btn shadow-box theme-toggle"
+      variant="outline"
+      size="icon"
       onClick={toggleTheme}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       aria-pressed={isDark}
-      data-state={isDark ? 'dark' : 'light'}
+      className="relative size-10 overflow-hidden rounded-full bg-background/40 backdrop-blur"
     >
-      <span className="theme-toggle__icon" aria-hidden="true">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={theme}
+          initial={{ y: 18, rotate: -90, opacity: 0 }}
+          animate={{ y: 0, rotate: 0, opacity: 1 }}
+          exit={{ y: -18, rotate: 90, opacity: 0 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          className="grid place-items-center"
         >
-          {/* Sun core — shrinks/fades when dark */}
-          <circle className="theme-toggle__sun" cx="12" cy="12" r="4.5" />
-          <g className="theme-toggle__rays">
-            <line x1="12" y1="2.5" x2="12" y2="5" />
-            <line x1="12" y1="19" x2="12" y2="21.5" />
-            <line x1="2.5" y1="12" x2="5" y2="12" />
-            <line x1="19" y1="12" x2="21.5" y2="12" />
-            <line x1="5.1" y1="5.1" x2="6.9" y2="6.9" />
-            <line x1="17.1" y1="17.1" x2="18.9" y2="18.9" />
-            <line x1="5.1" y1="18.9" x2="6.9" y2="17.1" />
-            <line x1="17.1" y1="6.9" x2="18.9" y2="5.1" />
-          </g>
-          {/* Moon mask — slides over the sun when going dark */}
-          <circle
-            className="theme-toggle__moon"
-            cx="17"
-            cy="9"
-            r="5.5"
-            fill="currentColor"
-            stroke="none"
-          />
-        </svg>
-      </span>
-    </button>
+          {isDark ? <Moon className="size-4" /> : <Sun className="size-4" />}
+        </motion.span>
+      </AnimatePresence>
+    </Button>
   );
 };

@@ -1,0 +1,56 @@
+{
+  "caption": "Open source",
+  "heading": "Built in public",
+  "description": "Interactive visualizations and minimal, readable PyTorch implementations of recent ML research papers.",
+  "github": "https://github.com/msanvarov",
+  "featured": {
+    "name": "Algo Vision",
+    "description": "Twenty-two interactive visualizations of how things actually compute — from bubble sort to Raft consensus, from Bloom filters to the Bloch sphere. Pause anywhere and read the pseudocode in lockstep.",
+    "live": "https://algo-vision.sal-anvarov.com/",
+    "repo": "https://github.com/msanvarov/algo-vision",
+    "media": "/assets/open-source/algo-vision.webp",
+    "tags": ["TypeScript", "Visualization", "Algorithms"]
+  },
+  "repos": [
+    {
+      "name": "gated-attention-minimal",
+      "description": "One sigmoid gate after SDPA — and the measurements to see what it does.",
+      "paper": "Gated Attention for LLMs",
+      "org": "Qwen Team",
+      "arxiv": "2505.06708",
+      "repo": "https://github.com/msanvarov/gated-attention-minimal"
+    },
+    {
+      "name": "titans-minimal",
+      "description": "A neural memory that trains itself by gradient descent during the forward pass.",
+      "paper": "Titans: Learning to Memorize at Test Time",
+      "org": "Google",
+      "arxiv": "2501.00663",
+      "repo": "https://github.com/msanvarov/titans-minimal"
+    },
+    {
+      "name": "gspo-minimal",
+      "description": "The sequence-level RL post-training objective behind Qwen3, with a GRPO baseline.",
+      "paper": "Group Sequence Policy Optimization",
+      "org": "Qwen Team",
+      "arxiv": "2507.18071",
+      "repo": "https://github.com/msanvarov/gspo-minimal"
+    },
+    {
+      "name": "muon-minimal",
+      "description": "Orthogonalized momentum, plus the two changes that made Muon work at LLM scale.",
+      "paper": "Muon is Scalable for LLM Training",
+      "org": "Moonshot AI",
+      "arxiv": "2502.16982",
+      "repo": "https://github.com/msanvarov/muon-minimal"
+    },
+    {
+      "name": "nsa-minimal",
+      "description": "Compression, selection, and sliding-window branches mixed by a learned per-head gate.",
+      "paper": "Native Sparse Attention",
+      "org": "DeepSeek-AI",
+      "arxiv": "2502.11089",
+      "repo": "https://github.com/msanvarov/nsa-minimal"
+    }
+  ]
+}

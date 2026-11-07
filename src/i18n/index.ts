@@ -3,6 +3,7 @@ import contact from './contact.json';
 import credentials from './credentials.json';
 import landing from './landing.json';
 import offerings from './offerings.json';
+import opensource from './opensource.json';
 import portfolio from './portfolio.json';
 
 export const en = {
@@ -11,5 +12,6 @@ export const en = {
   credentials,
   landing,
   offerings,
+  opensource,
   portfolio,
 };

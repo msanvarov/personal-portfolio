@@ -45,7 +45,9 @@ const sortByCreatedDesc = (entries: ContentEntry[]) =>
     return bTime - aTime;
   });
 
-export const caseStudies = toEntries(caseStudyModules, 'case-studies');
+export const caseStudies = sortByCreatedDesc(
+  toEntries(caseStudyModules, 'case-studies')
+);
 
 export const posts = sortByCreatedDesc(toEntries(postModules, 'posts'));
 

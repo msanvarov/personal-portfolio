@@ -1,14 +1,15 @@
+import { BentoCard } from '@/components/bento/BentoCard';
 import { Layout } from '@/components/layout/Layout.component';
+import { Reveal } from '@/components/motion/Reveal';
+import { ProfileContactCredentialsRow } from '@/components/pages/ProfileContactCredentialsRow';
+import { Timeline } from '@/components/pages/Timeline';
+import { SectionHeading, StarMark } from '@/components/SectionHeading';
 import { en } from '@/i18n';
-import { useTheme } from '@/providers/ThemeProvider';
 import { breadcrumbLd, personLd, Seo } from '@/utils/seo';
-import { getThemedContent } from '@/utils/themed-asset';
-import { Link } from '@tanstack/react-router';
 
 const BioPage = () => {
-  const { theme } = useTheme();
   return (
-    <Layout wrapperClass="main-aboutpage">
+    <Layout>
       <Seo
         title="Bio"
         description="The story behind Sal Anvarov — full stack developer and Co-founder of Cleanlist.ai. Education, work history, and the path from CS undergrad to building AI-powered B2B tooling."
@@ -22,158 +23,67 @@ const BioPage = () => {
           ]),
         ]}
       />
-      <section className="about-area">
-        <div className="container">
-          <div className="d-flex about-me-wrap align-items-start gap-24">
-            <div data-aos="zoom-in">
-              <div className="about-image-box shadow-box">
-                <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                <div className="image-inner">
-                  <img src={en.bio.bio.media} alt="bio" />
-                </div>
-              </div>
-            </div>
-            <div className="about-details" data-aos="zoom-in">
-              <h1 className="section-heading" data-aos="fade-up">
-                <img src="/assets/star-2.png" alt="Star" />{' '}
-                {en.bio.bio.details.heading}{' '}
-                <img src="/assets/star-2.png" alt="Star" />
-              </h1>
-              <div className="about-details-inner shadow-box">
-                <img src="/assets/icons/icon2.png" alt="Star" />
-                <h1>{en.bio.bio.details.name}</h1>
-                <p>{en.bio.bio.details.description}</p>
-              </div>
-            </div>
+      <SectionHeading>{en.bio.bio.details.heading}</SectionHeading>
+
+      <div className="grid gap-4 md:grid-cols-12">
+        <BentoCard className="p-4 md:col-span-5">
+          <div className="overflow-hidden rounded-[calc(var(--radius-bento)-0.5rem)] bg-gradient-to-br from-brand/80 via-[#7d93ff] to-[#b7c3ff]">
+            <img
+              src={en.bio.bio.media}
+              alt="bio"
+              className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
           </div>
-          <div className="row mt-24">
-            <div className="col-md-6" data-aos="zoom-in">
-              <div className="about-edc-exp about-experience shadow-box">
-                <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                <h3>{en.bio.experience.heading}</h3>
-                <ul>
-                  {en.bio.experience.experience.map((item, index) => (
-                    <li key={index}>
-                      <p className="date">{item.date}</p>
-                      <h2>{item.title}</h2>
-                      <p className="type">{item.company}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            <div className="col-md-6" data-aos="zoom-in">
-              <div className="about-edc-exp about-education shadow-box">
-                <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                <h3>{en.bio.education.heading}</h3>
-                <ul>
-                  {en.bio.education.education.map((item, index) => (
-                    <li key={index}>
-                      <p className="date">{item.date}</p>
-                      <h2>{item.degree}</h2>
-                      <p className="type">{item.university}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className="row mt-24">
-            <div className="col-md-12">
-              <div className="d-flex profile-contact-credentials-wrap gap-24">
-                <div data-aos="zoom-in" className="h-full">
-                  <div className="about-crenditials-box info-box shadow-box">
-                    <Link className="overlay-link" to="/credentials" />
-                    <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                    <img src={en.bio.credentials.media} alt="Sign" />
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div className="infos">
-                        <h4>{en.bio.credentials.caption}</h4>
-                        <h1>{en.bio.credentials.heading}</h1>
-                      </div>
-                      <Link
-                        to={en.bio.credentials.button.link}
-                        className="about-btn"
-                      >
-                        <img
-                          src={getThemedContent(
-                            theme,
-                            en.bio.credentials.button.icon
-                          )}
-                          alt="button"
-                        />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-                <div data-aos="zoom-in" className="flex-1">
-                  <div className="about-contact-box info-box shadow-box">
-                    <Link className="overlay-link" to="/contact" />
-                    <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                    <img
-                      src="/assets/icons/icon2.png"
-                      alt="Icon"
-                      className="star-icon"
-                    />
-                    <h1
-                      dangerouslySetInnerHTML={{
-                        __html: en.bio.contact.heading,
-                      }}
-                    />
-                    <Link
-                      to={en.bio.contact.button.link}
-                      className="about-btn"
-                    >
-                      <img
-                        src={getThemedContent(
-                          theme,
-                          en.bio.contact.button.icon
-                        )}
-                        alt="button"
-                      />
-                    </Link>
-                  </div>
-                </div>
-                <div data-aos="zoom-in">
-                  <div className="about-profile-box info-box shadow-box h-full">
-                    <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                    <div className="inner-profile-icons shadow-box">
-                      {en.bio.profiles.profiles.map((item, index) => (
-                        <a
-                          href={item.link}
-                          key={index}
-                          target="_blank"
-                          rel="noreferrer noopener"
-                        >
-                          <i className={item.icon} />
-                        </a>
-                      ))}
-                    </div>
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div className="infos">
-                        <h4>{en.bio.profiles.caption}</h4>
-                        <h1>{en.bio.profiles.heading}</h1>
-                      </div>
-                      <Link
-                        to={en.bio.profiles.button.link}
-                        className="about-btn"
-                      >
-                        <img
-                          src={getThemedContent(
-                            theme,
-                            en.bio.profiles.button.icon
-                          )}
-                          alt="button"
-                        />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+        </BentoCard>
+
+        <BentoCard
+          delay={0.08}
+          className="flex flex-col justify-center gap-6 p-8 md:col-span-7 md:p-10"
+        >
+          <StarMark className="size-10 animate-spin-slow text-brand" />
+          <h2 className="text-4xl font-semibold text-foreground md:text-5xl">
+            {en.bio.bio.details.name}
+          </h2>
+          <Reveal delay={0.15}>
+            <p className="max-w-prose text-base leading-relaxed text-muted-foreground md:text-lg">
+              {en.bio.bio.details.description}
+            </p>
+          </Reveal>
+        </BentoCard>
+      </div>
+
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
+        <BentoCard tilt={0} className="p-8">
+          <h3 className="mb-6 text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
+            {en.bio.experience.heading}
+          </h3>
+          <Timeline
+            items={en.bio.experience.experience.map((item) => ({
+              date: item.date,
+              title: item.title,
+              subtitle: item.company,
+            }))}
+          />
+        </BentoCard>
+        <BentoCard tilt={0} delay={0.08} className="p-8">
+          <h3 className="mb-6 text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
+            {en.bio.education.heading}
+          </h3>
+          <Timeline
+            items={en.bio.education.education.map((item) => ({
+              date: item.date,
+              title: item.degree,
+              subtitle: item.university,
+            }))}
+          />
+        </BentoCard>
+      </div>
+
+      <ProfileContactCredentialsRow
+        credentials={en.bio.credentials}
+        contact={en.bio.contact}
+        profiles={en.bio.profiles}
+      />
     </Layout>
   );
 };

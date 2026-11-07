@@ -1,8 +1,9 @@
+import { BentoCard } from '@/components/bento/BentoCard';
 import { Layout } from '@/components/layout/Layout.component';
+import { ProfileContactCredentialsRow } from '@/components/pages/ProfileContactCredentialsRow';
+import { SectionHeading } from '@/components/SectionHeading';
 import { en } from '@/i18n';
 import { breadcrumbLd, personLd, Seo } from '@/utils/seo';
-import classNames from 'classnames';
-import { Link } from '@tanstack/react-router';
 
 const OfferingsPage = () => {
   return (
@@ -19,146 +20,69 @@ const OfferingsPage = () => {
           ]),
         ]}
       />
-      <section className="service-area">
-        <div className="container">
-          <h1 className="section-heading" data-aos="fade-up">
-            <img src="/assets/star-2.png" alt="Star" /> {en.offerings.heading}{' '}
-            <img src="/assets/star-2.png" alt="Star" />
-          </h1>
-          <div className="row">
-            <div className="col-md-4">
-              <div className="service-sidebar" data-aos="fade-right">
-                <div className="service-sidebar-inner shadow-box">
-                  <ul>
-                    {en.offerings.navbar.entries.map((item, index) => (
-                      <li key={index}>
-                        <div className="service-sidebar-head">
-                          <i className={classNames('icon', item.icon)} />
-                          <span>{item.text}</span>
-                        </div>
-                        <ul className="service-sidebar-topics">
-                          {item.topics.map((topic, j) => (
-                            <li key={j}>{topic}</li>
-                          ))}
-                        </ul>
+      <SectionHeading>{en.offerings.heading}</SectionHeading>
+
+      <div className="grid gap-4 lg:grid-cols-12">
+        <aside className="lg:col-span-4">
+          <BentoCard className="p-6 lg:sticky lg:top-28">
+            <ul className="space-y-6">
+              {en.offerings.navbar.entries.map((item) => (
+                <li key={item.text}>
+                  <div className="flex items-center gap-3">
+                    <span className="bento-well grid size-11 place-items-center text-xl text-brand">
+                      <i className={item.icon} />
+                    </span>
+                    <span className="font-heading text-lg font-semibold text-foreground">
+                      {item.text}
+                    </span>
+                  </div>
+                  <ul className="mt-3 flex flex-wrap gap-1.5">
+                    {item.topics.map((topic) => (
+                      <li
+                        key={topic}
+                        className="rounded-full border border-border bg-background/50 px-2.5 py-1 text-xs text-muted-foreground"
+                      >
+                        {topic}
                       </li>
                     ))}
                   </ul>
-                </div>
+                </li>
+              ))}
+            </ul>
+          </BentoCard>
+        </aside>
+
+        <div className="space-y-4 lg:col-span-8">
+          {en.offerings.offerings.map((item, index) => (
+            <BentoCard
+              key={item.title}
+              delay={0.05}
+              tilt={2}
+              className="p-8 md:p-10"
+            >
+              <div className="flex items-baseline gap-4">
+                <span className="font-mono text-sm text-brand">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 className="text-3xl font-semibold text-foreground">
+                  {item.title}
+                </h3>
               </div>
-            </div>
-            <div className="col-md-8">
-              <h1 className="section-heading" data-aos="fade-up">
-                <img src="/assets/star-2.png" alt="Star" />{' '}
-                {en.offerings.heading}{' '}
-                <img src="/assets/star-2.png" alt="Star" />
-              </h1>
-              <div className="service-content-wrap" data-aos="zoom-in">
-                <div className="service-content-inner shadow-box">
-                  <div className="service-items">
-                    {en.offerings.offerings.map((item, index) => (
-                      <div className="service-item" key={index}>
-                        <h3>{item.title}</h3>
-                        {item.description.map((desc, j) => (
-                          <p
-                            key={j}
-                            dangerouslySetInnerHTML={{ __html: desc }}
-                          />
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              <div className="mt-6 space-y-3 text-base leading-relaxed text-muted-foreground [&_b]:font-semibold [&_b]:text-foreground">
+                {item.description.map((desc, j) => (
+                  <p key={j} dangerouslySetInnerHTML={{ __html: desc }} />
+                ))}
               </div>
-            </div>
-          </div>
-          <div className="row mt-24">
-            <div className="col-md-12">
-              <div className="d-flex profile-contact-credentials-wrap gap-24">
-                <div data-aos="zoom-in" className="h-full">
-                  <div className="about-crenditials-box info-box shadow-box">
-                    <Link className="overlay-link" to="/credentials" />
-                    <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                    <img src={en.offerings.credentials.media} alt="Sign" />
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div className="infos">
-                        <h4>{en.offerings.credentials.caption}</h4>
-                        <h1>{en.offerings.credentials.heading}</h1>
-                      </div>
-                      <Link
-                        to={en.offerings.credentials.button.link}
-                        className="about-btn"
-                      >
-                        <img
-                          src={en.offerings.credentials.button.icon}
-                          alt="button"
-                        />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-                <div data-aos="zoom-in" className="flex-1">
-                  <div className="about-contact-box info-box shadow-box">
-                    <Link className="overlay-link" to="/contact" />
-                    <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                    <img
-                      src="/assets/icons/icon2.png"
-                      alt="Icon"
-                      className="star-icon"
-                    />
-                    <h1
-                      dangerouslySetInnerHTML={{
-                        __html: en.offerings.contact.heading,
-                      }}
-                    />
-                    <Link
-                      to={en.offerings.contact.button.link}
-                      className="about-btn"
-                    >
-                      <img
-                        src={en.offerings.contact.button.icon}
-                        alt="button"
-                      />
-                    </Link>
-                  </div>
-                </div>
-                <div data-aos="zoom-in">
-                  <div className="about-profile-box info-box shadow-box h-full">
-                    <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                    <div className="inner-profile-icons shadow-box">
-                      {en.offerings.profiles.profiles.map((item, index) => (
-                        <a
-                          href={item.link}
-                          key={index}
-                          target="_blank"
-                          rel="noreferrer noopener"
-                        >
-                          <i className={item.icon} />
-                        </a>
-                      ))}
-                    </div>
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div className="infos">
-                        <h4>{en.offerings.profiles.caption}</h4>
-                        <h1>{en.offerings.profiles.heading}</h1>
-                      </div>
-                      <Link
-                        to={en.offerings.profiles.button.link}
-                        className="about-btn"
-                      >
-                        <img
-                          src={en.offerings.profiles.button.icon}
-                          alt="button"
-                        />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+            </BentoCard>
+          ))}
         </div>
-      </section>
+      </div>
+
+      <ProfileContactCredentialsRow
+        credentials={en.offerings.credentials}
+        contact={en.offerings.contact}
+        profiles={en.offerings.profiles}
+      />
     </Layout>
   );
 };

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="Group Sequence Policy Optimization thumbnail">
+  <defs>
+    <linearGradient id="gspoBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e0d12"/>
+      <stop offset="1" stop-color="#1c1d2b"/>
+    </linearGradient>
+    <linearGradient id="gspoBar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6f88ff"/>
+      <stop offset="1" stop-color="#3b58da"/>
+    </linearGradient>
+    <linearGradient id="gspoSeq" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5b78f6" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#9aa9ff" stop-opacity="0.35"/>
+    </linearGradient>
+    <pattern id="gspoDots" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#5b78f6" fill-opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#gspoBg)"/>
+  <rect width="1200" height="675" fill="url(#gspoDots)"/>
+
+  <g font-family="'JetBrains Mono', ui-monospace, monospace">
+    <!-- GRPO panel: one importance ratio per token -->
+    <text x="80" y="112" font-size="18" fill="#5b78f6" fill-opacity="0.75">// grpo: ratio per token</text>
+    <rect x="80" y="240" width="460" height="60" fill="#5b78f6" fill-opacity="0.07"/>
+    <text x="540" y="232" font-size="13" fill="#9aa9ff" fill-opacity="0.8" text-anchor="end">1 ± 0.2</text>
+    <line x1="80" y1="270" x2="540" y2="270" stroke="#f6f1ea" stroke-opacity="0.3" stroke-width="2" stroke-dasharray="6 6"/>
+    <g>
+      <rect x="100" y="200" width="48" height="70" rx="4" fill="url(#gspoBar)"/>
+      <rect x="100" y="200" width="48" height="40" rx="4" fill="#ffb648" fill-opacity="0.85"/>
+      <rect x="172" y="270" width="48" height="22" rx="4" fill="url(#gspoBar)"/>
+      <rect x="244" y="150" width="48" height="120" rx="4" fill="url(#gspoBar)"/>
+      <rect x="244" y="150" width="48" height="90" rx="4" fill="#ffb648" fill-opacity="0.85"/>
+      <rect x="316" y="270" width="48" height="14" rx="4" fill="url(#gspoBar)"/>
+      <rect x="388" y="222" width="48" height="48" rx="4" fill="url(#gspoBar)"/>
+      <rect x="388" y="222" width="48" height="18" rx="4" fill="#ffb648" fill-opacity="0.85"/>
+      <rect x="460" y="270" width="48" height="76" rx="4" fill="url(#gspoBar)"/>
+      <rect x="460" y="300" width="48" height="46" rx="4" fill="#ffb648" fill-opacity="0.85"/>
+    </g>
+    <g font-size="17" fill="#f6f1ea" fill-opacity="0.75" text-anchor="middle">
+      <rect x="100" y="372" width="48" height="40" rx="8" fill="#15161f" stroke="#2a2d44" stroke-width="2"/>
+      <rect x="172" y="372" width="48" height="40" rx="8" fill="#15161f" stroke="#2a2d44" stroke-width="2"/>
+      <rect x="244" y="372" width="48" height="40" rx="8" fill="#15161f" stroke="#2a2d44" stroke-width="2"/>
+      <rect x="316" y="372" width="48" height="40" rx="8" fill="#15161f" stroke="#2a2d44" stroke-width="2"/>
+      <rect x="388" y="372" width="48" height="40" rx="8" fill="#15161f" stroke="#2a2d44" stroke-width="2"/>
+      <rect x="460" y="372" width="48" height="40" rx="8" fill="#15161f" stroke="#2a2d44" stroke-width="2"/>
+      <text x="124" y="398">y₁</text>
+      <text x="196" y="398">y₂</text>
+      <text x="268" y="398">y₃</text>
+      <text x="340" y="398">y₄</text>
+      <text x="412" y="398">y₅</text>
+      <text x="484" y="398">y₆</text>
+    </g>
+
+    <!-- arrow: geometric mean -->
+    <g>
+      <line x1="610" y1="270" x2="686" y2="270" stroke="#9aa9ff" stroke-width="3"/>
+      <path d="M686,260 L702,270 L686,280 Z" fill="#9aa9ff"/>
+      <text x="656" y="246" font-size="15" fill="#9aa9ff" text-anchor="middle">(Π)^(1/|y|)</text>
+      <text x="656" y="302" font-size="13" fill="#f6f1ea" fill-opacity="0.45" text-anchor="middle">geo mean</text>
+    </g>
+
+    <!-- GSPO panel: one ratio per sequence -->
+    <text x="740" y="112" font-size="18" fill="#5b78f6" fill-opacity="0.75">// gspo: ratio per sequence</text>
+    <rect x="740" y="262" width="380" height="16" fill="#5b78f6" fill-opacity="0.18"/>
+    <text x="1120" y="250" font-size="13" fill="#9aa9ff" fill-opacity="0.8" text-anchor="end">1 ± 3e-4</text>
+    <line x1="740" y1="270" x2="1120" y2="270" stroke="#f6f1ea" stroke-opacity="0.3" stroke-width="2" stroke-dasharray="6 6"/>
+    <rect x="760" y="265" width="340" height="8" rx="4" fill="#9aa9ff"/>
+    <text x="930" y="216" font-size="30" font-weight="700" fill="#f6f1ea" text-anchor="middle">sᵢ</text>
+    <line x1="930" y1="226" x2="930" y2="258" stroke="#f6f1ea" stroke-opacity="0.35" stroke-width="2"/>
+
+    <rect x="760" y="372" width="340" height="40" rx="8" fill="url(#gspoSeq)" stroke="#5b78f6" stroke-width="2"/>
+    <text x="930" y="398" font-size="17" fill="#f6f1ea" fill-opacity="0.85" text-anchor="middle">yᵢ = y₁ … y₆</text>
+    <text x="930" y="446" font-size="14" fill="#f6f1ea" fill-opacity="0.45" text-anchor="middle">clip once, whole sequence</text>
+  </g>
+
+  <!-- title -->
+  <g font-family="'Space Grotesk', 'Inter', system-ui, sans-serif" fill="#f6f1ea">
+    <text x="80" y="535" font-size="22" letter-spacing="6" fill-opacity="0.55">MACHINE LEARNING · PAPER</text>
+    <text x="80" y="582" font-size="44" font-weight="600">Group Sequence Policy Optimization</text>
+  </g>
+</svg>

@@ -1,0 +1,237 @@
+---
+title: 'GSPO Explained: Sequence-Level Importance Ratios for LLM Reinforcement Learning'
+uid: gspo-explained
+thumbnail: /assets/thumbnails/gspo-explained.svg
+category: Machine Learning
+tag: PyTorch
+description: 'A practical walkthrough of Group Sequence Policy Optimization (GSPO) from the Qwen team, and of my minimal PyTorch implementation that puts it side by side with GRPO.'
+created: '2025-08-18T13:00:00.000Z'
+modified: '2025-08-18T13:00:00.000Z'
+---
+
+Reinforcement learning with verifiable rewards has become the standard way to push reasoning models further after pretraining and SFT. You sample a handful of answers per prompt, check which ones are right, and nudge the model towards the good ones. GRPO made this cheap by throwing away the critic and using the group of sampled answers as its own baseline.
+
+There is a quiet mismatch in GRPO, though. The reward is assigned to the **whole response**, but the off-policy correction (the importance ratio) is applied **per token**. The Qwen team's paper, [Group Sequence Policy Optimization](https://arxiv.org/abs/2507.18071) (Zheng et al., 2025), argues this mismatch is a real source of instability, and proposes a fix that is almost embarrassingly small: compute the ratio once per sequence and clip once per sequence.
+
+I wanted to understand it properly, so I wrote [gspo-minimal](https://github.com/msanvarov/gspo-minimal): a single-file PyTorch implementation of the objective, a set of self-checks, and a toy training script that runs GSPO and GRPO side by side. This post walks through the idea and then through the code.
+
+## The problem: token-level ratios for a sequence-level reward
+
+In PPO-style training, you sample rollouts with an "old" policy `π_old`, then take several gradient steps on the current policy `π_θ` using those same rollouts. Because `π_θ` drifts away from the policy that generated the data, you reweight with an importance ratio and clip it so a single update can't move too far.
+
+GRPO applies this at the token level. For response `y_i` and token position `t`:
+
+```text
+w_i,t(θ) = π_θ(y_i,t | x, y_i,<t) / π_old(y_i,t | x, y_i,<t)
+```
+
+Each token gets its own ratio, each ratio is clipped to `[1 - 0.2, 1 + 0.2]`, and each token is weighted by its own ratio when the gradient flows back.
+
+The trouble is that the advantage `A_i` is a property of the entire answer. A single per-token ratio is a one-sample estimate of a distribution correction, and it is noisy. Across a long response those noisy weights add up, and the paper's argument is that this noise accumulates and destabilizes training, especially for long responses and Mixture-of-Experts models. For MoE, expert routing can change between the rollout pass and the update pass, which makes individual token likelihoods (and therefore token ratios) swing wildly. The paper reports that GSPO notably stabilizes MoE RL training and contributed to the improvements in the latest Qwen3 models.
+
+## The core idea in plain language
+
+If the reward is about the sequence, the correction should be about the sequence too.
+
+GSPO uses the likelihood of the **whole response** under the new policy versus the old one. A raw sequence likelihood ratio is a product of many token ratios, so it would explode or vanish for long answers. GSPO tames that with length normalization: take the `|y_i|`-th root. That turns the product into a **geometric mean** of the token ratios.
+
+Then everything (clipping, weighting, optimization) happens at the sequence level. One number per answer, one clip per answer.
+
+## The exact objective
+
+From the paper, as written in the repo's README:
+
+```text
+s_i(θ) = ( π_θ(y_i|x) / π_old(y_i|x) ) ^ (1/|y_i|)
+
+J(θ)   = E[ (1/G) Σ_i min( s_i·A_i , clip(s_i, 1-ε, 1+ε)·A_i ) ]
+
+A_i    = (r_i - mean(r)) / std(r)              # group-relative, no critic
+```
+
+Here `G` is the group size (rollouts per prompt) and `r_i` is the scalar reward of rollout `i`. The advantage is the same group-relative one GRPO uses, so there's still no value network.
+
+Taking logs makes the length normalization concrete:
+
+```text
+log s_i = (1/|y_i|) · Σ_t [ log π_θ(y_i,t) - log π_old(y_i,t) ]
+```
+
+So `log s_i` is just the mean per-token log-ratio. If every token's log-ratio carries independent noise, averaging over `T` tokens shrinks that noise like `1/√T`. That's why the clip range in the paper is tiny: `ε_low = 3e-4` and `ε_high = 4e-4`, instead of GRPO's `0.2`. A sequence-level ratio sits much closer to 1 than any single token ratio does, so a clip range of 0.2 would almost never trigger.
+
+It also changes the gradient. Differentiating `s_i` gives:
+
+```text
+∇θ s_i = s_i · (1/|y_i|) · Σ_t ∇θ log π_θ(y_i,t)
+```
+
+Every token in a response is weighted **equally** by the same `s_i·A_i`. In GRPO each token is weighted by its own ratio, so a few tokens with large ratios can dominate the update.
+
+## GRPO vs GSPO at a glance
+
+| | GRPO | GSPO |
+|---|---|---|
+| Importance ratio | one per token | one per sequence (geometric mean of token ratios) |
+| Unit of clipping | token | sequence |
+| Typical clip range | `0.2` | `3e-4` / `4e-4` |
+| Token weighting in the gradient | each token by its own ratio | all tokens in a response share `s_i·A_i` |
+| Advantage | group-relative, no critic | group-relative, no critic (same) |
+| Matches the reward's granularity | no (reward is per sequence) | yes |
+
+## Walking through the implementation
+
+All of the objective lives in `gspo.py`, under 90 lines. Inputs are per-token log-probabilities, which is what you already have after a forward pass and a `gather` on the sampled tokens.
+
+### Clip constants
+
+```python
+# Paper's Section 5.1 settings. Tiny, because s_i is a geometric mean of token
+# ratios: it sits far closer to 1 than any individual token ratio does.
+EPS_LOW, EPS_HIGH = 3e-4, 4e-4
+```
+
+The clip range is asymmetric. These are module-level constants so the training script and the tests import exactly the same values.
+
+### Group-relative advantages
+
+```python
+def group_advantages(rewards, eps=1e-6):
+    """A_i = (r_i - mean) / std, per group. rewards: (n_groups, group_size)."""
+    mean = rewards.mean(dim=-1, keepdim=True)
+    std = rewards.std(dim=-1, keepdim=True, unbiased=False)
+    # a group where every rollout scored the same carries no signal -- the
+    # paper's formula divides by ~0 there, so we return exact zeros instead.
+    return torch.where(std > eps, (rewards - mean) / (std + eps),
+                       torch.zeros_like(rewards))
+```
+
+`rewards` has shape `(n_prompts, group_size)`, so the mean and std are taken across rollouts of the same prompt. Two deliberate choices:
+
+- `unbiased=False` uses the population std, so a normalized group has std exactly 1.
+- A group where every rollout got the same reward (all right or all wrong) has std 0. The formula as written divides by roughly zero there and amplifies float noise into "signal". I return exact zeros instead, which is the honest answer: that group has nothing to teach.
+
+You flatten the result to `(B,)` before passing it to the loss, where `B = n_prompts * group_size`.
+
+### The sequence ratio
+
+```python
+def sequence_log_ratio(logprobs, old_logprobs, mask):
+    """(1/|y_i|) * sum_t log( pi_theta / pi_old ). Shapes: (..., T)."""
+    lengths = mask.sum(-1).clamp_min(1)
+    return ((logprobs - old_logprobs) * mask).sum(-1) / lengths
+```
+
+This is the heart of GSPO, and it's three operations. `logprobs` and `old_logprobs` are `(B, T)`. The `mask` is 1 on response tokens and 0 on prompt and padding, so `lengths` is `|y_i|` per row and the masked sum ignores padding entirely. `clamp_min(1)` prevents a divide-by-zero on an empty row.
+
+Working in log space matters. Multiplying a few thousand token ratios directly would overflow or underflow; averaging log-ratios and exponentiating once is numerically stable.
+
+### The GSPO loss
+
+```python
+    s = sequence_log_ratio(logprobs, old_logprobs, mask).exp()
+    unclipped = s * advantages
+    clipped = s.clamp(1 - eps_low, 1 + eps_high) * advantages
+    loss = -torch.min(unclipped, clipped).mean()
+    return loss, {
+        "ratio_mean": s.mean().detach(),
+        "ratio_max": s.max().detach(),
+        "clip_frac": (clipped < unclipped).float().mean().detach(),
+    }
+```
+
+`s` is `(B,)`, one ratio per response, multiplied by one advantage per response. The rest is the standard PPO pessimistic min, just over sequences instead of tokens. The loss is negated because the paper maximizes `J` and PyTorch optimizers minimize.
+
+The diagnostics are worth logging in a real run. `clip_frac` is the fraction of sequences where the clipped term won the min, i.e. where the update was cut off. `ratio_max` is the first thing I'd look at if training started to wobble.
+
+### GSPO-token: per-token advantages, same gradient
+
+The paper also defines a variant for cases where you want different advantages for different tokens (credit assignment finer than "the whole response"). The trick is a stop-gradient:
+
+```python
+    s = sequence_log_ratio(logprobs, old_logprobs, mask).exp()
+    # exp(lp - sg(lp)) == 1 in value, but carries d/dtheta log pi_theta
+    s_tok = s.detach().unsqueeze(-1) * (logprobs - logprobs.detach()).exp()
+    adv = advantages.unsqueeze(-1) if token_advantages is None else token_advantages
+```
+
+`exp(lp - lp.detach())` equals 1 numerically, but its gradient is `∇ log π_θ` for that token. So `s_tok` has the value of the sequence ratio `s_i` at every position (shape `(B, T)`), while the gradient flows through each token individually. With a single advantage per sequence, this produces the same value and the same gradient as `gspo_loss`; its only reason to exist is the optional `token_advantages` argument.
+
+### The GRPO baseline
+
+```python
+def grpo_loss(logprobs, old_logprobs, mask, advantages, eps=0.2):
+    """GRPO's token-level objective, for comparison. Note the 0.2 clip range."""
+    w = (logprobs - old_logprobs).exp()
+```
+
+Here `w` is `(B, T)`, one ratio per token, each clipped independently with `eps=0.2`. Putting both objectives in the same file with the same signature makes the difference easy to see: GRPO exponentiates per token, GSPO averages the log-ratios first.
+
+## What the tests check
+
+`test_gspo.py` is nine plain-Python checks with no test framework. Each one pins down a specific property of the math:
+
+- **The ratio is 1 at the old policy.** Before any update, `s_i` must be exactly 1.
+- **Length normalization really is length-invariant.** A constant per-token log-ratio `c` must give `s_i = exp(c)` at `T = 4`, `64` and `4096`.
+- **Why ε is 3e-4.** Under iid per-token log-ratio noise, the spread of GSPO's sequence ratio must shrink as `T` grows, with the `T=16` to `T=4096` spread ratio landing between 10 and 25 (theory says `√(4096/16) = 16`). The token-level spread must stay more than 20x larger than GSPO's spread at `T=4096`.
+- **Padding is ignored.** Adding `7.0` to the log-probs under the mask must not change the loss.
+- **GSPO-token equals GSPO.** Same loss and same gradients to `1e-6` when advantages are per-sequence, after perturbing the policy so the test isn't trivially at `s = 1`.
+- **Clipping kills the gradient on runaway ratios.** With `A > 0`, a log-ratio of `0.01` pushes `s` above `1 + ε` and the gradient must be exactly zero; at `0.0` and `-0.01` the gradient must still flow.
+- **Negative advantages clip on the other side.** With `A < 0` and `s` below `1 - ε`, the gradient is zero.
+- **Group advantages behave.** Zero mean, unit std, and exact zeros for a group with no reward spread.
+- **GRPO needs a far wider clip range.** For token log-ratio noise with std 0.1, over 90% of token ratios fall outside GSPO's `[1 - 3e-4, 1 + 4e-4]` window, while GRPO's own `0.2` range keeps most of them.
+
+That last pair is the one I find most convincing. It shows numerically why you can't just take GRPO, swap in a sequence ratio, and keep `ε = 0.2`: the two ratios live on completely different scales.
+
+## The toy training run
+
+`train.py` trains a tiny policy on a verifiable task: given a prompt digit `d`, emit a length-6 sequence of `d`'s from a vocabulary of 6. The reward is the fraction of positions that are correct, so no reward model is needed. Each step samples a group of 16 rollouts for each of 4 prompts, computes group advantages, and takes 4 inner gradient steps on the same rollouts:
+
+```python
+        for _ in range(inner):
+            lp = token_logprobs(policy, flat_prompts, tokens)
+            if algo == "gspo":
+                loss, info = gspo_loss(lp, old, mask, adv, EPS_LOW, EPS_HIGH)
+            else:
+                loss = grpo_loss(lp, old, mask, adv, eps=0.2)
+```
+
+The inner loop matters. With `--inner 1` the update is fully on-policy and every importance ratio is exactly 1, so clipping never does anything. Reusing a batch for several steps is what lets the policy drift from the rollout policy, which is where the two objectives start to differ.
+
+The script asserts that GSPO's mean reward over the last 20 steps is above 0.9. The README reports GSPO reaching reward 1.000 from a chance baseline of 0.167 in about 40 steps. Both GSPO and GRPO solve this task, and at this scale that's the expected outcome, not evidence for either. The toy run checks that the objective trains a policy end to end; it isn't a benchmark.
+
+## Running it
+
+```bash
+pip install torch
+python test_gspo.py   # 9 checks, instant
+python train.py       # GSPO vs GRPO on a verifiable task, ~20s
+```
+
+`train.py` accepts `--steps`, `--group`, `--lr`, `--inner` and `--seed`. Using the objective in your own loop looks like this:
+
+```python
+from gspo import group_advantages, gspo_loss
+
+advantages = group_advantages(rewards)          # (n_prompts, group_size)
+loss, info = gspo_loss(
+    logprobs,       # (B, T) per-token log π_θ(y_t | x, y_<t)
+    old_logprobs,   # (B, T) same, under the rollout policy
+    mask,           # (B, T) 1 on response tokens, 0 on prompt/padding
+    advantages.flatten(),
+)
+loss.backward()
+print(info["clip_frac"], info["ratio_max"])
+```
+
+## What this repo is not
+
+The repo implements the objective, not a post-training stack. There's no vLLM rollout worker, no KV-cache reuse, no sequence packing, no reference-policy KL term (GSPO as published has none), and no MoE. That means the paper's headline MoE result, that GSPO removes the need for Routing Replay, can't be reproduced here. I'd rather say that plainly than suggest a toy task proves something it can't.
+
+## Takeaways
+
+- **Match the correction to the reward.** If the reward is per sequence, a per-sequence importance ratio is the natural choice. Most of GSPO follows from that one decision.
+- **Length normalization changes the scale of everything.** The geometric mean puts `s_i` very close to 1, so the clip range has to shrink by about three orders of magnitude. If you port GSPO into an existing GRPO setup, change `ε` too. Keeping 0.2 effectively turns clipping off.
+- **It's a small diff.** Going from GRPO to GSPO is a `mean` over log-ratios before the `exp` and a different `ε`. Rollouts, rewards and advantages stay the same.
+- **When I'd use it:** RL on long reasoning traces, MoE models, or any setup where you reuse rollouts for several updates and see token-level ratios spike. For short, on-policy updates the two objectives behave the same, because every ratio is 1.
+
+The code is at [github.com/msanvarov/gspo-minimal](https://github.com/msanvarov/gspo-minimal), and the paper is [arXiv:2507.18071](https://arxiv.org/abs/2507.18071). If you're already running GRPO, `sequence_log_ratio` is the one function to read first.

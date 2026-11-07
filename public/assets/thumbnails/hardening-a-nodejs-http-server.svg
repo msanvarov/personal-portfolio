@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="Hardening a Node.js HTTP Server thumbnail">
+  <defs>
+    <linearGradient id="hardenBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e0d12"/>
+      <stop offset="1" stop-color="#1c1d2b"/>
+    </linearGradient>
+    <linearGradient id="hardenGate" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5b78f6" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#5b78f6" stop-opacity="0.06"/>
+    </linearGradient>
+    <linearGradient id="hardenFlow" gradientUnits="userSpaceOnUse" x1="262" y1="0" x2="1030" y2="0">
+      <stop offset="0" stop-color="#9aa9ff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#9aa9ff" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="hardenServer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6f88ff"/>
+      <stop offset="1" stop-color="#3b58da"/>
+    </linearGradient>
+    <pattern id="hardenDots" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#5b78f6" fill-opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#hardenBg)"/>
+  <rect width="1200" height="675" fill="url(#hardenDots)"/>
+
+  <!-- config values, top-left -->
+  <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="19" fill="#5b78f6" fill-opacity="0.5">
+    <text x="80" y="118">headersTimeout = 10_000</text>
+    <text x="80" y="150">maxBodyBytes = 100 * 1024</text>
+    <text x="80" y="182">rateLimit = 100</text>
+    <text x="80" y="214">dependencies: 0</text>
+  </g>
+
+  <!-- request flow line -->
+  <line x1="262" y1="318" x2="1030" y2="318" stroke="url(#hardenFlow)" stroke-width="3" stroke-dasharray="10 8"/>
+
+  <!-- incoming request -->
+  <g transform="translate(80 296)">
+    <rect width="182" height="44" rx="22" fill="#15161f" stroke="#2a2d44" stroke-width="2"/>
+    <circle cx="24" cy="22" r="6" fill="#9aa9ff"/>
+    <text x="42" y="29" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="17" fill="#f6f1ea" fill-opacity="0.8">POST /echo</text>
+  </g>
+
+  <!-- guard layers -->
+  <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="13" font-weight="700" letter-spacing="2" text-anchor="middle">
+    <g transform="translate(440 170)">
+      <rect width="64" height="266" rx="12" fill="url(#hardenGate)" stroke="#5b78f6" stroke-opacity="0.55" stroke-width="2"/>
+      <text x="32" y="-16" fill="#9aa9ff" fill-opacity="0.8">TIME</text>
+    </g>
+    <g transform="translate(550 170)">
+      <rect width="64" height="266" rx="12" fill="url(#hardenGate)" stroke="#5b78f6" stroke-opacity="0.55" stroke-width="2"/>
+      <text x="32" y="-16" fill="#9aa9ff" fill-opacity="0.8">HDRS</text>
+    </g>
+    <g transform="translate(660 170)">
+      <rect width="64" height="266" rx="12" fill="url(#hardenGate)" stroke="#5b78f6" stroke-opacity="0.55" stroke-width="2"/>
+      <text x="32" y="-16" fill="#9aa9ff" fill-opacity="0.8">CORS</text>
+    </g>
+    <g transform="translate(770 170)">
+      <rect width="64" height="266" rx="12" fill="url(#hardenGate)" stroke="#5b78f6" stroke-opacity="0.55" stroke-width="2"/>
+      <text x="32" y="-16" fill="#9aa9ff" fill-opacity="0.8">RATE</text>
+    </g>
+    <g transform="translate(880 170)">
+      <rect width="64" height="266" rx="12" fill="url(#hardenGate)" stroke="#5b78f6" stroke-opacity="0.55" stroke-width="2"/>
+      <text x="32" y="-16" fill="#9aa9ff" fill-opacity="0.8">BODY</text>
+    </g>
+  </g>
+
+  <!-- pass markers where the request crosses each layer -->
+  <g fill="#9aa9ff">
+    <circle cx="472" cy="318" r="7"/>
+    <circle cx="582" cy="318" r="7"/>
+    <circle cx="692" cy="318" r="7"/>
+    <circle cx="802" cy="318" r="7"/>
+    <circle cx="912" cy="318" r="7"/>
+  </g>
+
+  <!-- rejected requests drop out between layers -->
+  <g fill="none" stroke="#ffb648" stroke-width="2.5" stroke-linecap="round">
+    <path d="M766,330 C750,336 747,350 747,372 L747,444"/>
+    <path d="M876,330 C860,336 857,350 857,372 L857,444"/>
+  </g>
+  <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14" font-weight="700" letter-spacing="1" text-anchor="middle">
+    <rect x="718" y="450" width="58" height="26" rx="13" fill="#ffb648" fill-opacity="0.15" stroke="#ffb648" stroke-opacity="0.6"/>
+    <text x="747" y="468" fill="#ffb648">429</text>
+    <rect x="828" y="450" width="58" height="26" rx="13" fill="#ffb648" fill-opacity="0.15" stroke="#ffb648" stroke-opacity="0.6"/>
+    <text x="857" y="468" fill="#ffb648">413</text>
+  </g>
+
+  <!-- server node -->
+  <g transform="translate(1040 248)">
+    <rect width="96" height="140" rx="14" fill="#15161f" stroke="#2a2d44" stroke-width="2"/>
+    <rect x="14" y="16" width="68" height="22" rx="5" fill="url(#hardenServer)" fill-opacity="0.9"/>
+    <rect x="14" y="46" width="68" height="22" rx="5" fill="url(#hardenServer)" fill-opacity="0.6"/>
+    <rect x="14" y="76" width="68" height="22" rx="5" fill="url(#hardenServer)" fill-opacity="0.35"/>
+    <circle cx="48" cy="140" r="22" fill="#0e0d12" stroke="#9aa9ff" stroke-width="2"/>
+    <path d="M38,140 L45,147 L59,133" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- title -->
+  <g font-family="'Space Grotesk', 'Inter', system-ui, sans-serif" fill="#f6f1ea">
+    <text x="80" y="535" font-size="22" letter-spacing="6" fill-opacity="0.55">NODE.JS · SECURITY</text>
+    <text x="80" y="582" font-size="44" font-weight="600">Hardening a Node.js HTTP Server</text>
+  </g>
+</svg>

@@ -1,0 +1,328 @@
+---
+title: 'Five Injection Bugs in Node.js: The Exploit, the Fix, the Test'
+uid: nodejs-injection-attacks-and-fixes
+thumbnail: /assets/thumbnails/nodejs-injection-attacks-and-fixes.svg
+category: Security
+tag: Node.js
+description: 'A walkthrough of command injection, SQL injection, path traversal, prototype pollution and ReDoS in Node.js, with the vulnerable code, the fix, and the test that proves each fix works.'
+created: '2025-03-24T13:00:00.000Z'
+modified: '2025-03-24T13:00:00.000Z'
+---
+
+Most injection bugs I find in Node code aren't exotic. They're one line that looked harmless when it was written: a template literal passed to `exec()`, a query glued together with `${name}`, a `path.join` on a filename from the request, a hand-rolled deep merge, a regex copied from Stack Overflow.
+
+They keep shipping for the same reason every time. The unsafe version is shorter, it works on every input the developer tried, and nothing fails until someone sends an input nobody tried. Code review rarely catches it because the bug isn't in what the code does, it's in what the code *allows*.
+
+So I built [nodejs-injection-defense](https://github.com/msanvarov/nodejs-injection-defense): five small files, each with an `Unsafe` function and a safe one, plus a test that runs the same attack against both. The attack has to succeed on the unsafe version and fail on the safe one, or the test goes red. No dependencies, only Node built-ins.
+
+This post walks through all five.
+
+## The setup
+
+```text
+src/
+  command.js     exec() vs execFile()
+  sql.js         string concatenation vs placeholders (node:sqlite)
+  path.js        path.join vs resolve-and-check
+  prototype.js   naive deep merge vs key-filtered merge
+  regex.js       catastrophic-backtracking regex vs linear one
+test/
+  injection.test.js   one test per attack, run against both versions
+```
+
+The tests use `node:test` and `node:assert/strict`, and the SQL example uses `node:sqlite`, which is why `package.json` asks for Node 22.13 or newer (that's where `node:sqlite` loads without a flag). The `test` script is just `node --test`.
+
+One warning before the code: the functions ending in `Unsafe` are intentionally vulnerable. They exist so the tests can show the attack landing. Copy the safe ones.
+
+## 1. Command injection
+
+### The bug
+
+```js
+// UNSAFE: user input is pasted into a shell string.
+// greetUnsafe('x; rm -rf ~') runs both commands.
+export async function greetUnsafe(name) {
+  const { stdout } = await execAsync(`echo Hello ${name}`);
+  return stdout;
+}
+```
+
+`exec()` hands its string to a shell (`/bin/sh` on Unix). The shell doesn't know which part came from you and which came from the user. It parses the whole thing, so `;`, `|`, `&&`, `$()` and backticks in `name` all become shell syntax.
+
+### The exploit
+
+The test passes `x; echo PWNED`. The shell sees two commands: `echo Hello x`, then `echo PWNED`. When I ran it, `greetUnsafe` returned `"Hello x\nPWNED\n"`. The test only asserts that a line reading `PWNED` came back, but swap that second command for anything else and the process runs it with your app's permissions.
+
+### The fix
+
+```js
+// SAFE: execFile skips the shell. `name` reaches the program as one argv entry,
+// so ; | && $() and backticks are just characters.
+// Never pass { shell: true } here, it brings the shell back.
+export async function greetSafe(name) {
+  const { stdout } = await execFileAsync('echo', ['Hello', name]);
+  return stdout;
+}
+```
+
+`execFile` starts the program directly with an argument array. There's no shell in between, so there's nothing to parse the metacharacters. The same input comes back as plain text: `"Hello x; echo PWNED\n"`.
+
+Two caveats from the repo's README that I think matter in practice:
+
+- `spawn` and `execFile` with `shell: true` put the shell right back. Grep for it.
+- No shell doesn't mean no injection. If the user controls an argument, they can pass flags like `--output=/somewhere`. Put `--` before user values when the program supports it, and allowlist values when you can. On Windows, `.bat` and `.cmd` files always run through `cmd.exe` (that was CVE-2024-27980), so keep Node patched.
+
+## 2. SQL injection
+
+### The bug
+
+```js
+// UNSAFE: string concatenation. name = "' OR '1'='1" returns every user.
+export function findUserUnsafe(db, name) {
+  return db.prepare(`SELECT name FROM users WHERE name = '${name}'`).all().map((r) => r.name);
+}
+```
+
+It's the same mistake as the shell one, aimed at a different parser. The value is pasted into the SQL text, so a quote in the value ends the string literal and whatever follows becomes SQL.
+
+Note that this calls `db.prepare`. Using a prepared statement doesn't help if you've already built the SQL string out of user input.
+
+### The exploit
+
+The test database has two users, `alice` (admin) and `bob`. The attack value is `' OR '1'='1`, which turns the query into:
+
+```text
+SELECT name FROM users WHERE name = '' OR '1'='1'
+```
+
+That `WHERE` clause is true for every row, so the unsafe function returns `['alice', 'bob']`.
+
+### The fix
+
+```js
+// SAFE: placeholder. The value is sent separately from the SQL text,
+// so it can never change the shape of the query.
+export function findUserSafe(db, name) {
+  return db.prepare('SELECT name FROM users WHERE name = ?').all(name).map((r) => r.name);
+}
+```
+
+With a `?` placeholder, the SQL is parsed once, and `name` is bound as data. The database looks for a user literally named `' OR '1'='1`, finds none, and returns `[]`. The test also checks that `findUserSafe(db, 'bob')` still returns `['bob']`, so the fix doesn't just break the lookup.
+
+ORMs give you this by default, until you reach for `raw()` or `$queryRawUnsafe`. NoSQL has its own version too. In MongoDB, a body like `{ "password": { "$ne": null } }` turns an equality check into "not null". The fix there is to check that the field is the type you expect (a string, not an object) before it reaches the query.
+
+## 3. Path traversal
+
+### The bug
+
+```js
+// UNSAFE: path.join happily walks out of baseDir with '../' or an absolute path.
+export function readUploadUnsafe(baseDir, name) {
+  return readFile(path.join(baseDir, name), 'utf8');
+}
+```
+
+A lot of people assume `path.join` keeps you inside the first argument. It doesn't. It joins segments and normalizes `..`, which is exactly what lets `../` climb out.
+
+### The exploit
+
+The test builds a temp directory with `uploads/ok.txt` and, one level up, `secret.txt`. Asking the unsafe reader for `../secret.txt` returns `'top secret'`.
+
+### The fix
+
+```js
+// SAFE: resolve the final path, then check it is still inside baseDir.
+// If baseDir can contain symlinks, run fs.realpath on the result too.
+export function resolveInside(baseDir, name) {
+  const root = path.resolve(baseDir);
+  const target = path.resolve(root, name);
+  if (!target.startsWith(root + path.sep)) throw new Error('path escapes base directory');
+  return target;
+}
+```
+
+The order matters: resolve first, then check the finished absolute path. `path.resolve` collapses every `..`, and if `name` is absolute it simply becomes the result, so whatever the input looks like, you end up checking the real destination.
+
+The `+ path.sep` is the subtle part. Without it, a check for `/srv/uploads` also accepts `/srv/uploads-evil/x`, because that string does start with `/srv/uploads`. The test covers this case and two others:
+
+- `../secret.txt` is rejected with `/escapes/`
+- an absolute path to `secret.txt` is rejected
+- `../uploads-evil/x`, the sibling-prefix trick, is rejected
+
+Better still, don't use user input as a filename at all. Store uploads under a generated ID and keep the original name in the database.
+
+## 4. Prototype pollution
+
+### The bug
+
+```js
+// UNSAFE: the classic recursive merge found in many old libraries.
+// mergeUnsafe({}, JSON.parse('{"__proto__": {"isAdmin": true}}'))
+// writes onto Object.prototype, so every object in the process now has isAdmin.
+export function mergeUnsafe(target, source) {
+  for (const key in source) {
+    const value = source[key];
+    if (typeof value === 'object' && value !== null) {
+      target[key] ??= {};
+      mergeUnsafe(target[key], value);
+    } else {
+      target[key] = value;
+    }
+  }
+  return target;
+}
+```
+
+`JSON.parse` creates `__proto__` as an ordinary own key. The merge then reads `target['__proto__']`, which for a plain object is `Object.prototype` itself, and recurses into it. Now `isAdmin: true` is written onto the prototype that almost every object in the process inherits from.
+
+### The exploit
+
+The test runs two payloads from the repo:
+
+```text
+{"__proto__": {"isAdmin": true}}
+{"constructor": {"prototype": {"isAdmin": true}}}
+```
+
+The second one gets there the long way: `target.constructor` is the inherited `Object` function, so `??=` leaves it alone, and the merge walks into `Object.prototype`. After either payload, a brand new `{}` has `isAdmin === true`. Any `if (user.isAdmin)` check in the process now passes for every user.
+
+The test deletes `Object.prototype.isAdmin` in a `finally` block so the pollution doesn't leak into the other tests. That cleanup is a good reminder that this bug affects the whole process, not one request.
+
+### The fix
+
+```js
+const BLOCKED_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
+// SAFE: only own keys, dangerous keys skipped, never recurse into inherited values.
+export function mergeSafe(target, source) {
+  for (const key of Object.keys(source)) {
+    if (BLOCKED_KEYS.has(key)) continue;
+    const value = source[key];
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      const current = Object.hasOwn(target, key) ? target[key] : undefined;
+      target[key] = current !== null && typeof current === 'object' ? current : {};
+      mergeSafe(target[key], value);
+    } else {
+      target[key] = value;
+    }
+  }
+  return target;
+}
+```
+
+Three things work together here:
+
+1. `Object.keys` instead of `for...in`, so inherited keys are never walked.
+2. The blocklist skips the three keys that lead to a prototype.
+3. `Object.hasOwn` decides whether to recurse into an existing value. The merge only descends into objects the target actually owns, never into something it inherited.
+
+After the safe merge, `{}.isAdmin` is `undefined` for both payloads. The test also merges `{ a: { b: 1 } }` with `{ a: { c: 2 }, d: 3 }` and expects `{ a: { b: 1, c: 2 }, d: 3 }`, so the safe version still deep-merges.
+
+The best defense is upstream of the merge: validate request bodies against a schema (Zod, or Ajv with `additionalProperties: false`) so unexpected keys never get that far. Use `Map` or `Object.create(null)` for dictionaries keyed by user input. For defense in depth, Node's `--disable-proto=delete` flag removes the `__proto__` accessor entirely.
+
+## 5. ReDoS
+
+### The bug
+
+```js
+// UNSAFE: nested quantifiers. On input like 'aaaa...a!' the engine tries
+// every way to split the letters into words, which is exponential: each extra
+// letter doubles the time. 30 letters blocks the event loop for ~20 seconds.
+export const isWordListUnsafe = (s) => /^(\w+\s?)*$/.test(s);
+```
+
+This is injection in the sense that the attacker's input steers how much work your code does. Because `\s?` is optional, a run of letters like `aaaa` can be split into "words" many different ways: `aaaa`, `aaa`+`a`, `aa`+`aa`, and so on. When the string ends in `!`, the match has to fail, and the backtracking engine tries every split before it gives up.
+
+Node runs your JavaScript on one thread. While that regex is backtracking, no other request gets served.
+
+### The exploit
+
+The README's input is `'a'.repeat(30) + '!'`. I didn't want to hang my terminal for that one, so I timed shorter inputs on my laptop instead:
+
+```text
+22 letters + '!'   ~17 ms
+24 letters + '!'   ~65 ms
+```
+
+Two more letters, about four times slower, which is what "doubles per letter" predicts. Keep going and you get to the multi-second hang the README demonstrates:
+
+```bash
+node -e "console.time('t'); /^(\w+\s?)*$/.test('a'.repeat(28) + '!'); console.timeEnd('t')"
+```
+
+### The fix
+
+```js
+// SAFE: no ambiguity (each space must be followed by a word, so there is only
+// one way to match). Also rejects a trailing space, which the unsafe one allowed.
+// Plus a length cap so even a linear regex has bounded work.
+const MAX_LEN = 1000;
+export const isWordList = (s) => s.length <= MAX_LEN && /^(\w+(\s\w+)*)?$/.test(s);
+```
+
+In `/^(\w+(\s\w+)*)?$/` a new word can only start after a whitespace character, and `\s` and `\w` never match the same character. So for any input there's only one way to carve it into words, and a failing match has nothing to retry. The length cap means even the linear work is bounded.
+
+The rewrite is slightly stricter, and the comment says so: `'hello '` with a trailing space passes the old regex and fails the new one. The test pins this down. It checks that both versions agree on `''`, `'hello'`, `'hello world'` and `'a b c'`, that `'hello  world'` with a double space is rejected, and that the safe regex rejects `'a'.repeat(900) + '!'` in under 50 ms. In my run it took about a tenth of a millisecond.
+
+The test never runs the unsafe regex on that input, on purpose. It would hang the test runner.
+
+## How the tests prove it
+
+Every test follows the same pattern:
+
+1. Run the attack against the `Unsafe` function and **assert that it works**: `PWNED` comes back, both rows leak, the secret file is read, `{}.isAdmin` is `true`.
+2. Run the same attack against the safe function and assert that it fails.
+3. Where it makes sense, run a normal input through the safe function to show it still does its job.
+
+Step 1 is the part people skip, and I think it's the most useful one. A test that only checks the fix passes just as happily when the "attack" was never a real attack. Asserting that the unsafe version really is exploitable proves the test input is a real exploit.
+
+Running it needs nothing but Node:
+
+```bash
+git clone https://github.com/msanvarov/nodejs-injection-defense.git
+cd nodejs-injection-defense
+npm test
+```
+
+My local run:
+
+```text
+✔ command injection: shell runs the injected command, execFile does not
+✔ SQL injection: concatenation leaks all rows, placeholder does not
+✔ path traversal: ../ and absolute paths are blocked
+✔ prototype pollution: unsafe merge poisons every object, safe merge does not
+✔ ReDoS: safe regex agrees on normal input and stays fast on hostile input
+ℹ tests 5
+ℹ pass 5
+ℹ fail 0
+```
+
+CI runs the same `npm test` on GitHub Actions for every push to `main` and every pull request.
+
+## Summary
+
+| Bug | Root cause | Fix |
+| --- | --- | --- |
+| Command injection | Input parsed by a shell via `exec()` | `execFile()` / `spawn()` with an args array, no `shell: true` |
+| SQL injection | Input concatenated into SQL text | `?` placeholders, value bound separately |
+| Path traversal | `path.join` follows `../` and absolute paths | `path.resolve`, then check it starts with `root + path.sep` |
+| Prototype pollution | Merge walks `__proto__` / `constructor` into `Object.prototype` | Own keys only, block the three keys, `Object.hasOwn` before recursing |
+| ReDoS | Nested quantifiers allow exponential backtracking | Unambiguous regex plus an input length cap |
+
+Four of the five come down to the same root cause: user data ended up somewhere it gets parsed as code (shell syntax, SQL, path segments, object keys). The fix is always to keep data and code apart. ReDoS is the odd one out. Nothing gets parsed as code there; the input just picks how long your regex runs.
+
+## Takeaways
+
+- [ ] Never build a shell string from input. Use `execFile` / `spawn` with an array, and grep for `shell: true`.
+- [ ] Put `--` before user-controlled arguments, and allowlist values where you can.
+- [ ] Use placeholders for every query, including inside an ORM's raw-query escape hatch.
+- [ ] For NoSQL, check that fields are strings before they reach the query.
+- [ ] Resolve paths first, then check them against `root + path.sep`. `realpath` if symlinks are possible.
+- [ ] Prefer generated IDs over user-supplied filenames.
+- [ ] Validate request bodies with a schema. Use `Map` or `Object.create(null)` for user-keyed dictionaries.
+- [ ] Keep merge and clone libraries updated, and consider `--disable-proto=delete`.
+- [ ] Avoid nested quantifiers like `(a+)+` and `(\w+\s?)*`, cap input length, and lint regexes with `eslint-plugin-regexp` or `eslint-plugin-security`.
+- [ ] Never `eval` input, and don't treat `node:vm` as a sandbox. Its own docs say it isn't a security mechanism.
+- [ ] When you fix one of these, write a test that proves the old code was exploitable, not just that the new code passes.
+
+The code is on GitHub at [msanvarov/nodejs-injection-defense](https://github.com/msanvarov/nodejs-injection-defense). If you find a mistake or want to add an example, issues and pull requests are welcome.

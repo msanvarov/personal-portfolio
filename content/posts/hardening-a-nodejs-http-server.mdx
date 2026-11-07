@@ -1,0 +1,285 @@
+---
+title: 'Hardening a Node.js HTTP Server with Zero Dependencies'
+uid: hardening-a-nodejs-http-server
+thumbnail: /assets/thumbnails/hardening-a-nodejs-http-server.svg
+category: Security
+tag: Node.js
+description: 'A layer-by-layer walkthrough of a hardened node:http server: security headers, body limits, timeouts, rate limiting, CORS and safe error handling, each one proven by a test.'
+created: '2025-05-12T13:00:00.000Z'
+modified: '2025-05-12T13:00:00.000Z'
+---
+
+Spin up `http.createServer()` with a ten-line handler and it works. It also has no security headers, no idea how big a request body is allowed to be, a fairly generous wait for slow clients, no rate limiting, and whatever error handling you remembered to write. None of that is a bug in Node. The core `http` module gives you a protocol implementation, not a policy. The policy is your job.
+
+Most of us hand that job to middleware like `helmet`, `express-rate-limit` and `cors`. That's fine in production, but the protections turn into a list of package names, and it's easy to forget what each one actually does.
+
+So I wrote [nodejs-http-hardening](https://github.com/msanvarov/nodejs-http-hardening): one file, `server.js`, about 130 lines, built only on `node:http`. **Zero dependencies is deliberate.** Every protection is code you can read in a minute, and there's no `node_modules` to audit. The test suite starts the server on a random port and attacks it. Once you've seen the plain version, the same ideas map directly onto Express, Fastify, Koa or Hono.
+
+Below I walk through each layer roughly in the order a request hits it.
+
+## The shape of the server
+
+The whole thing is a factory. Every limit is a parameter with a sensible default, which is what makes it testable: the tests can spin up a server with `rateLimit: 3` or `maxBodyBytes: 1024` without touching globals.
+
+```js
+export function createServer({
+  rateLimit = 100,
+  windowMs = 60_000,
+  maxBodyBytes = 100 * 1024,
+  allowedOrigins = ['http://localhost:3000'],
+} = {}) {
+```
+
+It exposes three demo routes: `GET /health`, `POST /echo` (parses and returns a JSON body), and `GET /boom`, which crashes on purpose so you can see what a client gets back when something goes wrong.
+
+## Layer 1: Socket-level timeouts (Slowloris)
+
+The first defense kicks in before your handler runs at all. A Slowloris-style client opens a connection and trickles headers or a body one byte at a time. Each connection is cheap for the attacker but holds a socket and memory on your side. Enough of them and real clients can't get in.
+
+Node's `http.Server` has the knobs for this. The repo tightens them:
+
+```js
+  // Slowloris / slow-body protection: drop clients that trickle data.
+  server.headersTimeout = 10_000;
+  server.requestTimeout = 30_000;
+  server.keepAliveTimeout = 5_000;
+  server.maxHeadersCount = 50;
+```
+
+What each one means:
+
+- **`headersTimeout` (10s)**: the client has 10 seconds to finish sending headers. Node's default is 60 seconds. A real browser sends its headers in milliseconds, so 10 seconds is generous for real users and short for an attacker.
+- **`requestTimeout` (30s)**: the whole request, body included, has to arrive within 30 seconds. The default is 5 minutes. For a JSON API taking 100 KB bodies, 30 seconds is plenty. If you accept big file uploads, raise this for those routes or handle uploads somewhere else.
+- **`keepAliveTimeout` (5s)**: an idle keep-alive connection is closed after 5 seconds. That's the current Node default, but setting it explicitly documents the intent. One practical gotcha: behind a load balancer, this should be *longer* than the balancer's idle timeout. Otherwise Node can close a socket the balancer is about to reuse, and you'll see intermittent 502s.
+- **`maxHeadersCount` (50)**: caps how many headers Node will parse. The default is 2000. A normal request sends a dozen or two.
+
+These are the same settings you'd use with Express or Fastify, because both run on the same `http.Server` underneath.
+
+## Layer 2: Security headers on every response
+
+The very first line of the request handler stamps a fixed set of headers onto the response:
+
+```js
+    for (const [name, value] of Object.entries(SECURITY_HEADERS)) res.setHeader(name, value);
+```
+
+It runs before routing, before the rate limiter, before anything that might throw. So 404s, 429s and 500s get the headers too. Error pages are responses as well, and leaving them out is an easy mistake.
+
+The header set itself is roughly what `helmet` would give you, tuned for a JSON API:
+
+```js
+const SECURITY_HEADERS = {
+  'Content-Security-Policy': "default-src 'none'; frame-ancestors 'none'",
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'no-referrer',
+  'Cross-Origin-Opener-Policy': 'same-origin',
+  'Cross-Origin-Resource-Policy': 'same-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+  'Cache-Control': 'no-store',
+};
+```
+
+| Header | Value | What it defends against |
+| --- | --- | --- |
+| `Content-Security-Policy` | `default-src 'none'; frame-ancestors 'none'` | If a response is ever rendered as a page, the browser loads nothing at all: no scripts, styles or images. `frame-ancestors 'none'` blocks framing (clickjacking). |
+| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains` | Tells the browser to use HTTPS only for this host and its subdomains for one year, which shuts down SSL-stripping downgrades. |
+| `X-Content-Type-Options` | `nosniff` | Stops the browser from guessing a content type, so JSON can't be sniffed into HTML or script. |
+| `X-Frame-Options` | `DENY` | The legacy version of `frame-ancestors`, for older browsers. |
+| `Referrer-Policy` | `no-referrer` | Keeps URLs, which may hold tokens or IDs, out of the `Referer` header sent to other sites. |
+| `Cross-Origin-Opener-Policy` | `same-origin` | Isolates the browsing context from cross-origin windows that open it or that it opens. |
+| `Cross-Origin-Resource-Policy` | `same-origin` | Stops other origins from embedding these responses as no-cors subresources. |
+| `Permissions-Policy` | `camera=(), microphone=(), geolocation=()` | Turns off powerful browser features this origin never needs. |
+| `Cache-Control` | `no-store` | Stops browsers and shared caches from keeping copies of API responses. |
+
+A few of these choices deserve a closer look.
+
+`default-src 'none'` is the strictest CSP there is, and it's only right because this server returns JSON. If you serve HTML you'll need a real policy (`script-src 'self'`, nonces, and so on). The comment in the source says exactly that: "Tune CSP for your app".
+
+HSTS uses one year with `includeSubDomains`, but **no `preload`**. Preloading is hard to undo, so it should be a deliberate choice. HSTS also only takes effect over HTTPS, which the README leaves to a load balancer or reverse proxy.
+
+Notice what's *not* in the list: `X-Powered-By`. Express sends it unless you call `app.disable('x-powered-by')`. Plain `node:http` never sends it, and the tests check that.
+
+## Layer 3: CORS with an allowlist
+
+Next comes the CORS decision:
+
+```js
+    // CORS: reflect only allowlisted origins. Never reflect any origin together
+    // with Access-Control-Allow-Credentials.
+    const origin = req.headers.origin;
+    if (origin && origins.has(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Vary', 'Origin');
+    }
+```
+
+The classic CORS mistake is reflecting *any* incoming `Origin` back in `Access-Control-Allow-Origin`, often next to `Access-Control-Allow-Credentials: true`. That lets any site on the internet read authenticated responses from your API in the user's browser. Here, the origin is reflected only on an exact match against a `Set`. No regex, no `endsWith('example.com')` that would also match `evilexample.com`. The server never sends the credentials header at all.
+
+`Vary: Origin` tells caches that the response depends on the `Origin` header, so an approved response isn't served to a different origin. Since every response here is also `no-store`, that's belt and braces. If you adapt this for cacheable responses, I'd set `Vary: Origin` on every response whose CORS headers can change, not only on the matches.
+
+Preflight requests get a short, specific answer. Only the methods and headers the API actually uses are allowed:
+
+```js
+      if (req.method === 'OPTIONS') {
+        res.writeHead(204, { 'Access-Control-Allow-Methods': 'GET, POST', 'Access-Control-Allow-Headers': 'Content-Type' });
+        return res.end();
+      }
+```
+
+## Layer 4: Per-IP rate limiting
+
+Inside the `try` block, the first thing that runs is the rate limiter:
+
+```js
+      if (isRateLimited(req.socket.remoteAddress)) throw new HttpError(429, 'too many requests');
+```
+
+The limiter is a fixed window held in memory:
+
+```js
+  const hits = new Map();
+  const isRateLimited = (key, now = Date.now()) => {
+    const entry = hits.get(key);
+    if (!entry || now - entry.start >= windowMs) {
+      hits.set(key, { start: now, count: 1 });
+      return false;
+    }
+    return ++entry.count > rateLimit;
+  };
+```
+
+By default each IP gets 100 requests per 60-second window. That slows down brute-force logins and casual scraping without bothering normal users. When a client goes over, it gets `429 Too Many Requests` with a `Retry-After` header set to the window length in seconds. That's an upper bound on the wait rather than an exact countdown, which is fine for a client deciding when to back off.
+
+A few details I care about here:
+
+- **The key is `req.socket.remoteAddress`, not `X-Forwarded-For`.** Any client can send its own `X-Forwarded-For`. If you trust it blindly, an attacker changes it on every request and never gets limited. Behind a proxy you *do* need the forwarded IP, but only from a proxy you trust. In Express that's `app.set('trust proxy', 1)`, not "trust whatever the header says".
+- **Memory is bounded.** A `setInterval` deletes expired entries once per window. It's `.unref()`'d so it never keeps the process alive, and it's cleared when the server closes.
+- **Known limitations.** A fixed window lets a client burst up to about twice the limit across a window boundary. And because the state lives in memory, each process has its own counter. Once you run more than one instance, move this to Redis or rate limit at your proxy or WAF. The source marks this with a comment so it doesn't read as production-ready distributed limiting.
+
+## Layer 5: Body parsing with a hard cap
+
+`POST /echo` reads a JSON body through `readJson`, and that's where most of the hardening lives:
+
+```js
+async function readJson(req, maxBytes) {
+  if (!req.headers['content-type']?.startsWith('application/json')) {
+    throw new HttpError(415, 'expected application/json');
+  }
+  if (Number(req.headers['content-length'] ?? 0) > maxBytes) throw new HttpError(413, 'body too large');
+  const chunks = [];
+  let size = 0;
+  for await (const chunk of req) {
+    size += chunk.length;
+    if (size > maxBytes) throw new HttpError(413, 'body too large'); // covers chunked bodies with no length
+    chunks.push(chunk);
+  }
+  try {
+    return JSON.parse(Buffer.concat(chunks).toString('utf8'));
+  } catch {
+    throw new HttpError(400, 'invalid JSON');
+  }
+}
+```
+
+There are four checks, and the order matters:
+
+1. **Content type first (415).** Anything that isn't `application/json` is rejected before a single byte of body is read. Your parser only ever sees the format it expects. `startsWith` still accepts `application/json; charset=utf-8`.
+2. **Declared size (413).** If `Content-Length` already says the body is too big, reject right away. Cheap and immediate.
+3. **Actual size while streaming (413).** This is the check people tend to skip. A request sent with `Transfer-Encoding: chunked` has no `Content-Length` at all, so the first check passes trivially. The only reliable cap is counting bytes as they arrive and stopping the moment the total crosses the limit. Without it, one client can make the process buffer an unbounded amount of data until it falls over.
+4. **Parse errors (400).** Malformed JSON becomes a clean client error, not a 500 with a `SyntaxError` message in it.
+
+The default limit is 100 KB, the same as `express.json()`'s default. When a 413 goes out, the response also carries `Connection: close`. The rest of the oversized body was never read, so closing the connection beats leaving it in an unknown state.
+
+This layer checks size and syntax, not shape. In a real service the next step is validating the parsed object against a schema (Zod, Ajv, TypeBox) and rejecting unknown fields. The README's checklist calls that out.
+
+## Layer 6: Errors that stay private
+
+Every failure, expected or not, ends up in one `catch`:
+
+```js
+    } catch (err) {
+      const status = err instanceof HttpError ? err.status : 500;
+      // Full details go to your logs. The client only gets a generic message,
+      // never a stack trace or internal error text.
+      if (status === 500) console.error(err);
+      const headers = status === 413 ? { Connection: 'close' } : status === 429 ? { 'Retry-After': String(Math.ceil(windowMs / 1000)) } : {};
+      send(res, status, { error: status === 500 ? 'internal error' : err.message }, headers);
+    }
+```
+
+The rule is simple. `HttpError` is the only class whose message is allowed to reach the client, because those messages are written for the client: "body too large", "not found". Anything else is a 500, and the client gets exactly `{"error":"internal error"}`. The full error, stack and all, goes to the server logs.
+
+The `/boom` route shows why this matters:
+
+```js
+      if (req.method === 'GET' && pathname === '/boom') throw new Error('database password is hunter2');
+```
+
+A naive handler that sends `err.message` or `err.stack` would hand that "password" to whoever hit the endpoint, along with file paths and line numbers from the stack trace. This one doesn't.
+
+## How the tests prove it
+
+The test suite, `test/server.test.js`, uses only the built-in `node:test` runner, `node:assert/strict` and the global `fetch`. A small helper starts a fresh server on port 0, so the OS picks a free port, and registers `t.after(() => server.close())` so every test cleans up after itself.
+
+Each test maps to one control:
+
+| Test | What it asserts |
+| --- | --- |
+| sets security headers on every response | `/health` and a 404 path both carry `nosniff`, `DENY`, a CSP containing `default-src 'none'`, HSTS with `max-age=`, and no `x-powered-by` |
+| errors never leak internals | `/boom` returns 500 with a body of exactly `{"error":"internal error"}`, with no `hunter2` and no stack-trace-looking text |
+| validates request bodies | valid JSON returns 200, broken JSON 400, a form-encoded body 415, and a 5,000-character payload against a 1 KB cap 413 |
+| rejects oversized chunked bodies with no Content-Length | sends a `ReadableStream` body (which makes `fetch` use chunked encoding) and expects 413 |
+| rate limits per client | with `rateLimit: 3`, five requests return `[200, 200, 200, 429, 429]` |
+| CORS only reflects allowlisted origins | the allowed origin gets `Access-Control-Allow-Origin`, `https://evil.example` gets nothing |
+
+The chunked-body test is the important one: without the streaming check, the `Content-Length` check alone would let that request through. The error test mocks `console.error` with `t.mock.method` so the deliberate crash doesn't clutter the output.
+
+Running it needs Node 22.13 or newer and no install step:
+
+```bash
+git clone https://github.com/msanvarov/nodejs-http-hardening.git
+cd nodejs-http-hardening
+npm test        # runs node --test
+npm start       # http://localhost:3000
+```
+
+On my machine all six tests pass in well under a second:
+
+```text
+✔ sets security headers on every response
+✔ errors never leak internals
+✔ validates request bodies
+✔ rejects oversized chunked bodies with no Content-Length
+✔ rate limits per client
+✔ CORS only reflects allowlisted origins
+ℹ tests 6
+ℹ pass 6
+ℹ fail 0
+```
+
+CI runs the same `npm test` on Node 22 and 24 with read-only repository permissions.
+
+## What it deliberately leaves out
+
+The repo draws a clear line on scope:
+
+- **TLS** belongs at the load balancer or reverse proxy (nginx, Caddy, your cloud's LB).
+- **Distributed rate limiting** belongs in Redis or at the proxy/WAF once you have more than one instance.
+- **Auth and sessions** live in the companion repo, [nodejs-crypto-secrets](https://github.com/msanvarov/nodejs-crypto-secrets).
+
+## Takeaways
+
+- [ ] Set security headers on **every** response, including errors, before any code that can throw.
+- [ ] Use a CSP that fits what you serve. `default-src 'none'` for JSON APIs, a real policy for HTML.
+- [ ] Tighten `headersTimeout`, `requestTimeout` and `maxHeadersCount`, and keep `keepAliveTimeout` longer than your load balancer's idle timeout.
+- [ ] Reject the wrong `Content-Type` before reading the body.
+- [ ] Cap body size on `Content-Length` **and** while streaming. Chunked requests have no length.
+- [ ] Validate parsed bodies against a schema.
+- [ ] Rate limit on an IP you can trust. Never trust `X-Forwarded-For` unless your own proxy sets it.
+- [ ] Reflect CORS origins only from an exact-match allowlist. Never pair a reflected origin with credentials.
+- [ ] Send clients a generic 500 and keep stack traces in your logs.
+- [ ] Prove each control with a test that actually attacks the server.
+
+The full source and tests are on GitHub: [msanvarov/nodejs-http-hardening](https://github.com/msanvarov/nodejs-http-hardening). It's part of a small Node.js security series alongside [nodejs-injection-defense](https://github.com/msanvarov/nodejs-injection-defense) and [nodejs-supply-chain-security](https://github.com/msanvarov/nodejs-supply-chain-security). Issues and pull requests are welcome.

@@ -1,0 +1,278 @@
+---
+title: 'Native Sparse Attention, Explained: A Minimal PyTorch Implementation'
+uid: native-sparse-attention-explained
+thumbnail: /assets/thumbnails/native-sparse-attention-explained.svg
+category: Machine Learning
+tag: PyTorch
+description: 'A walkthrough of the Native Sparse Attention paper from DeepSeek-AI: how compression, selection and a sliding window are combined by a learned gate, and how my small PyTorch reference implementation checks each piece against the paper.'
+created: '2025-03-10T13:00:00.000Z'
+modified: '2025-03-10T13:00:00.000Z'
+---
+
+Full attention has one well-known problem: every query looks at every earlier key. Double the context and the attention work roughly quadruples. At a few thousand tokens nobody cares. At 64k tokens it dominates the bill for training, prefill and decoding.
+
+Sparse attention is the obvious fix: let each query read only the keys that matter. The hard part is choosing which keys. Many sparse methods are bolted on at inference time to a model that was trained with dense attention, so the model never learned to work under that budget. Others use a selection step that isn't differentiable, so the network can't learn _what_ to select.
+
+[Native Sparse Attention](https://arxiv.org/abs/2502.11089) (NSA), by Yuan et al. at DeepSeek-AI, goes after both problems. The sparsity is part of the architecture from the first training step (that's the "native" part), and the whole design is built around what GPU kernels can do efficiently (the "hardware-aligned" part). The abstract reports that a model pretrained with NSA keeps or beats a full-attention baseline on general, long-context and reasoning benchmarks, while running much faster than full attention at 64k sequence length.
+
+I wanted to understand the mechanism properly, so I wrote [nsa-minimal](https://github.com/msanvarov/nsa-minimal): one readable PyTorch file, a self-check script and a toy training task. This post walks through the paper's idea and then the code, piece by piece.
+
+## The core idea: three views of the past
+
+For each query token `t`, NSA doesn't attend over the raw keys `k_1 … k_t`. It builds three smaller, derived key/value sets and runs attention over each one:
+
+| branch | what it reads | why |
+|---|---|---|
+| **compression** | one learned summary vector per block of `l` keys, stride `d` | global context, cheap |
+| **selection** | the `n` highest-scoring blocks of `l'` raw tokens | fine-grained precision |
+| **sliding window** | the last `w` tokens | local detail |
+
+That table is taken straight from the repo README. Here's how I think about the three:
+
+- **Compression** is the coarse overview. It chops the sequence into overlapping blocks and squashes each block into a single key and a single value with a small learned MLP. A query at position 64k now reads a few thousand summaries, not 64k tokens.
+- **Selection** zooms in. Using the compression branch's attention scores as a cheap relevance signal, it picks the top `n` blocks and attends to their _raw_ tokens at full resolution.
+- **Sliding window** handles what's nearby. Recent tokens matter almost everywhere, and giving them a dedicated branch means the other two branches don't have to learn local patterns. They can specialize in long-range retrieval.
+
+The three outputs are then mixed by a learned gate, one weight per head and per branch, computed from the query token's own features.
+
+## The equations the code follows
+
+The repo comments cite the paper's equation numbers, so here are the ones that matter, written in plain notation.
+
+**Eq. 5, the gated combination.** For each query `t`, every branch `c` has its own keys and values `K̃ᶜ_t, Ṽᶜ_t`, and the gate `gᶜ_t` (a sigmoid, so in `[0, 1]`) weights its output:
+
+```text
+o*_t = Σ_{c ∈ {cmp, slc, win}}  gᶜ_t · Attn(q_t, K̃ᶜ_t, Ṽᶜ_t)
+```
+
+**Eq. 8, compression scores.** Attending over the compressed keys gives a probability over compressed blocks as a side effect:
+
+```text
+p_cmp_t = Softmax(q_tᵀ · K̃_cmp_t)
+```
+
+**Eq. 9, remapping to selection blocks.** Compression blocks (size `l`, stride `d`) and selection blocks (size `l'`) don't line up one to one, so the scores have to be converted. The repo implements it as:
+
+```text
+p_slc[j] = Σ_m Σ_n  p_cmp[(l'/d)·j + m + n]
+           m = 0 … l'/d − 1,   n = 0 … l/d − 1
+```
+
+One note if you're reading along with the paper: the printed equation writes the index as `(l'/d)·j − m − n`. Taken literally, that goes negative for the first selection block, so I used the forward form instead. Selection block `j` sums the compression scores of the blocks that begin at its start and just after it, and the test described below checks exactly which blocks feed which.
+
+**Eq. 10, sharing across a GQA group.** With grouped-query attention, several query heads share one set of keys and values. NSA sums the selection scores over the heads in a group, so all of them pick the same blocks:
+
+```text
+p'_slc_t = Σ_{h in group}  p_slc_t^(h)
+```
+
+Eq. 10 looks like a small detail, but a lot of the paper's speed depends on it. If every head in a group reads the same blocks, a kernel can load each selected KV block from memory once and reuse it for the whole group. Selection then picks the top `n` blocks by `p'_slc` (Eq. 11–12).
+
+## Walking through the implementation
+
+Everything lives in `nsa.py`. I'll go top to bottom.
+
+### One attention primitive for every branch
+
+All three branches are expressed as "dense attention with a boolean mask," so there's exactly one attention function:
+
+```python
+def masked_attn(q, k, v, mask):
+    """q: (B,G,h,T,D)  k,v: (B,G,1,S,D)  mask: (...,T,S) bool, True = visible.
+
+    Rows with nothing visible return zeros instead of NaN.
+    """
+    logits = (q @ k.transpose(-1, -2)) / math.sqrt(q.shape[-1])
+    logits = logits.masked_fill(~mask, float("-inf"))
+    live = mask.any(-1, keepdim=True)
+    p = logits.softmax(-1).masked_fill(~live, 0.0)
+    return p @ v, p
+```
+
+The shapes carry the GQA structure: `B` batch, `G` KV groups, `h` query heads per group, `T` queries, `S` keys. Keys and values have a singleton head dimension, so they broadcast across the `h` heads of their group. The `live` guard matters more than it looks. Early queries can have no complete compression block to see, so a row of all `-inf` logits would softmax to NaN. Here that row returns zeros instead.
+
+The function also returns the probabilities `p`, because the selection branch needs them.
+
+### Compression: a small MLP per block
+
+The paper's compression function `φ` (Eq. 7) is a learnable MLP with an intra-block position encoding:
+
+```python
+class BlockCompress(nn.Module):
+    """phi in Eq. 7: learnable MLP with intra-block position encoding."""
+
+    def __init__(self, dim, block):
+        super().__init__()
+        self.pos = nn.Parameter(torch.zeros(block, dim))
+        self.proj = nn.Sequential(
+            nn.Linear(block * dim, dim), nn.GELU(), nn.Linear(dim, dim)
+        )
+
+    def forward(self, blocks):  # (B,G,n,block,D) -> (B,G,n,D)
+        return self.proj((blocks + self.pos).flatten(-2))
+```
+
+Each block of `l` keys gets a learned position offset, is flattened to one vector of length `l·D`, and is projected back down to `D`. There are two of these modules, one for keys and one for values.
+
+In `forward`, the blocks are gathered with a single index tensor, and the causal rule for compressed keys comes from the block boundaries:
+
+```python
+idx = t[:n_cmp, None] * self.d + torch.arange(self.l, device=dev)
+kb = k.squeeze(2)[:, :, idx]  # (B,G,n_cmp,l,Dk)
+vb = v.squeeze(2)[:, :, idx]
+k_c = self.k_cmp(kb).unsqueeze(2)  # (B,G,1,n_cmp,Dk)
+v_c = self.v_cmp(vb).unsqueeze(2)
+# block i spans [i*d, i*d+l); visible to query t once it is complete
+ends = torch.arange(n_cmp, device=dev) * self.d + self.l
+m_cmp = (ends[None, :] <= t[:, None] + 1).view(1, 1, 1, T, n_cmp)
+o_cmp, p_cmp = masked_attn(q, k_c, v_c, m_cmp)
+```
+
+The causal rule is the subtle part. A query may only see a compressed block once _every_ token in that block is in its past. Otherwise the summary would leak future tokens into the present. The mask therefore compares each block's end, not its start, against `t + 1`.
+
+### Selection: scoring blocks for free
+
+This is the part of NSA I like most. The selection branch needs to rank blocks, but there's no separate scoring network. It reuses `p_cmp`, the attention probabilities the compression branch already computed.
+
+Eq. 9 becomes a fixed `(n_slc, n_cmp)` matrix, built once per forward:
+
+```python
+def _slc_from_cmp(self, n_cmp, n_slc, device):
+    """Eq. 9: p_slc[j] = sum_m sum_n p_cmp[(l'/d) j + m + n], as a matrix."""
+    w = torch.zeros(n_slc, n_cmp, device=device)
+    for j in range(n_slc):
+        for m in range(self.lp // self.d):
+            for n in range(self.l // self.d):
+                i = (self.lp // self.d) * j + m + n
+                if i < n_cmp:
+                    w[j, i] += 1.0
+    return w
+```
+
+Applying it is one matmul, followed by the GQA sum of Eq. 10:
+
+```python
+w = self._slc_from_cmp(n_cmp, n_slc, dev)
+p_slc = p_cmp @ w.T  # (B,G,h,T,n_slc)
+p_slc = p_slc.sum(2)  # Eq. 10: GQA-consistent, sum over heads
+```
+
+Summing over dimension 2 removes the per-head axis. From here on, block choice is per _group_, not per head, which is exactly the property a fast kernel relies on.
+
+The constructor enforces what Eq. 9 needs: both block sizes must be multiples of the stride, and the stride must be smaller than the compression block.
+
+```python
+assert cmp_block % cmp_stride == 0 and slc_block % cmp_stride == 0
+assert cmp_stride < cmp_block, "paper requires d < l"
+```
+
+Next comes top-`n` selection. Blocks entirely in the future are excluded, and a few blocks are always kept. The code comment says the paper keeps one initial block and two local blocks unconditionally:
+
+```python
+scores = p_slc.masked_fill(~reachable, float("-inf"))
+scores = scores.masked_fill(forced, float("inf"))
+keep = min(self.n_selected, n_slc)
+top = scores.topk(keep, dim=-1).indices
+chosen = torch.zeros_like(scores, dtype=torch.bool).scatter_(-1, top, True)
+chosen &= reachable
+# expand block choice to tokens, then re-apply causality
+m_slc = chosen[..., blk.repeat_interleave(self.lp)[:T]]
+m_slc = m_slc.unsqueeze(2) & causal  # (B,G,1,T,T)
+o_slc, _ = masked_attn(q, k, v, m_slc)
+```
+
+Setting forced blocks to `+inf` is a cheap way to guarantee `topk` picks them. The `chosen &= reachable` line handles short sequences: when `keep` exceeds the number of reachable blocks, `topk` still returns some `-inf` entries, and those get dropped here. The block mask is then expanded to token level and intersected with the ordinary causal mask, because the current block is only partly in the past.
+
+You might ask how the selection branch learns anything if `topk` isn't differentiable. The block _choice_ gets no gradient. The scores come from the compression branch, and the compression branch is trained through its own output `o_cmp`. As the compressed keys get better at matching relevant regions, the blocks they point selection at get better too. Once a block is selected, attention over its raw tokens is ordinary, fully differentiable attention.
+
+### Sliding window and the gate
+
+The window branch is just a banded causal mask:
+
+```python
+m_win = causal & (t[:, None] - t[None, :] < self.window).view(1, 1, 1, T, T)
+o_win, _ = masked_attn(q, k, v, m_win)
+```
+
+Then the gate. It's a single linear layer from the input features to three logits per head, passed through a sigmoid:
+
+```python
+g = self.gate(x).sigmoid().view(B, T, G, h, 3).permute(0, 2, 3, 1, 4)
+o = g[..., 0:1] * o_cmp + g[..., 1:2] * o_slc + g[..., 2:3] * o_win
+```
+
+The sigmoid gates are independent rather than a softmax across branches, so a head can turn several branches on at once or almost all of them off.
+
+The default constructor arguments follow the paper's 27B configuration according to the README: `l=32, d=16, l'=64, n=16, w=512`, 64 heads in 4 GQA groups, key dimension 192 and value dimension 128.
+
+## What the checks verify
+
+A sparse attention implementation can produce plausible-looking tensors while being quietly wrong, so `test_nsa.py` focuses on the mistakes that are easy to miss:
+
+- **Every branch trains.** A backward pass must put non-zero gradient on the compression MLP, the gate and the query projection.
+- **Causality.** Perturbing tokens from position 10 onward has to leave every earlier output unchanged (checked to `1e-5`). This catches leaks through compressed blocks, which is the easiest place to get causality wrong.
+- **Exactness.** With every block selected and the gate forced to `[0, 1, 0]` (selection only), NSA has to match dense causal attention through the same projections to within `1e-5`. This shows the selection path is real attention, not an approximation of it.
+- **Eq. 9 coverage.** Every compressed block must feed at least one selection block. For a small config, selection block 1 must draw on compressed blocks 2, 3 and 4.
+- **Cost scaling.** The test counts how many keys each query head actually reads across all three branches, as a fraction of what dense causal attention reads.
+- **Short sequences.** Inputs shorter than one compression block must produce finite outputs, not NaN.
+
+For the cost test, the docstring records these fractions for a small config (`n=4, l'=32, w=32, l=32, d=16`):
+
+```text
+T =  256  ->  0.97 of the keys dense attention reads
+T =  512  ->  0.57
+T = 1024  ->  0.33
+T = 2048  ->  0.20
+```
+
+The test asserts that the fraction keeps shrinking, that it ends below 0.25, and that doubling `T` from 1024 to 2048 raises the per-head key reads by less than 2.8x (dense attention would be about 4x). The same docstring notes that the paper's 27B budget at 64k tokens works out to roughly 2% of the keys.
+
+The second check is `train.py`, a toy "needle recall" task. Each sequence is 128 filler tokens with one payload token hidden somewhere _outside_ the final 16-token sliding window, and the model must output that payload at the last position. The window branch can't see the needle at all, so any accuracy above chance has to come from compression and selection. According to the README, the two-layer model gets to about 100% recall in roughly 500 steps, against a chance level of 7%. The script fails if accuracy doesn't reach five times chance.
+
+## What this implementation is not
+
+It's worth being direct about this, and the README is too. This is the _reference_ form of NSA. It builds full `(T, S)` masks for each branch and runs dense attention over them, so it is still `O(T²)` in time and memory. It reproduces NSA's _outputs_, not its speedup. The key-count test above measures how much NSA _reads_, not wall-clock time.
+
+The paper's speedups (the README cites 9–11x) come from a blockwise Triton kernel. It uses the GQA-consistent block choice to load each selected KV block once for a whole group of heads, and it never materializes the masks. If you want that speed, `masked_attn` is the single function to swap out.
+
+Also missing on purpose: positional encoding (RoPE belongs in your model, not in the attention module) and KV-cache decoding.
+
+## Running it
+
+The only dependency is PyTorch:
+
+```bash
+pip install torch
+```
+
+Using the module looks like any other attention layer:
+
+```python
+import torch
+from nsa import NativeSparseAttention
+
+attn = NativeSparseAttention(
+    dim=512, n_heads=16, n_groups=4, head_dim=64, v_dim=64,
+    cmp_block=32, cmp_stride=16, slc_block=64, n_selected=16, window=512,
+)
+y = attn(torch.randn(2, 1024, 512))   # (2, 1024, 512)
+```
+
+And the two checks:
+
+```bash
+python test_nsa.py   # correctness + cost scaling
+python train.py      # toy long-range recall, ~1 min on CPU
+```
+
+## Takeaways
+
+- **Train sparse, don't just infer sparse.** Because the gate and the compression MLP train from the start, the model learns to work within its attention budget instead of having one imposed afterwards.
+- **Reuse signals you already compute.** Selection scores come straight from the compression branch's softmax. Block ranking costs one small matmul.
+- **Design for the kernel.** The GQA-shared block choice in Eq. 10 adds little to the math, but it's what allows each KV block to be loaded once per group.
+- **Give local context its own branch.** The sliding window keeps the long-range branches from being taken over by nearby tokens.
+
+I'd use this repo as a study aid or a correctness oracle: read it next to the paper, change a hyperparameter and watch the tests react, or check a fast kernel's outputs against it. For real long-context training you'd want the blockwise kernel, but having a small, tested reference to compare that kernel against makes it much easier to trust.
+
+- Code: [github.com/msanvarov/nsa-minimal](https://github.com/msanvarov/nsa-minimal)
+- Paper: [Native Sparse Attention: Hardware-Aligned and Natively Trainable Sparse Attention (arXiv:2502.11089)](https://arxiv.org/abs/2502.11089)

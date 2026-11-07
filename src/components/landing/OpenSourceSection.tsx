@@ -13,7 +13,8 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { BookOpen, ExternalLink } from 'lucide-react';
 import { useLayoutEffect, useRef, useState } from 'react';
 
 const os = en.opensource;
@@ -147,6 +148,13 @@ const RepoCard = ({
       </p>
     </div>
     <p className="leading-relaxed text-muted-foreground">{repo.description}</p>
+    <Link
+      to="/blog/$post"
+      params={{ post: repo.post }}
+      className="relative z-20 inline-flex w-fit items-center gap-1.5 text-sm font-medium text-brand underline-offset-4 hover:underline"
+    >
+      <BookOpen className="size-4" /> Read the breakdown
+    </Link>
     <div className="mt-auto flex items-center justify-between gap-4 border-t border-border pt-5">
       <span className="flex min-w-0 items-center gap-2 font-mono text-sm text-foreground">
         <GithubIcon className="shrink-0 text-base" />

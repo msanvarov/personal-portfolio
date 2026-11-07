@@ -1,0 +1,243 @@
+---
+title: 'Muon, Explained: Orthogonalized Momentum That Scales to LLMs'
+uid: muon-optimizer-explained
+thumbnail: /assets/thumbnails/muon-optimizer-explained.svg
+category: Machine Learning
+tag: PyTorch
+description: 'A practical walkthrough of the Muon optimizer and the Moonshot AI paper that scaled it to LLM training, built around a ~100-line PyTorch implementation and the tests that pin down how it behaves.'
+created: '2025-04-07T13:00:00.000Z'
+modified: '2025-04-07T13:00:00.000Z'
+---
+
+For most of the last decade, the answer to "which optimizer?" has been AdamW. It is robust and most training recipes are tuned around it. So when a paper claims roughly 2x the compute efficiency of AdamW on LLM pretraining, it is worth understanding exactly what changed.
+
+The paper is [Muon is Scalable for LLM Training](https://arxiv.org/abs/2502.16982) by Liu et al. at Moonshot AI. Muon itself comes from Keller Jordan et al. (2024). What Moonshot contributed is the part that made it hold up at scale: two small changes that turn Muon from "great on small models" into something you can drop into a large run, reusing the learning rate and weight decay you already had for AdamW.
+
+I wrote a minimal implementation to make sure I actually understood it: [msanvarov/muon-minimal](https://github.com/msanvarov/muon-minimal). It is one ~100-line `muon.py`, a test file, and a small benchmark. This post walks through the idea, the math, and the code.
+
+## What Muon changes compared to AdamW
+
+AdamW is an elementwise optimizer. It treats every parameter as an independent scalar: keep a running mean of the gradient, keep a running mean of its square, and divide one by the square root of the other. A weight matrix, to AdamW, is just a bag of numbers that happens to be stored in a 2D tensor.
+
+Muon takes the opposite view. A hidden weight matrix `W` of shape `[A, B]` is a linear map, and its update should be treated as a matrix too. Muon is SGD with momentum, with one extra step: before applying the momentum, replace it with its nearest semi-orthogonal matrix.
+
+Why would you want that? Think about the singular value decomposition of the momentum, `M = U S Vᵀ`. In practice, the momentum matrices for transformer weights tend to be badly conditioned: a few large singular directions and a long tail of small ones. Step along `M` directly and the dominant directions decide everything while the rest barely move. Orthogonalizing throws away `S` and keeps `U Vᵀ`: same directions, comparable magnitude for each.
+
+## Orthogonalizing cheaply: the Newton–Schulz quintic
+
+Computing `U Vᵀ` exactly needs an SVD, which is far too slow to run on every weight matrix at every step. Muon instead uses a few iterations of a polynomial that pushes singular values toward 1.
+
+Here is the trick that makes it work. If `X = U S Vᵀ`, then:
+
+```text
+X Xᵀ          = U S² Uᵀ
+(X Xᵀ) X      = U S³ Vᵀ
+(X Xᵀ)² X     = U S⁵ Vᵀ
+
+a·X + b·(X Xᵀ)X + c·(X Xᵀ)²X  =  U · (a·S + b·S³ + c·S⁵) · Vᵀ
+```
+
+So one iteration applies the scalar polynomial `f(x) = a·x + b·x³ + c·x⁵` to every singular value at once, while leaving `U` and `V` untouched. It only uses matrix multiplies, which GPUs are very good at. Repeat it a few times and every singular value gets dragged toward 1.
+
+Muon uses the coefficients `(3.4445, -4.7750, 2.0315)` and runs it 5 times. These are not the coefficients of a textbook convergent Newton–Schulz iteration. They were tuned for speed: the slope at zero is about 3.4, so tiny singular values grow quickly. The cost is that the iteration never settles exactly at 1 (plug in `x = 1` and you get about 0.70). Singular values end up in a band near 1 rather than on it. The paper explicitly calls this "inexact" orthogonalization, and that is fine, because Muon does not need exactness. It needs the spectrum flattened.
+
+## The exact update
+
+Putting it together, with `G` the gradient, `μ` the momentum, `η` the learning rate and `λ` the weight decay, for a weight of shape `[A, B]`:
+
+```text
+M_t = μ · M_{t-1} + G_t                          # momentum buffer
+O_t = NewtonSchulz5(μ · M_t + G_t)               # Nesterov variant
+W_t = W_{t-1} − η · ( 0.2 · √max(A,B) · O_t  +  λ · W_{t-1} )
+```
+
+The first two lines are Jordan's Muon. The last line contains Moonshot's two additions.
+
+## Moonshot's two changes for LLM scale
+
+**1. Decoupled weight decay.** Original Muon had no weight decay, and without it the weights keep growing over a long run. The fix is the same decoupled weight decay AdamW uses: shrink the parameter directly (`λ · W`), separately from the gradient-based update.
+
+**2. Consistent update RMS.** This is the subtle one. An orthogonalized update of shape `[A, B]` has `min(A, B)` singular values all near 1, so its Frobenius norm squared is about `min(A, B)`. Divide by the `A·B` entries and take the square root:
+
+```text
+RMS(O) = √( min(A,B) / (A·B) ) = 1 / √max(A,B)
+```
+
+That means a raw Muon update is smaller for bigger matrices. An MLP weight of `768 × 3072` and an attention projection of `768 × 768` get very different effective step sizes from the same learning rate. Multiplying by `√max(A,B)` cancels that, and the extra factor of `0.2` pins the update RMS at 0.2 for every shape.
+
+Why 0.2? Because that is roughly where AdamW's update RMS lands in practice (the paper observes 0.2 to 0.4). Matching it means Muon's updates have the same overall scale as AdamW's, so **you can reuse your AdamW learning rate and weight decay**. The abstract says these techniques let Muon work out of the box at large scale without hyperparameter tuning. For me, that matters more than the 2x claim. A new optimizer you have to re-tune from scratch is a hard sell. One that takes your existing learning rate is easy to try.
+
+## Walking through the implementation
+
+All of the optimizer lives in [`muon.py`](https://github.com/msanvarov/muon-minimal/blob/main/muon.py). There are three pieces: the Newton–Schulz function, the optimizer class, and a helper that decides which parameters go to Muon.
+
+### Newton–Schulz in bfloat16
+
+```python
+NS_COEFFS = (3.4445, -4.7750, 2.0315)
+
+
+def newtonschulz5(G, steps=5, eps=1e-7):
+    assert G.ndim == 2, f"expected a matrix, got shape {tuple(G.shape)}"
+    a, b, c = NS_COEFFS
+    X = G.bfloat16()
+    tall = X.size(0) > X.size(1)
+    if tall:  # the iteration is cheapest on wide matrices
+        X = X.mT
+    X = X / (X.norm() + eps)  # spectral norm <= Frobenius norm, so sigma <= 1
+    for _ in range(steps):
+        A = X @ X.mT
+        X = a * X + (b * A + c * (A @ A)) @ X
+    return (X.mT if tall else X).to(G.dtype)
+```
+
+A few design choices are worth explaining:
+
+- **bfloat16.** The iteration only has to land singular values *near* 1, so there is no reason to pay for fp32, and this loop is Muon's per-step cost. The result is cast back to the input's dtype.
+- **Normalize first.** The polynomial only behaves on singular values in `[0, 1]`. The spectral norm is hard to compute, but it is always at most the Frobenius norm, so dividing by `X.norm()` (Frobenius) is a cheap, safe way to guarantee every singular value starts at or below 1.
+- **Transpose tall matrices.** For a wide `X` of shape `[A, B]` with `A ≤ B`, the Gram matrix `X @ X.mT` is only `A × A`. Transposing a tall matrix first keeps that inner product on the small side, then the result is transposed back.
+
+### The optimizer step
+
+```python
+buf = self.state[p].setdefault("momentum_buffer", torch.zeros_like(p))
+buf.mul_(g["momentum"]).add_(p.grad)
+u = p.grad.add(buf, alpha=g["momentum"]) if g["nesterov"] else buf
+o = newtonschulz5(u, steps=g["ns_steps"])
+o = o * (g["rms_scale"] * max(p.shape) ** 0.5)
+if g["weight_decay"]:
+    o = o.add(p, alpha=g["weight_decay"])
+p.add_(o, alpha=-g["lr"])
+```
+
+This is the update from earlier, one line at a time:
+
+1. `buf = μ·buf + grad` is the momentum buffer `M_t`. Note there is only one state tensor per parameter. AdamW keeps two (first and second moments), so Muon's optimizer state is half the size.
+2. With Nesterov on (the default), the matrix that gets orthogonalized is `grad + μ·buf`, which looks one step ahead.
+3. `newtonschulz5` flattens its spectrum.
+4. `rms_scale * sqrt(max(A, B))` is Moonshot's consistent-RMS scale. The default `rms_scale=0.2` is the paper's value.
+5. Weight decay is added to the update as `λ·W`, so it is applied to the parameter, not folded into the gradient. That is what decoupled means here, and since the whole thing is multiplied by `lr`, it matches AdamW's `W ← W − η·λ·W` form.
+
+The defaults are `lr=1e-3, momentum=0.95, nesterov=True, ns_steps=5, weight_decay=0.0, rms_scale=0.2`. The constructor also refuses anything that is not a 2D tensor, with an error message that points you at AdamW for norms, biases and embeddings.
+
+### Which parameters get Muon
+
+This is the part that is easy to get wrong. Muon is only meant for the 2D hidden weights: attention projections and MLP matrices. Embeddings and the LM head stay on AdamW, along with norms and biases, which are not matrices anyway.
+
+The catch is that an embedding table and the LM head *are* 2D tensors. Shape alone cannot tell them apart from a hidden linear layer. Their rows are indexed by tokens (or features), so they are not a linear map whose spectrum you want flattened. So the split is done by name:
+
+```python
+ADAM_NAME_HINTS = ("embed", "wte", "wpe", "lm_head", "norm", "ln", "bias")
+
+
+def split_params(model, extra_adam_hints=()):
+    hints = ADAM_NAME_HINTS + tuple(extra_adam_hints)
+    muon, adam = [], []
+    for name, p in model.named_parameters():
+        if not p.requires_grad:
+            continue
+        lowered = name.lower()
+        (muon if p.ndim == 2 and not any(h in lowered for h in hints) else adam).append(p)
+    return muon, adam
+```
+
+A parameter goes to Muon only if it is 2D *and* its name contains none of the hints. The defaults cover common naming conventions (`wte`/`wpe` are GPT-2 style). If your model uses different names, pass `extra_adam_hints`. It is a heuristic, so it is worth printing which parameters landed where the first time you use it on a new model.
+
+In a training loop you then just run two optimizers side by side:
+
+```python
+from muon import Muon, split_params
+
+muon_params, adam_params = split_params(model)
+opts = [
+    Muon(muon_params, lr=3e-3, momentum=0.95, weight_decay=0.01),
+    torch.optim.AdamW(adam_params, lr=3e-3, weight_decay=0.01),
+]
+```
+
+Notice that both use the same `lr` and `weight_decay`. That is the consistent-RMS scale paying off.
+
+## What the tests check
+
+[`test_muon.py`](https://github.com/msanvarov/muon-minimal/blob/main/test_muon.py) is a plain script with no test framework. Each check isolates one claim from the paper.
+
+**The quintic works.** Build matrices with a controlled spectrum (singular values spread over one or two decades) in square, wide and tall shapes, and check that the condition number collapses after `newtonschulz5`:
+
+```python
+before, after = cond(g), cond(newtonschulz5(g))
+assert before > 9, (shape, before)
+assert after < 2.0, (shape, decade, before, after)
+assert after < before / 4, (shape, decade, before, after)
+```
+
+Per the README, the condition number goes from over 100 to under 2 in 5 steps.
+
+**It is inexact, on purpose.** The test docstring is explicit that 5 steps park singular values in a band around `[0.65, 1.2]` rather than at exactly 1. The tests assert the condition-number band, not perfection, because perfection is not the goal.
+
+**Direction is preserved.** An orthogonal input should come back parallel to itself, scaled but not rotated (cosine similarity above 0.99, with bf16 noise being the only thing left). A separate check makes sure orthogonalization never flips the sign of the update.
+
+**Shape-consistent steps.** This is the test I care most about, because it is the reason the learning rate transfers. It takes a single Muon step with `lr=1.0` and no momentum on five shapes, from `64×64` to `16×512` and `512×16`, and measures the update RMS:
+
+```python
+assert max(scaled) / min(scaled) < 1.3, dict(zip(map(str, shapes), scaled))
+assert all(0.12 < r < 0.22 for r in scaled), scaled
+# the unscaled update is what the fix is correcting for
+assert max(raw) / min(raw) > 2.5, dict(zip(map(str, shapes), raw))
+```
+
+With the scale on, update RMS varies by less than 1.3x across shapes. With it off, it varies by more than 2.5x. A `16×512` matrix would move about 3x less per step than a `64×64` one, and no single learning rate would suit both.
+
+**The mechanism, isolated.** This one trains a two-layer deep linear network toward an ill-conditioned target and compares Muon against plain SGD with momentum, using the same `lr=0.02` and `momentum=0.95`. Since Muon *is* SGD-momentum plus Newton–Schulz, this is the one comparison that attributes the gain to orthogonalization itself. The test asserts Muon leaves at least 5x less remaining loss on every seed, and the docstring reports about 10–30x in practice. A follow-up check confirms Muon is insensitive to the target's conditioning: the hard target must not leave more than 4x the loss of the easy one.
+
+The rest cover plumbing: decoupled weight decay, rejecting non-2D parameters, `split_params` routing, and optimizer state.
+
+### What the tests deliberately do not claim
+
+There is no test asserting "Muon beats AdamW", and that is intentional. On a full-batch toy problem, AdamW's `m/√v` saturates near 1, which gives it about a 5x larger effective step, and it wins. The paper's ~2x compute-efficiency result is about large-scale pretraining with compute-optimal training. A CPU unit test cannot settle that either way, so I did not pretend it could.
+
+## The benchmark
+
+[`bench.py`](https://github.com/msanvarov/muon-minimal/blob/main/bench.py) is the realistic usage demo. It trains a tiny character-level transformer (2 layers, width 96, 4 heads) on CPU twice: once with Muon on the hidden matrices plus AdamW on everything else, and once with pure AdamW. Both use the same learning rate (`3e-3` by default) and weight decay of 0.01.
+
+```python
+if which == "muon":
+    muon_p, adam_p = split_params(model)
+    opts = [Muon(muon_p, lr=lr, momentum=0.95, weight_decay=0.01),
+            torch.optim.AdamW(adam_p, lr=lr, weight_decay=0.01)]
+else:
+    opts = [torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=0.01)]
+```
+
+Here `split_params` sends `qkv`, `proj` and the MLP weights to Muon, while `embed`, `pos_embed`, the LayerNorms and `lm_head` go to AdamW. That is exactly the split the paper describes.
+
+The script prints both loss curves and asserts only that each run gets below a loss of 2.0. It does not pick a winner: a 30-second CPU run on a repeated pangram corpus says nothing about billion-parameter pretraining, and the numbers move with the seed. It shows how to wire Muon into a real model, nothing more.
+
+## Running it
+
+The only dependency is PyTorch:
+
+```bash
+pip install torch
+```
+
+Then:
+
+```bash
+python test_muon.py   # a few seconds
+python bench.py       # tiny transformer, Muon+AdamW vs AdamW, ~30s
+```
+
+## What is not implemented
+
+I left out Section 3's other contribution: a distributed, ZeRO-1 style implementation that shards the Newton–Schulz work. Orthogonalizing needs the *full* momentum matrix, which clashes with sharded optimizer state, and Moonshot's open-sourced version is what makes Muon practical on a real cluster. Mine is single-device and meant for understanding.
+
+## Takeaways
+
+- **Muon treats weight matrices as matrices.** The whole idea is one extra step on top of SGD-momentum: orthogonalize the momentum so every direction gets a comparable step.
+- **Newton–Schulz is cheap and deliberately sloppy.** Five bfloat16 iterations of a tuned quintic is enough. Exact orthogonality is not the goal.
+- **The scale factor is what makes it practical.** `0.2 · √max(A,B)` makes the update RMS shape-independent and matched to AdamW, so you keep your existing learning rate and weight decay.
+- **It is a hybrid, not a replacement.** Embeddings, the LM head, norms and biases stay on AdamW. Routing by name is the part most likely to bite you on a new codebase.
+
+When would I reach for it? For a long transformer pretraining run, where most parameters are big hidden matrices, Muon is a cheap experiment because it reuses the AdamW hyperparameters. For small models or fine-tuning I would measure first: the paper's evidence is about large-scale pretraining, and my toy tests show AdamW can still win on small problems.
+
+The code is at [github.com/msanvarov/muon-minimal](https://github.com/msanvarov/muon-minimal), and the paper is on [arXiv:2502.16982](https://arxiv.org/abs/2502.16982). If you want to understand the optimizer, I would start with `newtonschulz5` and the shape-consistency test. Those two pieces explain most of why it works.

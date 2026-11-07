@@ -1,0 +1,223 @@
+---
+title: 'Gated Attention, Explained: One Sigmoid After SDPA'
+uid: gated-attention-explained
+thumbnail: /assets/thumbnails/gated-attention-explained.svg
+category: Machine Learning
+tag: PyTorch
+description: 'A walkthrough of the Qwen team paper on gated attention: what a single head-specific sigmoid gate after scaled dot-product attention changes, and a minimal PyTorch implementation with tests that pin each claim down.'
+created: '2025-06-09T13:00:00.000Z'
+modified: '2025-06-09T13:00:00.000Z'
+---
+
+Every transformer layer you have ever used has the same quiet limitation: an attention head cannot say "I have nothing useful for this token." Softmax weights always sum to 1, so a head has to put its attention *somewhere*. In large models, that somewhere is usually the first token in the sequence, which collects a big slice of attention for no semantic reason. That is the *attention sink*, and it tends to come paired with huge activation spikes that make training and quantization more fragile.
+
+The Qwen team at Alibaba took a very direct look at this in [Gated Attention for Large Language Models: Non-linearity, Sparsity, and Attention-Sink-Free](https://arxiv.org/abs/2505.06708) (Qiu et al.). They compared 30 gating variants across 15B Mixture-of-Experts and 1.7B dense models trained on 3.5 trillion tokens. The winner was the simplest one: a head-specific sigmoid gate applied right after scaled dot-product attention (SDPA). According to the abstract, it consistently improves performance, makes training more stable, tolerates larger learning rates, mitigates the attention sink, and improves long-context extrapolation.
+
+A result that strong from a change that small made me want to build it myself. So I wrote [gated-attention-minimal](https://github.com/msanvarov/gated-attention-minimal): one PyTorch module, nine self-checks, and a small training script that compares the gated and plain versions. This post walks through the paper's idea, the code, and what a tiny experiment can and cannot tell you.
+
+## The idea in plain language
+
+Standard multi-head attention does four things: project the input into queries, keys, and values; compute softmax-weighted averages of the values; concatenate the heads; and project back with an output matrix `W_O`.
+
+Gated attention adds one step between the last two. Before the heads go through `W_O`, each head's output is multiplied elementwise by a gate between 0 and 1. The gate is computed from the same input token that produced the query, so every token, in every head, on every channel, gets its own dial.
+
+Here is the whole change:
+
+```text
+G   = sigmoid(X W_θ)                     # query-dependent, per (head, channel)
+out = W_O ( SDPA(Q, K, V) ⊙ G )
+```
+
+`X` is the layer input with shape `(B, T, D)`. `W_θ` is a new learned projection with the same shape as the query projection, so `G` has one value per head, per channel, per token. `⊙` is elementwise multiplication. The paper calls this placement **G1**. It also tested gating the queries, keys, and values, gating before SDPA, sharing one gate across heads, and other activations. G1 (after SDPA, per head, elementwise, sigmoid) is the version it recommends.
+
+## Why one gate does three things
+
+The paper credits the gate with three effects. Two are mechanisms, and the third follows from the second.
+
+### 1. Non-linearity in the value path
+
+Hold the attention weights fixed for a moment and look at what happens to the values. For head `h`:
+
+```text
+out_h = A_h · X · W_V,h · W_O,h
+```
+
+Here `A_h` is the softmax matrix, and everything after it is linear in `X`. Worse, `W_V,h · W_O,h` is a product of a `D × d_h` matrix and a `d_h × D` matrix, so its rank is at most `d_h`, the head dimension. Each head's value-to-output path is a low-rank linear map.
+
+The gate sits exactly between `W_V` and `W_O`, and it is a sigmoid of the input. That breaks the purely linear `W_V · W_O` composition and adds expressiveness where attention was weakest. The paper names this "introducing non-linearity upon the low-rank mapping."
+
+### 2. Query-dependent sparsity
+
+The gate is computed from the *query* token, not the keys. So for a given token, a head can close its gate and contribute nothing, no matter where its softmax weights landed. Plain attention has no off switch. Gated attention has one per channel.
+
+### 3. No attention sink
+
+Here is how the third claim follows from the second. If a head that has nothing to add can just close its gate, it no longer needs to dump its probability mass on token 0 as a parking spot. The paper reports that the gate mitigates that sink, and that the massive activations that come with it shrink too.
+
+## The implementation
+
+The core is one file, `gated_attention.py`. The module takes a `gate` flag, and `gate=False` gives you the *identical* module without the gate, using the same projections and code path. Any A/B comparison then differs in exactly one thing, which matters a lot when your experiment is small and noisy.
+
+### Projections and the gate
+
+```python
+self.q_proj = nn.Linear(dim, inner, bias=False)
+self.k_proj = nn.Linear(dim, inner, bias=False)
+self.v_proj = nn.Linear(dim, inner, bias=False)
+self.o_proj = nn.Linear(inner, dim, bias=False)
+
+self.to_gate = nn.Linear(dim, inner, bias=True) if gate else None
+if self.to_gate is not None:
+    with torch.no_grad():
+        self.to_gate.bias.fill_(gate_bias_init)
+```
+
+`inner` is `n_heads * head_dim`, so `to_gate` is exactly `W_θ`. It has the same shape as `q_proj` plus a bias. The cost is one extra `D × (H·d_h)` matmul per layer. At `dim=512, n_heads=8`, that works out to 262,144 weights plus 512 biases per layer.
+
+The gate gets a bias and the other projections don't. That's deliberate. The bias sets where the gate starts, and that matters more than you might expect.
+
+### Where the gate starts
+
+```text
+gate_bias_init: the gate's bias at init. 0.0 starts every gate at 0.5,
+    which halves the residual branch's scale early in training; the
+    paper's own runs start open. Raise it to ~4.0 (sigmoid ~0.98) if you
+    are retrofitting the gate onto a trained checkpoint.
+```
+
+With a zero bias and small random weights, `sigmoid(≈0) ≈ 0.5`, so every gate starts half-closed and the attention branch is scaled by half. Training from scratch absorbs that fine. In my runs, though, it noticeably slowed the first few hundred steps on one of five seeds. If you're adding the gate to a model that is already trained, you want it to start as close to a no-op as possible. `gate_bias_init=4.0` gives `sigmoid(4) ≈ 0.98`, so the pretrained behavior survives and the gate can learn to close from there.
+
+### The forward pass
+
+```python
+def _heads(self, t, B, T):
+    return t.view(B, T, self.n_heads, self.head_dim).transpose(1, 2)
+```
+
+`_heads` turns `(B, T, H·d_h)` into `(B, H, T, d_h)`, the layout PyTorch's fused attention expects. The gate goes through the same reshape. That is what makes it head-specific with no extra bookkeeping: channel `c` of head `h` in the gate lines up with channel `c` of head `h` in the attention output.
+
+```python
+o = F.scaled_dot_product_attention(
+    q, k, v, is_causal=True,
+    dropout_p=self.dropout if self.training else 0.0)
+
+gate = None
+if self.to_gate is not None:
+    gate = self._heads(self.to_gate(x), B, T).sigmoid()
+    o = o * gate
+
+out = self.o_proj(o.transpose(1, 2).reshape(B, T, -1))
+```
+
+That's the paper in three lines. `o` and `gate` are both `(B, H, T, d_h)`, the multiply is elementwise, and only then do the heads get concatenated and sent through `W_O`. Note that the gate reads `x`, the same input the queries came from. That is what makes it query-dependent.
+
+### A second path for looking inside
+
+The fused SDPA kernel never materializes the attention matrix, and you need that matrix to measure a sink. So `forward(x, return_attn=True)` takes a hand-written path:
+
+```python
+t = torch.arange(T, device=x.device)
+logits = (q @ k.transpose(-1, -2)) / math.sqrt(self.head_dim)
+attn = logits.masked_fill(
+    ~(t[:, None] >= t[None, :]), float("-inf")).softmax(-1)
+o = attn @ v
+```
+
+It returns `(out, attn, gate)`, with `attn` shaped `(B, H, T, T)` and `gate` shaped `(B, H, T, d_h)`. Having two code paths is risky, so one of the tests checks that they agree.
+
+### Two metrics
+
+```python
+def sink_mass(attn):
+    return attn[:, :, 1:, 0].mean().item()
+
+def gate_sparsity(gate, threshold=0.1):
+    return (gate < threshold).float().mean().item()
+```
+
+`sink_mass` is the average share of attention each query sends to position 0. Query 0 is skipped because it can only attend to itself. If there's no sink, the value sits near uniform, roughly `1/T`. A strong sink pushes it toward 1. `gate_sparsity` is the fraction of gate values below 0.1, meaning channels that are effectively switched off.
+
+## What the tests pin down
+
+`test_gated_attention.py` has nine checks. They run in an instant, and each one ties to a specific claim. Here are the ones I care about most.
+
+**The gate is the only difference.** Copy the shared weights into an ungated module, then force the gate fully open: zero weights, bias `+30`, so `sigmoid(30)` is 1 to float precision. The gated module must reproduce plain attention:
+
+```python
+with torch.no_grad():
+    gated.to_gate.weight.zero_()
+    gated.to_gate.bias.fill_(30.0)
+x = torch.randn(2, 24, 64)
+assert torch.allclose(gated(x), plain(x), atol=1e-5), \
+    (gated(x) - plain(x)).abs().max()
+```
+
+**The gate can close completely.** Set the bias to `-30` instead, and the layer's output must be exactly zero:
+
+```python
+assert attn(torch.randn(2, 16, 64)).abs().max() < 1e-6
+```
+
+This is the sparsity mechanism made concrete. Plain softmax attention has no setting that produces a zero output.
+
+**The two attention paths agree.** The hand-written path must match the fused kernel to `1e-5`, every row of the attention map must sum to 1, and nothing above the diagonal may be non-zero.
+
+**The gate is head-specific and query-dependent.** The gate's shape is checked as `(4, 4, 32, 16)`. Its values must vary across query positions, and two heads must not share a gate.
+
+The remaining checks cover output shapes, causality (perturbing future tokens must not change earlier outputs), gradients actually reaching `W_θ` and its bias, `gate_bias_init=4.0` producing gates above 0.98, and the two metric helpers on hand-built inputs.
+
+## The tiny experiment, honestly
+
+`train.py` trains two 3-layer character-level LMs (`dim=128`, 4 heads, context 64) on a few hundred characters of pangrams repeated 48 times, with the same seed, gate on versus gate off. It runs on CPU in about a minute. This is the output in the README:
+
+```text
+                                   gated                     plain
+final loss                        0.0378                    0.0457
+sink mass / layer  [0.045, 0.042, 0.041]     [0.040, 0.038, 0.037]
+peak |hidden|                       22.8                      29.3
+gate sparsity      [0.058, 0.086, 0.162]                         -
+  ...at init       [0.000, 0.000, 0.000]                         -
+```
+
+Here's how I read it, checked across 5 seeds:
+
+- **Reproduces: learned sparsity.** The gate starts with *zero* values below 0.1 and ends with 4–20% of channels switched off, rising with depth. This held across all 5 seeds. The script asserts it, so it fails if the gate doesn't learn to close.
+- **Reproduces directionally: smaller activations.** The gated model's peak hidden-state magnitude was lower on 5 of 5 seeds, by 8–20%. That lines up with the paper's finding on massive activations, but at a scale far too small to call it confirmation.
+- **Does not reproduce: the attention sink.** No sink forms in *either* model. Sink mass sits near uniform (roughly `1/T`) in both models, so there is no sink for the gate to remove. Sinks show up in large-scale pretraining. A 3-layer model on a tiny corpus never develops one. So this run neither confirms nor refutes the headline claim, and the script prints exactly that instead of asserting it.
+- **Not a loss comparison.** The gated model won on 3 of 5 seeds. At this scale, that's noise.
+
+To me, that last section matters as much as the code. A minimal implementation is only useful if it's clear about what it demonstrates. The mechanism checks (open gate recovers plain attention, closed gate silences the layer) are exact. The emergent behaviors the paper reports at scale are things a CPU script can only point toward.
+
+## Running it
+
+```bash
+pip install torch
+python test_gated_attention.py   # 9 checks, instant
+python train.py                  # gated vs plain tiny LM, ~1 min
+```
+
+`train.py` accepts `--steps`, `--bs`, `--lr`, and `--seed`, so it's easy to repeat the seed sweep. Using the module in your own model:
+
+```python
+import torch
+from gated_attention import GatedAttention
+
+attn = GatedAttention(dim=512, n_heads=8, gate=True)
+y = attn(torch.randn(2, 1024, 512))
+
+# inspect what the gate is doing
+y, attn_map, gate = attn(x, return_attn=True)   # (B,H,T,T) and (B,H,T,Dh)
+```
+
+## Scope
+
+I kept it to attention and the gate. There is no RoPE (positional encoding belongs in your model), no GQA/MQA, no KV-cache decoding, and none of the paper's other gate placements. G1 is the variant the paper recommends, and G1 is what this implements. Adding the gate to a GQA or RoPE attention block is mechanical: compute `sigmoid(to_gate(x))`, reshape it to match the per-head output, and multiply before the output projection.
+
+## Takeaways
+
+- **It's a cheap change.** One extra linear layer per attention block and one elementwise multiply. If you're training a transformer from scratch, it's an easy ablation to run.
+- **Mind the init.** Starting at `sigmoid(0) = 0.5` halves the attention branch. For fine-tuning or retrofitting a pretrained model, start the gate open (`gate_bias_init≈4`).
+- **The gate gives each head an off switch.** That one fact explains most of the paper. Heads no longer have to fake "do nothing" by parking attention on token 0.
+- **Separate mechanism from emergence.** You can verify the mechanism exactly with unit tests. Sink removal and stability at scale come from the paper's large runs, not from a toy model.
+
+The code is at [github.com/msanvarov/gated-attention-minimal](https://github.com/msanvarov/gated-attention-minimal) (MIT), and the paper is [arXiv:2505.06708](https://arxiv.org/abs/2505.06708). If you add the gate to a bigger model and do see the sink go away, I'd love to hear about it.

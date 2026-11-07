@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="npm Supply-Chain Defenses thumbnail">
+  <defs>
+    <linearGradient id="npmscBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e0d12"/>
+      <stop offset="1" stop-color="#1c1d2b"/>
+    </linearGradient>
+    <linearGradient id="npmscRoot" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6f88ff"/>
+      <stop offset="1" stop-color="#3b58da"/>
+    </linearGradient>
+    <radialGradient id="npmscFlagGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffb648" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#ffb648" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="npmscDots" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#5b78f6" fill-opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#npmscBg)"/>
+  <rect width="1200" height="675" fill="url(#npmscDots)"/>
+
+  <!-- defenses, top-left -->
+  <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="20" fill="#5b78f6" fill-opacity="0.45">
+    <text x="80" y="120">ignore-scripts=true</text>
+    <text x="80" y="152">save-exact=true</text>
+    <text x="80" y="184">npm audit signatures</text>
+    <text x="80" y="216">find-install-scripts</text>
+    <text x="80" y="248">--allow-fs-read=./src</text>
+  </g>
+
+  <!-- permission boundary -->
+  <rect x="470" y="56" width="670" height="410" rx="20" fill="#15161f" fill-opacity="0.55"
+        stroke="#5b78f6" stroke-opacity="0.45" stroke-width="2" stroke-dasharray="10 8"/>
+  <text x="494" y="88" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" fill="#9aa9ff" fill-opacity="0.8">node --permission</text>
+
+  <!-- edges -->
+  <g fill="none" stroke="#5b78f6" stroke-opacity="0.55" stroke-width="2">
+    <path d="M800,154 C800,180 620,176 620,206"/>
+    <path d="M800,154 L800,206"/>
+    <path d="M800,154 C800,180 980,176 980,206"/>
+    <path d="M620,250 C620,274 560,272 560,296"/>
+    <path d="M620,250 C620,274 680,272 680,296"/>
+    <path d="M980,250 C980,274 920,272 920,296"/>
+    <path d="M980,250 C980,274 1040,272 1040,296"/>
+  </g>
+  <path d="M800,250 L800,296" fill="none" stroke="#ffb648" stroke-width="2.5" stroke-dasharray="6 5"/>
+
+  <g font-family="'JetBrains Mono', ui-monospace, monospace" text-anchor="middle">
+    <!-- root -->
+    <rect x="720" y="106" width="160" height="48" rx="12" fill="url(#npmscRoot)" stroke="#9aa9ff" stroke-width="2"/>
+    <text x="800" y="137" font-size="18" font-weight="700" fill="#ffffff">my-app</text>
+
+    <!-- level 2 -->
+    <g font-size="16" fill="#f6f1ea" fill-opacity="0.8">
+      <rect x="550" y="206" width="140" height="44" rx="10" fill="#1b1d2a" stroke="#2a2d44" stroke-width="2"/>
+      <text x="620" y="234">http-kit</text>
+      <rect x="730" y="206" width="140" height="44" rx="10" fill="#1b1d2a" stroke="#2a2d44" stroke-width="2"/>
+      <text x="800" y="234">log-fmt</text>
+      <rect x="910" y="206" width="140" height="44" rx="10" fill="#1b1d2a" stroke="#2a2d44" stroke-width="2"/>
+      <text x="980" y="234">cfg-load</text>
+    </g>
+
+    <!-- level 3 -->
+    <g font-size="15" fill="#f6f1ea" fill-opacity="0.6">
+      <rect x="505" y="296" width="110" height="40" rx="10" fill="#17182a" stroke="#2a2d44" stroke-width="2"/>
+      <text x="560" y="321">ansi-x</text>
+      <rect x="625" y="296" width="110" height="40" rx="10" fill="#17182a" stroke="#2a2d44" stroke-width="2"/>
+      <text x="680" y="321">url-x</text>
+      <rect x="865" y="296" width="110" height="40" rx="10" fill="#17182a" stroke="#2a2d44" stroke-width="2"/>
+      <text x="920" y="321">deep-get</text>
+      <rect x="985" y="296" width="110" height="40" rx="10" fill="#17182a" stroke="#2a2d44" stroke-width="2"/>
+      <text x="1040" y="321">tiny-ms</text>
+    </g>
+
+    <!-- flagged package -->
+    <ellipse cx="800" cy="316" rx="110" ry="60" fill="url(#npmscFlagGlow)"/>
+    <rect x="745" y="296" width="110" height="40" rx="10" fill="#2a2216" stroke="#ffb648" stroke-width="2.5"/>
+    <text x="800" y="321" font-size="15" font-weight="700" fill="#ffb648">helpr</text>
+
+    <!-- scanner finding -->
+    <rect x="610" y="378" width="380" height="34" rx="8" fill="#ffb648" fill-opacity="0.1" stroke="#ffb648" stroke-opacity="0.5"/>
+    <rect x="622" y="385" width="76" height="20" rx="10" fill="#ffb648" fill-opacity="0.18"/>
+    <text x="660" y="400" font-size="12" font-weight="700" letter-spacing="1.5" fill="#ffb648">REVIEW</text>
+    <text x="838" y="401" font-size="15" fill="#ffb648">postinstall: curl … | sh</text>
+  </g>
+  <line x1="800" y1="336" x2="800" y2="378" stroke="#ffb648" stroke-opacity="0.6" stroke-width="2"/>
+
+  <!-- title -->
+  <g font-family="'Space Grotesk', 'Inter', system-ui, sans-serif" fill="#f6f1ea">
+    <text x="80" y="535" font-size="22" letter-spacing="6" fill-opacity="0.55">NODE.JS · SECURITY</text>
+    <text x="80" y="582" font-size="44" font-weight="600">npm Supply-Chain Defenses</text>
+  </g>
+</svg>

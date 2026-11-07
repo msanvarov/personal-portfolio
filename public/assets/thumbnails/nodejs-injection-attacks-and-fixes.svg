@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="Injection Attacks in Node.js thumbnail">
+  <defs>
+    <linearGradient id="njaBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e0d12"/>
+      <stop offset="1" stop-color="#1c1d2b"/>
+    </linearGradient>
+    <linearGradient id="njaWall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6f88ff"/>
+      <stop offset="1" stop-color="#3b58da"/>
+    </linearGradient>
+    <linearGradient id="njaHex" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6f88ff"/>
+      <stop offset="1" stop-color="#3b58da"/>
+    </linearGradient>
+    <linearGradient id="njaPill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffb648" stop-opacity="0.03"/>
+      <stop offset="1" stop-color="#ffb648" stop-opacity="0.16"/>
+    </linearGradient>
+    <pattern id="njaDots" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#5b78f6" fill-opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#njaBg)"/>
+  <rect width="1200" height="675" fill="url(#njaDots)"/>
+
+  <!-- column headers -->
+  <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" letter-spacing="3" fill-opacity="0.55">
+    <text x="380" y="78" fill="#ffb648">UNTRUSTED INPUT</text>
+    <text x="1040" y="78" text-anchor="middle" fill="#9aa9ff">DATA, NOT CODE</text>
+  </g>
+
+  <!-- payload rows -->
+  <g font-family="'JetBrains Mono', ui-monospace, monospace">
+    <g transform="translate(380 100)">
+      <rect width="440" height="52" rx="10" fill="url(#njaPill)" stroke="#ffb648" stroke-opacity="0.35"/>
+      <text x="20" y="33" font-size="15" letter-spacing="2" fill="#9aa9ff" fill-opacity="0.8">CMD</text>
+      <text x="100" y="34" font-size="20" fill="#ffb648">x; echo PWNED</text>
+    </g>
+    <g transform="translate(380 172)">
+      <rect width="440" height="52" rx="10" fill="url(#njaPill)" stroke="#ffb648" stroke-opacity="0.35"/>
+      <text x="20" y="33" font-size="15" letter-spacing="2" fill="#9aa9ff" fill-opacity="0.8">SQL</text>
+      <text x="100" y="34" font-size="20" fill="#ffb648">' OR '1'='1</text>
+    </g>
+    <g transform="translate(380 244)">
+      <rect width="440" height="52" rx="10" fill="url(#njaPill)" stroke="#ffb648" stroke-opacity="0.35"/>
+      <text x="20" y="33" font-size="15" letter-spacing="2" fill="#9aa9ff" fill-opacity="0.8">PATH</text>
+      <text x="100" y="34" font-size="20" fill="#ffb648">../secret.txt</text>
+    </g>
+    <g transform="translate(380 316)">
+      <rect width="440" height="52" rx="10" fill="url(#njaPill)" stroke="#ffb648" stroke-opacity="0.35"/>
+      <text x="20" y="33" font-size="15" letter-spacing="2" fill="#9aa9ff" fill-opacity="0.8">PROTO</text>
+      <text x="100" y="34" font-size="20" fill="#ffb648">{"__proto__": …}</text>
+    </g>
+    <g transform="translate(380 388)">
+      <rect width="440" height="52" rx="10" fill="url(#njaPill)" stroke="#ffb648" stroke-opacity="0.35"/>
+      <text x="20" y="33" font-size="15" letter-spacing="2" fill="#9aa9ff" fill-opacity="0.8">REGEX</text>
+      <text x="100" y="34" font-size="20" fill="#ffb648">'a'.repeat(30)+'!'</text>
+    </g>
+  </g>
+
+  <!-- stop marks where each payload hits the wall -->
+  <g stroke="#ffb648" stroke-width="3" stroke-linecap="round">
+    <g transform="translate(856 126)"><path d="M-7,-7 L7,7 M7,-7 L-7,7"/></g>
+    <g transform="translate(856 198)"><path d="M-7,-7 L7,7 M7,-7 L-7,7"/></g>
+    <g transform="translate(856 270)"><path d="M-7,-7 L7,7 M7,-7 L-7,7"/></g>
+    <g transform="translate(856 342)"><path d="M-7,-7 L7,7 M7,-7 L-7,7"/></g>
+    <g transform="translate(856 414)"><path d="M-7,-7 L7,7 M7,-7 L-7,7"/></g>
+  </g>
+  <g stroke="#ffb648" stroke-opacity="0.4" stroke-width="2" stroke-dasharray="4 6">
+    <line x1="824" y1="126" x2="842" y2="126"/>
+    <line x1="824" y1="198" x2="842" y2="198"/>
+    <line x1="824" y1="270" x2="842" y2="270"/>
+    <line x1="824" y1="342" x2="842" y2="342"/>
+    <line x1="824" y1="414" x2="842" y2="414"/>
+  </g>
+
+  <!-- the boundary -->
+  <rect x="878" y="92" width="12" height="356" rx="6" fill="url(#njaWall)"/>
+  <rect x="872" y="92" width="24" height="356" rx="12" fill="#5b78f6" fill-opacity="0.12"/>
+
+  <!-- clean flow into the app -->
+  <g fill="none" stroke="#9aa9ff" stroke-opacity="0.45" stroke-width="2">
+    <path d="M896,126 C940,126 950,230 975,256"/>
+    <path d="M896,198 C930,198 950,250 968,262"/>
+    <path d="M896,270 L964,270"/>
+    <path d="M896,342 C930,342 950,290 968,278"/>
+    <path d="M896,414 C940,414 950,310 975,284"/>
+  </g>
+
+  <!-- app hexagon with check -->
+  <g transform="translate(1050 270)">
+    <polygon points="0,-82 71,-41 71,41 0,82 -71,41 -71,-41" fill="#0e0d12" stroke="#2a2d44" stroke-width="2"/>
+    <polygon points="0,-64 55,-32 55,32 0,64 -55,32 -55,-32" fill="url(#njaHex)" stroke="#9aa9ff" stroke-width="2"/>
+    <path d="M-20,2 L-5,17 L22,-12" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- title -->
+  <g font-family="'Space Grotesk', 'Inter', system-ui, sans-serif" fill="#f6f1ea">
+    <text x="80" y="535" font-size="22" letter-spacing="6" fill-opacity="0.55">NODE.JS · SECURITY</text>
+    <text x="80" y="582" font-size="44" font-weight="600">Five Injection Bugs, Exploited and Fixed</text>
+  </g>
+</svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="Muon optimizer explained thumbnail">
+  <defs>
+    <linearGradient id="muonBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e0d12"/>
+      <stop offset="1" stop-color="#1c1d2b"/>
+    </linearGradient>
+    <linearGradient id="muonBar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6f88ff"/>
+      <stop offset="1" stop-color="#3b58da"/>
+    </linearGradient>
+    <pattern id="muonDots" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#5b78f6" fill-opacity="0.08"/>
+    </pattern>
+    <marker id="muonArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#9aa9ff" fill-opacity="0.7"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#muonBg)"/>
+  <rect width="1200" height="675" fill="url(#muonDots)"/>
+
+  <g font-family="'JetBrains Mono', ui-monospace, monospace">
+    <!-- left: skewed singular values of the momentum -->
+    <text x="86" y="104" font-size="18" fill="#f6f1ea" fill-opacity="0.6">momentum  M = U S Vᵀ</text>
+    <rect x="86" y="140" width="28" height="280" rx="4" fill="#9aa9ff" fill-opacity="0.55"/>
+    <rect x="126" y="250" width="28" height="170" rx="4" fill="#9aa9ff" fill-opacity="0.55"/>
+    <rect x="166" y="310" width="28" height="110" rx="4" fill="#9aa9ff" fill-opacity="0.55"/>
+    <rect x="206" y="350" width="28" height="70" rx="4" fill="#9aa9ff" fill-opacity="0.55"/>
+    <rect x="246" y="375" width="28" height="45" rx="4" fill="#9aa9ff" fill-opacity="0.55"/>
+    <rect x="286" y="392" width="28" height="28" rx="4" fill="#9aa9ff" fill-opacity="0.55"/>
+    <rect x="326" y="404" width="28" height="16" rx="4" fill="#9aa9ff" fill-opacity="0.55"/>
+    <rect x="366" y="411" width="28" height="9" rx="4" fill="#9aa9ff" fill-opacity="0.55"/>
+    <line x1="80" y1="421" x2="400" y2="421" stroke="#2a2d44" stroke-width="2"/>
+    <text x="86" y="456" font-size="16" fill="#f6f1ea" fill-opacity="0.4">σ: a few directions dominate</text>
+
+    <!-- middle: Newton-Schulz box -->
+    <line x1="408" y1="280" x2="446" y2="280" stroke="#9aa9ff" stroke-opacity="0.7" stroke-width="2.5" marker-end="url(#muonArrow)"/>
+    <rect x="452" y="210" width="296" height="140" rx="14" fill="#15161f" stroke="#5b78f6" stroke-opacity="0.8" stroke-width="2"/>
+    <text x="600" y="254" text-anchor="middle" font-size="21" font-weight="700" fill="#f6f1ea">Newton–Schulz × 5</text>
+    <text x="600" y="287" text-anchor="middle" font-size="14" fill="#9aa9ff">3.4445x − 4.775x³ + 2.0315x⁵</text>
+    <text x="600" y="322" text-anchor="middle" font-size="13" letter-spacing="3" fill="#f6f1ea" fill-opacity="0.45">BFLOAT16</text>
+    <line x1="752" y1="280" x2="790" y2="280" stroke="#9aa9ff" stroke-opacity="0.7" stroke-width="2.5" marker-end="url(#muonArrow)"/>
+
+    <!-- right: flattened spectrum -->
+    <text x="800" y="104" font-size="18" fill="#f6f1ea" fill-opacity="0.6">update  O ≈ U Vᵀ</text>
+    <rect x="800" y="262" width="28" height="158" rx="4" fill="url(#muonBar)" fill-opacity="1"/>
+    <rect x="840" y="274" width="28" height="146" rx="4" fill="url(#muonBar)" fill-opacity="1"/>
+    <rect x="880" y="266" width="28" height="154" rx="4" fill="url(#muonBar)" fill-opacity="1"/>
+    <rect x="920" y="280" width="28" height="140" rx="4" fill="url(#muonBar)" fill-opacity="1"/>
+    <rect x="960" y="270" width="28" height="150" rx="4" fill="url(#muonBar)" fill-opacity="1"/>
+    <rect x="1000" y="276" width="28" height="144" rx="4" fill="url(#muonBar)" fill-opacity="1"/>
+    <rect x="1040" y="264" width="28" height="156" rx="4" fill="url(#muonBar)" fill-opacity="1"/>
+    <rect x="1080" y="272" width="28" height="148" rx="4" fill="url(#muonBar)" fill-opacity="1"/>
+    <line x1="794" y1="270" x2="1120" y2="270" stroke="#ffb648" stroke-opacity="0.8" stroke-width="2" stroke-dasharray="6 6"/>
+    <text x="1120" y="258" text-anchor="end" font-size="15" fill="#ffb648">σ ≈ 1</text>
+    <line x1="794" y1="421" x2="1120" y2="421" stroke="#2a2d44" stroke-width="2"/>
+    <text x="800" y="456" font-size="16" fill="#ffb648" fill-opacity="0.85">× 0.2·√max(A,B)  →  RMS 0.2</text>
+  </g>
+
+  <!-- title -->
+  <g font-family="'Space Grotesk', 'Inter', system-ui, sans-serif" fill="#f6f1ea">
+    <text x="80" y="535" font-size="22" letter-spacing="6" fill-opacity="0.55">MACHINE LEARNING · PAPER</text>
+    <text x="80" y="582" font-size="44" font-weight="600">Muon: Orthogonalized Momentum</text>
+  </g>
+</svg>

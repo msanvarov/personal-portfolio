@@ -93,9 +93,9 @@ const PostsListPage = () => {
                 label={post.metadata.title}
                 delay={Math.min(i, 3) * 0.06}
                 tilt={2}
-                className="grid gap-5 p-4 md:grid-cols-[15rem_minmax(0,1fr)] md:p-5"
+                className="grid gap-5 p-4 md:grid-cols-[18rem_minmax(0,1fr)] md:p-5"
               >
-                <div className="bento-well aspect-[16/9] overflow-hidden md:aspect-auto md:min-h-44">
+                <div className="bento-well aspect-[16/9] self-start overflow-hidden">
                   <img
                     src={post.metadata.thumbnail}
                     alt="thumbnail"

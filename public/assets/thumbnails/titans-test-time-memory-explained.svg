@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="Titans: Learning to Memorize at Test Time thumbnail">
+  <defs>
+    <linearGradient id="titansBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e0d12"/>
+      <stop offset="1" stop-color="#1c1d2b"/>
+    </linearGradient>
+    <linearGradient id="titansMem" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6f88ff"/>
+      <stop offset="1" stop-color="#3b58da"/>
+    </linearGradient>
+    <linearGradient id="titansWindow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5b78f6" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#5b78f6" stop-opacity="0.25"/>
+    </linearGradient>
+    <pattern id="titansDots" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#5b78f6" fill-opacity="0.08"/>
+    </pattern>
+    <marker id="titansArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#9aa9ff"/>
+    </marker>
+    <marker id="titansArrowAmber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#ffb648"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#titansBg)"/>
+  <rect width="1200" height="675" fill="url(#titansDots)"/>
+
+  <!-- update equations, top-left -->
+  <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="20" fill="#5b78f6" fill-opacity="0.5">
+    <text x="80" y="110">S = η·S − θ·∇loss</text>
+    <text x="80" y="142">M = (1 − α)·M + S</text>
+    <text x="80" y="174">y = M(q)</text>
+  </g>
+
+  <!-- token stream -->
+  <g transform="translate(80 380)">
+    <g fill="#f6f1ea" fill-opacity="0.12">
+      <rect x="0" width="40" height="40" rx="8"/>
+      <rect x="52" width="40" height="40" rx="8"/>
+      <rect x="104" width="40" height="40" rx="8"/>
+      <rect x="208" width="40" height="40" rx="8"/>
+      <rect x="260" width="40" height="40" rx="8"/>
+      <rect x="312" width="40" height="40" rx="8"/>
+      <rect x="364" width="40" height="40" rx="8"/>
+      <rect x="416" width="40" height="40" rx="8"/>
+    </g>
+    <!-- needle token, far outside the window -->
+    <rect x="156" width="40" height="40" rx="8" fill="#ffb648" fill-opacity="0.2" stroke="#ffb648" stroke-width="2"/>
+    <circle cx="176" cy="20" r="6" fill="#ffb648"/>
+    <g fill="#f6f1ea" fill-opacity="0.12">
+      <rect x="468" width="40" height="40" rx="8"/>
+      <rect x="520" width="40" height="40" rx="8"/>
+      <rect x="572" width="40" height="40" rx="8"/>
+      <rect x="624" width="40" height="40" rx="8"/>
+      <rect x="676" width="40" height="40" rx="8"/>
+      <rect x="728" width="40" height="40" rx="8"/>
+      <rect x="780" width="40" height="40" rx="8"/>
+      <rect x="832" width="40" height="40" rx="8"/>
+      <rect x="884" width="40" height="40" rx="8"/>
+      <rect x="936" width="40" height="40" rx="8"/>
+    </g>
+    <rect x="770" y="-12" width="216" height="64" rx="12" fill="url(#titansWindow)" stroke="#5b78f6" stroke-width="2" stroke-dasharray="6 6"/>
+    <text x="878" y="80" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" fill="#9aa9ff" fill-opacity="0.8">attention window</text>
+    <!-- output token -->
+    <rect x="1000" y="0" width="40" height="40" rx="8" fill="#ffb648"/>
+  </g>
+
+  <!-- neural memory: small MLP -->
+  <g transform="translate(560 90)">
+    <rect width="420" height="200" rx="18" fill="#15161f" stroke="#2a2d44" stroke-width="2"/>
+    <text x="24" y="38" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="16" letter-spacing="2" fill="#9aa9ff">NEURAL MEMORY  M</text>
+    <g stroke="#5b78f6" stroke-opacity="0.35" stroke-width="1.5">
+      <line x1="110" y1="80" x2="210" y2="70"/><line x1="110" y1="80" x2="210" y2="110"/><line x1="110" y1="80" x2="210" y2="150"/>
+      <line x1="110" y1="125" x2="210" y2="70"/><line x1="110" y1="125" x2="210" y2="110"/><line x1="110" y1="125" x2="210" y2="150"/>
+      <line x1="110" y1="170" x2="210" y2="70"/><line x1="110" y1="170" x2="210" y2="110"/><line x1="110" y1="170" x2="210" y2="150"/>
+      <line x1="210" y1="70" x2="310" y2="80"/><line x1="210" y1="110" x2="310" y2="80"/><line x1="210" y1="150" x2="310" y2="80"/>
+      <line x1="210" y1="70" x2="310" y2="125"/><line x1="210" y1="110" x2="310" y2="125"/><line x1="210" y1="150" x2="310" y2="125"/>
+      <line x1="210" y1="70" x2="310" y2="170"/><line x1="210" y1="110" x2="310" y2="170"/><line x1="210" y1="150" x2="310" y2="170"/>
+    </g>
+    <!-- highlighted updated path -->
+    <g stroke="#ffb648" stroke-width="2.5">
+      <line x1="110" y1="125" x2="210" y2="110"/>
+      <line x1="210" y1="110" x2="310" y2="80"/>
+    </g>
+    <g fill="url(#titansMem)" stroke="#9aa9ff" stroke-width="1.5">
+      <circle cx="110" cy="80" r="11"/><circle cx="110" cy="125" r="11"/><circle cx="110" cy="170" r="11"/>
+      <circle cx="210" cy="70" r="11"/><circle cx="210" cy="110" r="11"/><circle cx="210" cy="150" r="11"/>
+      <circle cx="310" cy="80" r="11"/><circle cx="310" cy="125" r="11"/><circle cx="310" cy="170" r="11"/>
+    </g>
+    <text x="396" y="38" text-anchor="end" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14" fill="#ffb648" fill-opacity="0.85">∇ surprise</text>
+  </g>
+
+  <!-- needle written into memory -->
+  <path d="M256,372 C256,250 420,190 552,190" fill="none" stroke="#ffb648" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#titansArrowAmber)"/>
+  <text x="300" y="258" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" fill="#ffb648" fill-opacity="0.85">write</text>
+  <!-- memory read to the output -->
+  <path d="M988,190 C1080,190 1100,280 1100,366" fill="none" stroke="#9aa9ff" stroke-width="2.5" marker-end="url(#titansArrow)"/>
+  <text x="1040" y="262" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" fill="#9aa9ff" fill-opacity="0.85">read</text>
+
+  <!-- title -->
+  <g font-family="'Space Grotesk', 'Inter', system-ui, sans-serif" fill="#f6f1ea">
+    <text x="80" y="535" font-size="22" letter-spacing="6" fill-opacity="0.55">MACHINE LEARNING · PAPER</text>
+    <text x="80" y="582" font-size="44" font-weight="600">Titans: Memory That Learns at Test Time</text>
+  </g>
+</svg>

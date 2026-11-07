@@ -1,0 +1,288 @@
+---
+title: 'Titans Explained: A Neural Memory That Learns While It Reads'
+uid: titans-test-time-memory-explained
+thumbnail: /assets/thumbnails/titans-test-time-memory-explained.svg
+category: Machine Learning
+tag: PyTorch
+description: 'A practical walkthrough of Google''s Titans paper, where a small MLP memory trains itself by gradient descent during the forward pass, and of my minimal PyTorch implementation of it.'
+created: '2025-02-03T14:00:00.000Z'
+modified: '2025-02-03T14:00:00.000Z'
+---
+
+Every sequence model has to decide what to do with the past. Attention keeps all of it and looks at it directly, which is accurate but costs quadratic time and memory, so the context window has a hard ceiling. Recurrent models squeeze the past into a fixed-size state, which is cheap but lossy: whatever doesn't fit into the state is gone.
+
+[Titans: Learning to Memorize at Test Time](https://arxiv.org/abs/2501.00663) (Behrouz, Zhong, Mirrokni, Google) proposes a third option. Keep attention, but only over a short window, and treat it as short-term memory. Then add a separate **long-term memory** that is itself a small neural network, and let that network *train on the sequence while the model is reading it*. Not during pre-training: during the forward pass, at test time.
+
+The abstract reports that Titans beat Transformers and recent linear recurrent models on language modeling, commonsense reasoning, genomics and time series, and that they scale past 2M-token contexts with better needle-in-a-haystack accuracy than the baselines. I wanted to understand the mechanism well enough to build it from scratch, so I wrote [titans-minimal](https://github.com/msanvarov/titans-minimal): one file, about 250 lines of PyTorch, plus a test file that pins down the behaviours that are easy to get silently wrong. This post explains the paper through that code.
+
+## The core idea in plain language
+
+Think of the memory as a key-value store, except that the store is an MLP instead of a table. To "write" a pair `(k, v)` you nudge the MLP's weights so that `M(k)` comes out closer to `v`. To "read" you feed it a query and take whatever comes out.
+
+The nudge is a gradient step. Each incoming token hands the memory a tiny regression problem: "given this key, produce this value." How badly the memory fails is what the paper calls **surprise**. A token the memory already predicts well produces a small gradient and barely changes anything. A token that contradicts what the memory holds produces a large gradient and gets written in hard. That is a nice property: the memory spends its capacity on what is new.
+
+Two more pieces make it practical:
+
+- **Momentum.** One surprising token shouldn't be the only thing that matters; the tokens right after it are probably related. So the update carries a running "past surprise" term, the way SGD with momentum does.
+- **Forgetting.** The memory is a fixed-size network. If it only ever accumulates, it fills up and gets noisy. A forget gate decays the old weights a little at every step.
+
+The part I find most interesting: all three knobs (how surprised to be, how much momentum to keep, how much to forget) are computed *from the token itself*. The memory decides per token how to update.
+
+## The exact math
+
+Here are the four equations, written the way they appear in the repo's README:
+
+```text
+loss_t = ‖ M_{t-1}(k_t) − v_t ‖²              k_t = x_t W_K,  v_t = x_t W_V
+S_t    = η_t · S_{t-1} − θ_t · ∇loss_t         past surprise + momentary surprise
+M_t    = (1 − α_t) · M_{t-1} + S_t             α_t forgets
+y_t    = M_t(q_t)                              q_t = x_t W_Q
+```
+
+Reading them line by line:
+
+1. **Associative loss.** Project the token into a key and a value, and measure how far the current memory is from mapping one to the other.
+2. **Surprise with momentum.** `S_t` is the update direction. `θ_t` scales the fresh gradient (momentary surprise, effectively an inner learning rate) and `η_t` decides how much of the previous update to carry forward (past surprise).
+3. **Forgetting.** Shrink the old weights by `(1 − α_t)`, then add the update. With `α_t = 0` nothing is forgotten; with `α_t = 1` the old memory is discarded entirely.
+4. **Retrieval.** Project the token to a query and run it through the memory. No weights change on a read.
+
+There are two loops here, and keeping them apart is the key to understanding the paper:
+
+- The **inner loop** updates the memory MLP's weights, token by token (or chunk by chunk), during the forward pass.
+- The **outer loop** is ordinary training. It learns `W_K`, `W_V`, `W_Q`, the gate projections, and the memory's *initial* weights, by backpropagating through the inner loop.
+
+So the outer loop is learning *how to learn* at test time: which projections make associations easy to store, and when to forget.
+
+## Walking through the implementation
+
+Everything lives in `titans.py`. The core class is `NeuralMemory`.
+
+### The memory is a plain MLP, stored as raw tensors
+
+```python
+widths = [mem_dim] + [mem_dim * hidden_mult] * (depth - 1) + [mem_dim]
+self.w = nn.ParameterList()
+self.b = nn.ParameterList()
+for i in range(depth):
+    self.w.append(nn.Parameter(torch.randn(widths[i], widths[i + 1])
+                               / math.sqrt(widths[i])))
+    self.b.append(nn.Parameter(torch.zeros(widths[i + 1])))
+```
+
+I didn't use `nn.Linear` for the memory on purpose. The memory's weights change during the forward pass and they're different for every sequence in the batch, so they can't live as module parameters. The parameters above are only the *initial* memory, and they get copied per sequence:
+
+```python
+def init_state(self, batch):
+    """Memory at t=0: the learned initial weights, one copy per sequence."""
+    w = [p.unsqueeze(0).repeat(batch, *([1] * p.ndim)) for p in self.w]
+    b = [p.unsqueeze(0).repeat(batch, *([1] * p.ndim)) for p in self.b]
+    return (w, b)
+```
+
+So the state is a tuple of lists: weights of shape `(B, in, out)` and biases of shape `(B, out)`. The forward pass over that state is a batched matmul with SiLU between layers:
+
+```python
+for i, (wi, bi) in enumerate(zip(w, b)):
+    x = x @ wi + bi.unsqueeze(-2)
+    if i < len(w) - 1:
+        x = F.silu(x)
+```
+
+With `x` of shape `(B, T, in)` and `wi` of shape `(B, in, out)`, each sequence runs through its own copy of the memory. `depth=1` gives a linear memory, which the docstring notes recovers a DeltaNet-style linear-attention update; `depth=2` or more is what the paper argues you actually want.
+
+### Data-dependent gates
+
+```python
+self.to_gates = nn.Linear(dim, 3)
+with torch.no_grad():
+    # alpha ~ 0.018 (forget slowly), theta ~ 0.3, eta = 0.5.
+    # theta is the one to turn down if the inner loop ever diverges --
+    # it is a real gradient step on a freshly initialised MLP.
+    self.to_gates.bias.copy_(torch.tensor([-4.0, -1.05, 0.0]))
+```
+
+One linear layer emits three numbers per token. In `forward` they go through squashing functions that match their roles:
+
+```python
+alpha = gates[..., 0].sigmoid()
+theta = F.softplus(gates[..., 1])
+eta = gates[..., 2].sigmoid()
+```
+
+`α` and `η` are fractions, so they're sigmoids. `θ` is a learning rate, so it only needs to be positive, hence softplus. The bias init matters more than it looks: sigmoid(−4) is about 0.018 (forget slowly), softplus(−1.05) is about 0.3, and sigmoid(0) is 0.5. Starting with a large `θ` on a randomly initialised MLP is an easy way to make the inner loop diverge.
+
+### The inner loop
+
+This is the heart of the paper. The sequence is processed in chunks, and each chunk does read-then-write:
+
+```python
+for s in range(0, T, self.chunk_size):
+    e = min(s + self.chunk_size, T)
+    # retrieve with the memory as it stands *before* this chunk: a token
+    # must never be able to read a memory that already absorbed it
+    out.append(self._apply_memory(state, q[:, s:e]))
+```
+
+The order is the whole causality story. If you updated first and read second, a token's output would depend on a memory that had just been trained on that very token (and on later tokens in the same chunk). Reading first means the output for a chunk only depends on earlier chunks.
+
+Then the write, which is a real `autograd.grad` call:
+
+```python
+flat = [t for t in state[0]] + [t for t in state[1]]
+# mean over features keeps the step size independent of mem_dim
+loss = (self._apply_memory(state, k[:, s:e]) - v[:, s:e]).pow(2).mean(-1).mean(-1)
+grads = torch.autograd.grad(loss.sum(), flat, create_graph=self.training)
+```
+
+The loss has shape `(B,)`: one scalar per sequence. Summing before `grad` is fine because each sequence's loss only depends on its own copy of the weights, so the gradients don't mix across the batch. `create_graph=self.training` is what makes the outer loop possible: in training mode the gradient computation is itself part of the graph, so `loss.backward()` later can flow through every inner step back to `W_K`, `W_V`, the gates and the initial memory. In eval mode there's no need for that second-order graph.
+
+Then the gates get pooled over the chunk, and there's one line I want to call out:
+
+```python
+a = alpha[:, s:e].mean(-1)
+# the chunk's loss is a mean over its tokens, so one step has to
+# carry the weight of all of them -- without this, chunk_size
+# silently rescales the effective learning rate
+th = theta[:, s:e].mean(-1) * (e - s)
+et = eta[:, s:e].mean(-1)
+```
+
+Because the loss is a mean over the chunk's tokens, a chunk of 16 would take a step 16 times smaller per token than a chunk of 1. Multiplying `θ` by the chunk length undoes that. Without it, changing `chunk_size` would quietly change the effective learning rate and you'd be comparing different models without knowing it.
+
+Finally, the two update equations, applied to every weight and bias tensor:
+
+```python
+shape = (-1,) + (1,) * (tensor.ndim - 1)
+# S_t = eta_t S_{t-1} - theta_t grad
+s_new = et.view(shape) * prev - th.view(shape) * g
+# M_t = (1 - alpha_t) M_{t-1} + S_t
+t_new = (1 - a.view(shape)) * tensor + s_new
+```
+
+The `shape` trick reshapes the per-sequence gate `(B,)` into `(B, 1, 1)` for weights or `(B, 1)` for biases so it broadcasts. These two lines are the paper's equations, almost character for character.
+
+### Persistent memory
+
+```python
+class PersistentMemory(nn.Module):
+    def __init__(self, dim, n_tokens=4):
+        super().__init__()
+        self.tokens = nn.Parameter(torch.randn(n_tokens, dim) * 0.02)
+
+    def forward(self, x):
+        return torch.cat([self.tokens.expand(x.shape[0], -1, -1), x], dim=1)
+```
+
+These are learnable tokens that don't depend on the input, prepended to the sequence. The paper uses them to hold task knowledge; they also give attention somewhere to dump probability mass instead of piling it onto the first real token.
+
+## The three architectures: MAC, MAG, MAL
+
+The paper offers three ways to wire the memory into a model with attention. All three are in the repo, and the attention they use is a hand-written causal sliding-window attention. I wrote it out rather than calling `F.scaled_dot_product_attention` because the fused CPU attention kernel has no double-backward, and the inner `create_graph=True` needs one.
+
+**MAG, memory as a gate.** The simplest. Attention and memory run as parallel branches and a learned sigmoid gate mixes them:
+
+```python
+short = self.attn(h)[:, n_p:]
+long = self.memory(x)
+g = self.gate(x).sigmoid()
+return g * short + (1 - g) * long
+```
+
+Attention handles the last `window` tokens precisely; the memory handles everything older.
+
+**MAL, memory as a layer.** The memory sits in front of attention like any other layer, with a residual:
+
+```python
+h = x + self.memory(x)
+return self.attn(self.norm(self.persist(h)))[:, n_p:]
+```
+
+**MAC, memory as context.** The most involved, and the one that is easiest to get wrong. Per chunk: read the memory using the chunk as the query, prepend `[persistent tokens, retrieved values]` to the chunk, attend over that, then update the memory from the *attention output* rather than the raw input:
+
+```python
+retrieved = self.memory._apply_memory(state, self.memory.to_q(chunk))
+ctx = self.persist(torch.cat([retrieved, chunk], dim=1))
+attended = self.attn(self.norm(ctx))[:, n_p + chunk.shape[1]:]
+# the paper updates memory from the attention output, not the input
+_, state = self.memory(attended, state=state, return_state=True)
+```
+
+The final output for the chunk adds the attention output to a read from the memory that has just absorbed it. The retrieval that feeds attention still uses the memory from before the chunk, which is what keeps it causal.
+
+## What the tests check
+
+`test_titans.py` has 12 checks. I treated it as the spec: each one encodes a claim from the paper or a mistake I'd expect to make.
+
+**The headline: it memorizes with no training.** An untrained memory reads a random sequence, and recall error is measured before and after. Nothing is optimized; the only weight updates are the ones the memory makes on itself while reading. The README records:
+
+```text
+recall MSE 0.4457 -> 0.1731
+```
+
+The test asserts the error at least halves. That's the paper's thesis in one assertion.
+
+The rest:
+
+- **Causality.** Perturbing tokens from position 16 onward must leave outputs before 16 unchanged. There's a separate version for MAC, MAG and MAL, because MAC in particular is easy to break.
+- **The outer gradient really flows.** In training mode, every parameter, including the initial memory weights, gets a non-zero gradient. The initial weights can only get one through `create_graph=True`.
+- **Gates do what they say.** Forcing `α` close to 1 must leave a state that has nothing left of the learned initial weights. Forcing `θ` close to 0 must leave the state identical to the initial memory, to within 1e-8.
+- **Forgetting produces recency bias.** With `α > 0`, the newest quarter of a 256-token sequence recalls better than the oldest quarter, across three seeds.
+- **A linear memory still memorizes** at `depth=1`.
+- **Persistent tokens** are prepended and receive gradient.
+- **Inference needs grad mode.** A test asserts that `torch.no_grad()` breaks the forward pass, and that `torch.enable_grad()` fixes it.
+
+### Two findings I didn't expect
+
+**`chunk_size=1` memorizes worse than chunked updates.** It ends at roughly 0.65x the initial error, against roughly 0.39x at `chunk_size=4`, even though it's the exact recurrence from the equations. Single-token gradients partly undo each other, while a chunk's mean gradient points in a cleaner direction. So "use chunk size 1 for fidelity" is not obviously the right call.
+
+**The memory saturates.** Recall error at T = 16, 64 and 256 all land around 0.18 to 0.19, against an initial 0.42 to 0.45. Reading more tokens stops helping because the MLP has a fixed size and `α` keeps forgetting. Capacity is the binding constraint, not sequence length. The test asserts the plateau directly: the ratio of worst to best error across the three lengths stays under 1.3.
+
+## Does it buy long-range recall?
+
+`train.py` is a small end-to-end experiment. Each sequence is 64 tokens of filler with exactly one "needle" token from a separate range, placed *outside* an 8-token attention window. The model has to output the needle at the last position. Two models with the same width and depth are trained:
+
+- `window`: sliding-window attention only. The needle is out of reach by construction, so this is the control.
+- `mag`: the same attention plus the Titans memory, gated (MAG). The memory is the only path to the needle.
+
+The README reports that MAG reaches **1.000** accuracy, while the identical model without memory stays at **0.117**, against a chance baseline of 0.125. The script asserts that MAG beats three times chance and beats the control by at least 0.1.
+
+It's a toy task, and I don't want to oversell it. But it isolates the one thing that matters: information outside the attention window can only arrive through the memory, and it does.
+
+## Running it
+
+The only dependency is PyTorch:
+
+```bash
+pip install torch
+python test_titans.py   # 12 checks
+python train.py         # memory vs attention on long-range recall
+```
+
+Using the memory on its own:
+
+```python
+import torch
+from titans import NeuralMemory, MemoryAsContext, MemoryAsGate, MemoryAsLayer
+
+mem = NeuralMemory(dim=512, depth=2, chunk_size=16)
+y = mem(torch.randn(2, 1024, 512))           # retrieved values, (2, 1024, 512)
+y, state = mem(x, return_state=True)         # keep the memory for the next call
+y2 = mem(next_chunk, state=state)            # ...and continue from it
+```
+
+Passing `state` between calls turns this into streaming long-term memory: the weights you get back *are* the memory of everything read so far. Two gotchas: wrap inference in `torch.enable_grad()`, because the write is a real `autograd.grad` call, and turn `θ` down first if the inner loop ever diverges.
+
+## Scope and honest limitations
+
+The inner loop runs chunk by chunk in Python. That makes it readable and slow: there's no parallel scan, no `torch.func.vmap` over the memory, no custom kernel. It's fine for small-scale research and for building intuition, and it is not a drop-in for a long-context production model. I also left out the paper's full block design (convolutions before the projections, its normalization choices, RoPE) and the deeper memory variants from its ablations.
+
+## Takeaways
+
+- **Test-time learning is a concrete mechanism.** The memory is an MLP, a write is a gradient step on an associative loss, and "surprise" is that gradient. The four equations are SGD with momentum and weight decay, with per-token hyperparameters.
+- **Two loops, one graph.** The outer model learns how the inner memory should learn by differentiating through the updates. That's what `create_graph=True` buys.
+- **The small details carry the correctness.** Read before write. Scale `θ` by the chunk length. Hand-write attention if the fused kernel can't double-backward.
+- **Capacity is real.** A fixed-size memory with forgetting plateaus, so measure before assuming more context means better recall.
+
+I'd reach for this when full attention is too expensive, the important information may sit far outside any affordable window, and a compressed, recency-weighted summary is good enough.
+
+The code is at [github.com/msanvarov/titans-minimal](https://github.com/msanvarov/titans-minimal) and the paper is [arXiv:2501.00663](https://arxiv.org/abs/2501.00663). Keep `titans.py` open next to the paper; the equations and the code line up closely enough that each helps you read the other.

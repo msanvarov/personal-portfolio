@@ -7,15 +7,9 @@ import {
   useScroll,
   useTransform,
 } from 'framer-motion';
-import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Footer } from './Footer.component';
 import { Header } from './Header.component';
-
-const PopupWidget = lazy(() =>
-  import('react-calendly').then((mod) => ({ default: mod.PopupWidget }))
-);
-
-const calendlyUrl = import.meta.env.VITE_CALENDLY_URL;
 
 type LayoutProps = {
   title?: string;
@@ -45,13 +39,8 @@ const Backdrop = () => {
 };
 
 export const Layout = ({ title, className, head, children }: LayoutProps) => {
-  const [rootEl, setRootEl] = useState<HTMLElement | null>(null);
   const { pathname } = useLocation();
   const reduce = useReducedMotion();
-
-  useEffect(() => {
-    setRootEl(document.getElementById('root'));
-  }, []);
 
   return (
     <>
@@ -70,16 +59,6 @@ export const Layout = ({ title, className, head, children }: LayoutProps) => {
       >
         {children}
       </motion.main>
-      {calendlyUrl && rootEl ? (
-        <Suspense fallback={null}>
-          <PopupWidget
-            url={calendlyUrl}
-            rootElement={rootEl}
-            text="☕ Chat with Sal"
-            color="#5b78f6"
-          />
-        </Suspense>
-      ) : null}
       <Footer />
     </>
   );

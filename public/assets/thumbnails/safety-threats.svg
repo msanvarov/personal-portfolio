@@ -5,8 +5,12 @@
       <stop offset="1" stop-color="#1c1d2b"/>
     </linearGradient>
     <linearGradient id="safetyShield" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#5b78f6"/>
+      <stop offset="0" stop-color="#6f88ff"/>
       <stop offset="1" stop-color="#3b58da"/>
+    </linearGradient>
+    <linearGradient id="safetyGlow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffb648" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#ffb648" stop-opacity="0.04"/>
     </linearGradient>
     <pattern id="safetyDots" width="32" height="32" patternUnits="userSpaceOnUse">
       <circle cx="2" cy="2" r="1.2" fill="#5b78f6" fill-opacity="0.08"/>
@@ -16,52 +20,66 @@
   <rect width="1200" height="675" fill="url(#safetyBg)"/>
   <rect width="1200" height="675" fill="url(#safetyDots)"/>
 
-  <!-- diagonal warning stripes, very subtle -->
-  <g opacity="0.06" fill="#ffb648">
-    <rect x="-200" y="600" width="1700" height="14" transform="rotate(-12 600 600)"/>
-    <rect x="-200" y="640" width="1700" height="14" transform="rotate(-12 600 600)"/>
+  <!-- threat list from the article, top-left -->
+  <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="20" fill="#5b78f6" fill-opacity="0.45">
+    <text x="80" y="120">// xss</text>
+    <text x="80" y="152">// csrf</text>
+    <text x="80" y="184">// clickjacking</text>
+    <text x="80" y="216">// cdn tampering</text>
+    <text x="80" y="248">// mitm</text>
   </g>
 
-  <!-- code marks suggesting the front-end context -->
-  <g font-family="'JetBrains Mono', ui-monospace, monospace" font-weight="500" fill="#5b78f6" fill-opacity="0.35">
-    <text x="80"   y="120" font-size="40">&lt;/&gt;</text>
-    <text x="1020" y="140" font-size="40">{ }</text>
-    <text x="1040" y="600" font-size="40">&lt;/&gt;</text>
-    <text x="100"  y="600" font-size="40">{ }</text>
+  <!-- browser window -->
+  <g transform="translate(560 100)">
+    <rect width="560" height="360" rx="16" fill="#15161f" stroke="#2a2d44" stroke-width="2"/>
+    <!-- title bar -->
+    <path d="M16,0 H544 A16,16 0 0 1 560,16 V52 H0 V16 A16,16 0 0 1 16,0 Z" fill="#1b1d2a"/>
+    <line x1="0" y1="52" x2="560" y2="52" stroke="#2a2d44" stroke-width="2"/>
+    <circle cx="28" cy="26" r="6" fill="#ff6b6b" fill-opacity="0.7"/>
+    <circle cx="48" cy="26" r="6" fill="#ffb648" fill-opacity="0.7"/>
+    <circle cx="68" cy="26" r="6" fill="#4ade80" fill-opacity="0.7"/>
+    <!-- url pill with lock -->
+    <rect x="100" y="12" width="420" height="28" rx="14" fill="#0e0d12"/>
+    <g transform="translate(118 18)" fill="none" stroke="#4ade80" stroke-width="2">
+      <path d="M3,8 V5 A5,5 0 0 1 13,5 V8"/>
+      <rect x="1" y="8" width="14" height="10" rx="2" fill="#4ade80" stroke="none"/>
+    </g>
+    <text x="144" y="32" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" fill="#f6f1ea" fill-opacity="0.6">https://app.example.com</text>
+
+    <!-- code -->
+    <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="18">
+      <text x="32" y="100" fill="#9aa9ff">Content-Security-Policy:</text>
+      <text x="54" y="126" fill="#f6f1ea" fill-opacity="0.75">script-src 'self'</text>
+
+      <text x="32" y="176" fill="#f6f1ea" fill-opacity="0.55">&lt;div class="comment"&gt;</text>
+
+      <!-- injected payload, blocked -->
+      <rect x="20" y="192" width="520" height="40" rx="6" fill="url(#safetyGlow)"/>
+      <rect x="20" y="192" width="4" height="40" fill="#ffb648"/>
+      <text x="52" y="218" fill="#ffb648">&lt;script&gt;steal(cookie)&lt;/script&gt;</text>
+      <line x1="52" y1="212" x2="378" y2="212" stroke="#ffb648" stroke-width="2.5"/>
+      <rect x="428" y="200" width="98" height="24" rx="12" fill="#ffb648" fill-opacity="0.15" stroke="#ffb648" stroke-opacity="0.6"/>
+      <text x="477" y="217" text-anchor="middle" font-size="13" font-weight="700" letter-spacing="2" fill="#ffb648">BLOCKED</text>
+
+      <text x="32" y="264" fill="#f6f1ea" fill-opacity="0.55">&lt;/div&gt;</text>
+    </g>
+    <!-- placeholder lines -->
+    <g fill="#f6f1ea" fill-opacity="0.08">
+      <rect x="32" y="294" width="220" height="10" rx="5"/>
+      <rect x="32" y="318" width="320" height="10" rx="5"/>
+    </g>
   </g>
 
-  <!-- shield -->
-  <g transform="translate(600 337)">
-    <path d="M0,-180
-             L130,-130
-             L130,30
-             C130,110 70,170 0,200
-             C-70,170 -130,110 -130,30
-             L-130,-130 Z"
-          fill="url(#safetyShield)"
-          stroke="#7c93ff"
-          stroke-width="2"/>
-    <!-- inner highlight -->
-    <path d="M0,-150
-             L100,-110
-             L100,20
-             C100,80 55,130 0,155
-             C-55,130 -100,80 -100,20
-             L-100,-110 Z"
-          fill="none"
-          stroke="#ffffff"
-          stroke-opacity="0.12"
-          stroke-width="1.5"/>
-    <!-- check inside shield -->
-    <path d="M-46,8 L-12,42 L52,-32"
-          fill="none"
-          stroke="#ffffff"
-          stroke-width="14"
-          stroke-linecap="round"
-          stroke-linejoin="round"/>
+  <!-- shield badge on the window's lower-right corner -->
+  <g transform="translate(1100 440)">
+    <circle r="78" fill="#0e0d12"/>
+    <path d="M0,-62 L48,-44 L48,6 C48,36 26,58 0,70 C-26,58 -48,36 -48,6 L-48,-44 Z"
+          fill="url(#safetyShield)" stroke="#9aa9ff" stroke-width="2"/>
+    <path d="M-20,2 L-5,17 L22,-12" fill="none" stroke="#ffffff" stroke-width="8"
+          stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 
-  <!-- subtle title bar at the bottom-left, just enough to anchor identity -->
+  <!-- title -->
   <g font-family="'Space Grotesk', 'Inter', system-ui, sans-serif" fill="#f6f1ea">
     <text x="80" y="535" font-size="22" letter-spacing="6" fill-opacity="0.55">FRONT-END · SECURITY</text>
     <text x="80" y="582" font-size="44" font-weight="600">Safety Threats &amp; Mitigation</text>

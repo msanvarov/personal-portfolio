@@ -5,40 +5,22 @@ type PreloaderProps = {
 };
 
 export const Preloader = ({ loading = true }: PreloaderProps) => {
-  const containerVariants = {
-    open: { scaleY: 1 },
-    closed: { scaleY: 0 },
-  };
-
-  const loaderVariants = {
-    leftToRight: { scaleX: 1, originX: 0 },
-    rightToLeft: { scaleX: 0, originX: 1 },
-  };
-
   if (!loading) return null;
 
   return (
-    <motion.div
-      id="preloader"
-      className="preloader off"
-      initial="closed"
-      animate="open"
-      variants={containerVariants}
-      transition={{ duration: 0.5, ease: 'easeInOut' }}
+    <div
+      role="status"
+      aria-label="Loading"
+      className="fixed inset-0 z-[100] grid place-items-center bg-background"
     >
-      <motion.div className="black_wall" />
-      <motion.div
-        className="loader"
-        variants={loaderVariants}
-        initial="leftToRight"
-        animate="rightToLeft"
-        transition={{
-          duration: 3,
-          ease: 'easeInOut',
-          repeat: Infinity,
-          repeatType: 'reverse',
-        }}
-      />
-    </motion.div>
+      <div className="h-0.5 w-40 overflow-hidden rounded-full bg-secondary">
+        <motion.div
+          className="h-full w-1/2 rounded-full bg-brand"
+          initial={{ x: '-100%' }}
+          animate={{ x: '200%' }}
+          transition={{ duration: 1.1, ease: 'easeInOut', repeat: Infinity }}
+        />
+      </div>
+    </div>
   );
 };

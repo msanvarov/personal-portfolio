@@ -1,5 +1,7 @@
 import { BlogNavbar } from '@/components/BlogNavbar.component';
 import { Layout } from '@/components/layout/Layout.component';
+import { EASE, Reveal, SplitWords } from '@/components/motion/Reveal';
+import { Badge } from '@/components/ui/badge';
 import { getPostBySlug, postsAsStoreShape } from '@/utils/content';
 import { articleLd, breadcrumbLd, Seo, SITE_URL } from '@/utils/seo';
 import { MDXProvider } from '@mdx-js/react';
@@ -9,7 +11,13 @@ import {
   useParams,
 } from '@tanstack/react-router';
 import { DiscussionEmbed } from 'disqus-react';
-import { useEffect, useMemo } from 'react';
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
+import { useEffect, useMemo, useRef } from 'react';
 
 const disqusShortname = import.meta.env.VITE_DISQUS_SHORTNAME;
 
@@ -29,6 +37,16 @@ const PostPage = () => {
     [posts]
   );
 
+  // Hero image eases out and drifts as the reader scrolls into the post.
+  const heroRef = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
+  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '8%']);
+
   useEffect(() => {
     if (!entry) navigate({ to: '/blog', replace: true });
   }, [entry, navigate]);
@@ -41,7 +59,7 @@ const PostPage = () => {
   const url = `${SITE_URL}${pathname}`;
 
   return (
-    <Layout title={metadata.title} wrapperClass="main-workdetails-page">
+    <Layout title={metadata.title}>
       <Seo
         title={metadata.title}
         description={metadata.description}
@@ -67,42 +85,59 @@ const PostPage = () => {
           ]),
         ]}
       />
-      <section className="blog-details-area">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-8">
-              <article className="blog-details-content">
-                {metadata.thumbnail ? (
-                  <div className="img-box">
-                    <img src={metadata.thumbnail} alt={metadata.title} />
-                  </div>
-                ) : null}
-                <span className="meta">{metadata.category}</span>
-                <h1>{metadata.title}</h1>
-                <MDXProvider>
-                  <Component />
-                </MDXProvider>
-                <div className="tags">
-                  <span className="theme-btn my-4">{metadata.tag}</span>
-                </div>
-                {disqusShortname ? (
-                  <DiscussionEmbed
-                    shortname={disqusShortname}
-                    config={{
-                      url,
-                      identifier: metadata.uid,
-                      title: metadata.title,
-                    }}
-                  />
-                ) : null}
-              </article>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+        <article className="min-w-0">
+          <header ref={heroRef} className="mb-6">
+            <motion.div
+              initial={reduce ? false : { opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: EASE }}
+            >
+              <Badge variant="secondary" className="mb-4 rounded-full">
+                {metadata.category}
+              </Badge>
+            </motion.div>
+            <h1 className="mb-8 text-3xl font-semibold leading-tight text-foreground md:text-5xl">
+              <SplitWords text={metadata.title} stagger={0.035} />
+            </h1>
+            {metadata.thumbnail ? (
+              <div className="bento overflow-hidden p-0">
+                <motion.img
+                  src={metadata.thumbnail}
+                  alt={metadata.title}
+                  style={reduce ? undefined : { scale: heroScale, y: heroY }}
+                  className="block aspect-[16/9] w-full object-cover"
+                />
+              </div>
+            ) : null}
+          </header>
+          <Reveal className="bento p-6 md:p-10">
+            <div className="prose prose-neutral max-w-none dark:prose-invert prose-headings:font-heading prose-headings:tracking-tight prose-a:text-brand prose-a:underline-offset-4 prose-strong:text-foreground prose-code:rounded-md prose-code:bg-secondary prose-code:px-1.5 prose-code:py-0.5 prose-code:font-normal prose-code:before:content-none prose-code:after:content-none prose-pre:rounded-2xl prose-pre:border prose-pre:border-border prose-pre:bg-secondary prose-pre:text-foreground prose-img:rounded-2xl [&_pre_code]:bg-transparent [&_pre_code]:p-0">
+              <MDXProvider>
+                <Component />
+              </MDXProvider>
             </div>
-            <div className="col-md-4">
-              <BlogNavbar posts={posts} categories={categories} tags={tags} />
+            <div className="mt-10 flex flex-wrap gap-2 border-t border-border pt-6">
+              <Badge variant="outline" className="h-8 rounded-full px-4">
+                {metadata.tag}
+              </Badge>
             </div>
-          </div>
-        </div>
-      </section>
+            {disqusShortname ? (
+              <div className="mt-8">
+                <DiscussionEmbed
+                  shortname={disqusShortname}
+                  config={{
+                    url,
+                    identifier: metadata.uid,
+                    title: metadata.title,
+                  }}
+                />
+              </div>
+            ) : null}
+          </Reveal>
+        </article>
+        <BlogNavbar posts={posts} categories={categories} tags={tags} />
+      </div>
     </Layout>
   );
 };

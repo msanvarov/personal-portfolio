@@ -49,8 +49,7 @@ export const ThemeProvider = ({
   useEffect(() => {
     const root = document.documentElement;
     root.dataset.theme = theme;
-    root.classList.remove('theme-light', 'theme-dark');
-    root.classList.add(`theme-${theme}`);
+    root.classList.toggle('dark', theme === 'dark');
     try {
       window.localStorage.setItem(STORAGE_KEY, theme);
     } catch {

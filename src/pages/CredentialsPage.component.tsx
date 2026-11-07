@@ -1,11 +1,31 @@
+import { BentoCard } from '@/components/bento/BentoCard';
 import { Layout } from '@/components/layout/Layout.component';
+import { CountUp } from '@/components/motion/CountUp';
+import { EASE, Reveal, SplitWords } from '@/components/motion/Reveal';
+import { Timeline } from '@/components/pages/Timeline';
+import { Button } from '@/components/ui/button';
 import { en } from '@/i18n';
 import { breadcrumbLd, personLd, Seo } from '@/utils/seo';
 import { Link } from '@tanstack/react-router';
+import { motion, useReducedMotion } from 'framer-motion';
+
+const SubHeading = ({ children }: { children: string }) => (
+  <h2 className="mb-8 text-3xl font-semibold uppercase text-foreground md:text-4xl">
+    <SplitWords text={children} />
+  </h2>
+);
+
+// "6+ years" → 6. Bars are scaled against the longest capability.
+const years = (value: string) => Number(value.match(/^\d+/)?.[0] ?? 0);
+const maxYears = Math.max(
+  ...en.credentials.capabilities.capabilities.map((c) => years(c.percent)),
+  1
+);
 
 const CredentialsPage = () => {
+  const reduce = useReducedMotion();
   return (
-    <Layout wrapperClass="main-aboutpage">
+    <Layout>
       <Seo
         title="Credentials"
         description="Resume and capabilities of Sal Anvarov: experience at Oproma, Cleanlist.ai, Permion.ai, and prior roles; expertise across React, TypeScript, Node.js, NestJS, AWS, GCP, and AI engineering."
@@ -19,119 +39,148 @@ const CredentialsPage = () => {
           ]),
         ]}
       />
-      <section className="credential-area">
-        <div className="container">
-          <div className="gx-row d-flex">
-            <div className="credential-sidebar-wrap" data-aos="zoom-in">
-              <div className="credential-sidebar text-center">
-                <div className="shadow-box">
-                  <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                  <div className="img-box">
-                    <img src={en.credentials.navbar.media} alt="bio" />
-                  </div>
-                  <h2>{en.credentials.navbar.heading}</h2>
-                  <p>{en.credentials.navbar.email}</p>
-                  <ul className="social-links d-flex justify-content-center">
-                    {en.credentials.navbar.profiles.map((item, index) => (
-                      <li key={index}>
-                        <a
-                          href={item.link}
-                          target="_blank"
-                          rel="noreferrer noopener"
-                        >
-                          <i className={item.icon} />
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    to={en.credentials.navbar.button.link}
-                    className="theme-btn"
-                  >
-                    {en.credentials.navbar.button.text}
-                  </Link>
-                </div>
-              </div>
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
+        <aside className="lg:col-span-4">
+          <BentoCard className="p-6 text-center lg:sticky lg:top-28">
+            <div className="overflow-hidden rounded-[calc(var(--radius-bento)-0.5rem)] bg-gradient-to-br from-brand/80 via-[#7d93ff] to-[#b7c3ff]">
+              <img
+                src={en.credentials.navbar.media}
+                alt="bio"
+                className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
             </div>
-            <div className="credential-content flex-1">
-              <div className="credential-about" data-aos="zoom-in">
-                <h2>{en.credentials.bio.heading}</h2>
-                {en.credentials.bio.description.map((item, index) => (
-                  <p
-                    key={index}
-                    dangerouslySetInnerHTML={{ __html: item }}
-                  />
-                ))}
-              </div>
-              <div className="credential-edc-exp credential-experience">
-                <h2 data-aos="fade-up">{en.credentials.experience.heading}</h2>
-                {en.credentials.experience.experience.map((item, index) => (
-                  <div
-                    className="credential-edc-exp-item"
-                    data-aos="zoom-in"
-                    key={index}
+            <h2 className="mt-6 text-2xl font-semibold text-foreground">
+              {en.credentials.navbar.heading}
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {en.credentials.navbar.email}
+            </p>
+            <ul className="mt-5 flex justify-center gap-2">
+              {en.credentials.navbar.profiles.map((item) => (
+                <li key={item.link}>
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    aria-label={item.icon.replace('iconoir-', '')}
+                    className="grid size-11 place-items-center rounded-full border border-border bg-background/60 text-xl text-foreground transition-all duration-300 hover:-translate-y-1 hover:border-brand hover:text-brand"
                   >
-                    <h4>{item.date}</h4>
-                    <h3>{item.title}</h3>
-                    <h5>{item.company}</h5>
-                    <p dangerouslySetInnerHTML={{ __html: item.description }} />
+                    <i className={item.icon} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <Button
+              asChild
+              className="mt-6 h-11 w-full rounded-full bg-brand text-brand-foreground hover:bg-brand/90"
+            >
+              <Link to={en.credentials.navbar.button.link}>
+                {en.credentials.navbar.button.text}
+              </Link>
+            </Button>
+          </BentoCard>
+        </aside>
+
+        <div className="lg:col-span-8">
+          <section>
+            <SubHeading>{en.credentials.bio.heading}</SubHeading>
+            <Reveal className="space-y-4 text-base leading-relaxed text-muted-foreground md:text-lg">
+              {en.credentials.bio.description.map((item, index) => (
+                <p
+                  key={index}
+                  className="[&_a]:text-brand [&_a]:underline-offset-4 hover:[&_a]:underline"
+                  dangerouslySetInnerHTML={{ __html: item }}
+                />
+              ))}
+            </Reveal>
+          </section>
+
+          <section className="mt-16">
+            <SubHeading>{en.credentials.experience.heading}</SubHeading>
+            <Timeline
+              size="lg"
+              items={en.credentials.experience.experience.map((item) => ({
+                date: item.date,
+                title: item.title,
+                subtitle: item.company,
+                description: item.description,
+              }))}
+            />
+          </section>
+
+          <section className="mt-16">
+            <SubHeading>{en.credentials.education.heading}</SubHeading>
+            <Timeline
+              size="lg"
+              items={en.credentials.education.education.map((item) => ({
+                date: item.date,
+                title: item.degree,
+                subtitle: item.university,
+                description:
+                  'description' in item
+                    ? (item.description as string | undefined)
+                    : undefined,
+              }))}
+            />
+          </section>
+
+          <section className="mt-16">
+            <SubHeading>{en.credentials.capabilities.heading}</SubHeading>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {en.credentials.capabilities.capabilities.map((item, index) => (
+                <BentoCard
+                  key={item.name}
+                  delay={(index % 2) * 0.08}
+                  className="p-6"
+                >
+                  <div className="flex items-baseline justify-between gap-4">
+                    <h3 className="text-xl font-semibold text-foreground">
+                      {item.name}
+                    </h3>
+                    <CountUp
+                      value={item.percent}
+                      className="shrink-0 font-mono text-sm text-brand"
+                    />
                   </div>
-                ))}
-              </div>
-              <div className="credential-edc-exp credential-education">
-                <h2 data-aos="fade-up">{en.credentials.education.heading}</h2>
-                {en.credentials.education.education.map((item, index) => (
-                  <div
-                    className="credential-edc-exp-item"
-                    data-aos="zoom-in"
-                    key={index}
-                  >
-                    <h4>{item.date}</h4>
-                    <h3>{item.degree}</h3>
-                    <h5>{item.university}</h5>
-                    {item.description ? (
-                      <p
-                        dangerouslySetInnerHTML={{ __html: item.description }}
-                      />
-                    ) : null}
+                  <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-secondary">
+                    <motion.div
+                      className="h-full origin-left rounded-full bg-gradient-to-r from-brand to-[#9aa9ff]"
+                      style={{ width: `${(years(item.percent) / maxYears) * 100}%` }}
+                      initial={reduce ? false : { scaleX: 0 }}
+                      whileInView={{ scaleX: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.4, delay: 0.2, ease: EASE }}
+                    />
                   </div>
-                ))}
-              </div>
-              <div className="skills-wrap">
-                <h2 data-aos="fade-up">
-                  {en.credentials.capabilities.heading}
-                </h2>
-                <div className="d-grid skill-items gap-24 flex-wrap">
-                  {en.credentials.capabilities.capabilities.map(
-                    (item, index) => (
-                      <div
-                        className="skill-item"
-                        data-aos="zoom-in"
-                        key={index}
-                      >
-                        <span className="percent">{item.percent}</span>
-                        <h3 className="name">{item.name}</h3>
-                        <p>{item.description}</p>
-                      </div>
-                    )
-                  )}
-                </div>
-              </div>
-              <div className="skills-wrap awards-wrap">
-                <h2 data-aos="fade-up">{en.credentials.expertise.heading}</h2>
-                <div className="d-grid skill-items gap-24 flex-wrap">
-                  {en.credentials.expertise.expertise.map((item, index) => (
-                    <div className="skill-item" data-aos="zoom-in" key={index}>
-                      <h3 className="name">{item.name}</h3>
-                      <p>{item.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                    {item.description}
+                  </p>
+                </BentoCard>
+              ))}
             </div>
-          </div>
+          </section>
+
+          <section className="mt-16">
+            <SubHeading>{en.credentials.expertise.heading}</SubHeading>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {en.credentials.expertise.expertise.map((item, index) => (
+                <BentoCard
+                  key={item.name}
+                  delay={(index % 2) * 0.08}
+                  className="p-6"
+                >
+                  <h3 className="text-xl font-semibold text-foreground">
+                    {item.name}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                    {item.description}
+                  </p>
+                </BentoCard>
+              ))}
+            </div>
+          </section>
         </div>
-      </section>
+      </div>
     </Layout>
   );
 };

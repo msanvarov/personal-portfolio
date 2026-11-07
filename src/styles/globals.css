@@ -1,0 +1,249 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
+
+/* MDX case studies are authored as raw markup in content/, so Tailwind must
+   scan them too (legacy class names are styled in case-study.css). */
+@source "../../content";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-heading: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-bento: 1.75rem;
+
+  --animate-marquee: marquee var(--marquee-duration, 32s) linear infinite;
+  --animate-spin-slow: spin 14s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+}
+
+/* Light theme */
+:root {
+  --brand: #5b78f6;
+  --brand-foreground: #ffffff;
+  --background: #f4f6fb;
+  --foreground: #14151a;
+  --card: #ffffff;
+  --card-foreground: #14151a;
+  --popover: #ffffff;
+  --popover-foreground: #14151a;
+  --primary: #5b78f6;
+  --primary-foreground: #ffffff;
+  --secondary: #eceff6;
+  --secondary-foreground: #14151a;
+  --muted: #eceff6;
+  --muted-foreground: #6b6f7b;
+  --accent: #e7ebfe;
+  --accent-foreground: #2c46c7;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: rgb(20 21 26 / 0.08);
+  --input: rgb(20 21 26 / 0.12);
+  --ring: #5b78f6;
+  --radius: 0.75rem;
+
+  --bento-edge: rgb(20 21 26 / 0.09);
+  --bento-edge-hi: rgb(20 21 26 / 0.16);
+  --bento-sheen: rgb(91 120 246 / 0.10);
+  --grid-line: rgb(20 21 26 / 0.045);
+}
+
+/* Dark theme (default) */
+.dark {
+  --background: #0b0b0d;
+  --foreground: #f4f4f5;
+  --card: #121215;
+  --card-foreground: #f4f4f5;
+  --popover: #141418;
+  --popover-foreground: #f4f4f5;
+  --primary: #5b78f6;
+  --primary-foreground: #ffffff;
+  --secondary: #1b1b20;
+  --secondary-foreground: #f4f4f5;
+  --muted: #1b1b20;
+  --muted-foreground: #9a9aa3;
+  --accent: #1d2140;
+  --accent-foreground: #b9c6ff;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: rgb(255 255 255 / 0.08);
+  --input: rgb(255 255 255 / 0.12);
+  --ring: #5b78f6;
+
+  --bento-edge: rgb(255 255 255 / 0.07);
+  --bento-edge-hi: rgb(255 255 255 / 0.2);
+  --bento-sheen: rgb(91 120 246 / 0.16);
+  --grid-line: rgb(255 255 255 / 0.035);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans antialiased;
+    font-feature-settings: "ss01", "cv01", "cv11";
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply min-h-dvh bg-background text-foreground;
+    overflow-x: clip;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
+  }
+  ::selection {
+    background: rgb(91 120 246 / 0.35);
+  }
+  /* Content JSON uses this class inside inline HTML snippets. */
+  .text-primary-color,
+  [class*="text-primary-color"] {
+    color: var(--brand);
+  }
+}
+
+@layer components {
+  /* Bento card: gradient hairline edge + cursor spotlight. The spotlight
+     follows --mx/--my, which BentoCard sets on pointer move. */
+  .bento {
+    position: relative;
+    isolation: isolate;
+    border-radius: var(--radius-bento);
+    background:
+      linear-gradient(140deg, var(--bento-sheen), transparent 38%),
+      var(--card);
+    color: var(--card-foreground);
+    box-shadow:
+      0 1px 0 0 rgb(255 255 255 / 0.04) inset,
+      0 30px 60px -30px rgb(0 0 0 / 0.35);
+    transform-style: preserve-3d;
+  }
+  .bento::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    padding: 1px;
+    background:
+      radial-gradient(
+        420px circle at var(--mx, 50%) var(--my, -20%),
+        var(--bento-edge-hi),
+        transparent 45%
+      ),
+      linear-gradient(140deg, var(--bento-edge-hi), var(--bento-edge) 45%);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+  .bento::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    background: radial-gradient(
+      560px circle at var(--mx, 50%) var(--my, 50%),
+      rgb(91 120 246 / 0.13),
+      transparent 42%
+    );
+  }
+  .bento:hover::after {
+    opacity: 1;
+  }
+  .bento > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Inset tile used inside bento cards (stats, icon wells). */
+  .bento-well {
+    border-radius: calc(var(--radius-bento) - 0.5rem);
+    background: linear-gradient(160deg, var(--secondary), transparent 140%);
+    box-shadow: inset 0 0 0 1px var(--bento-edge);
+  }
+
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  .mask-fade-x {
+    mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  }
+}
+
+/* Lenis smooth scrolling */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-spin-slow,
+  .animate-float {
+    animation: none !important;
+  }
+}

@@ -1,9 +1,16 @@
+import { BentoCard } from '@/components/bento/BentoCard';
 import { Layout } from '@/components/layout/Layout.component';
+import { Reveal, SplitWords } from '@/components/motion/Reveal';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { en } from '@/i18n';
 import { breadcrumbLd, Seo } from '@/utils/seo';
 import { ValidationError, useForm } from '@formspree/react';
-import { useEffect, useState } from 'react';
-import { Alert, Form } from 'reactstrap';
+import { AnimatePresence, motion } from 'framer-motion';
+import { CheckCircle2, Send, X } from 'lucide-react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 const formId = import.meta.env.VITE_FORMSPREE_FORM_ID;
 
@@ -22,21 +29,51 @@ const ContactSeo = () => (
 const ContactPage = () => {
   if (!formId) {
     return (
-      <Layout wrapperClass="main-aboutpage">
+      <Layout>
         <ContactSeo />
-        <section className="contact-area">
-          <div className="container">
-            <p>
-              Contact form is not configured. Set <code>VITE_FORMSPREE_FORM_ID</code>{' '}
-              to enable it.
-            </p>
-          </div>
-        </section>
+        <BentoCard className="p-8 text-muted-foreground">
+          <p>
+            Contact form is not configured. Set{' '}
+            <code className="font-mono text-foreground">
+              VITE_FORMSPREE_FORM_ID
+            </code>{' '}
+            to enable it.
+          </p>
+        </BentoCard>
       </Layout>
     );
   }
   return <ContactForm />;
 };
+
+const InfoTile = ({
+  icon,
+  heading,
+  delay,
+  children,
+}: {
+  icon: string;
+  heading: string;
+  delay: number;
+  children: ReactNode;
+}) => (
+  <BentoCard delay={delay} className="flex items-center gap-5 p-5">
+    <span className="bento-well grid size-14 shrink-0 place-items-center text-2xl text-brand transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110">
+      <i className={icon} />
+    </span>
+    <div className="min-w-0">
+      <span className="text-[0.7rem] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+        {heading}
+      </span>
+      <div className="mt-1 space-y-0.5 break-words font-heading text-lg font-medium text-foreground">
+        {children}
+      </div>
+    </div>
+  </BentoCard>
+);
+
+const linkClass = 'transition-colors hover:text-brand';
+const fieldError = 'mt-1.5 block text-sm text-destructive';
 
 const ContactForm = () => {
   const [state, handleSubmit] = useForm(formId as string);
@@ -47,167 +84,192 @@ const ContactForm = () => {
     if (state.succeeded) setDisplayBanner(true);
   }, [state]);
 
+  const { contact, profiles, form } = en.contact;
+
   return (
-    <Layout wrapperClass="main-aboutpage">
+    <Layout>
       <ContactSeo />
-      <section className="contact-area">
-        <div className="container">
-          <div className="gx-row d-flex justify-content-between gap-24">
-            <div className="contact-infos">
-              <h3 data-aos="fade-up">{en.contact.contact.heading}</h3>
-              <ul className="contact-details">
-                <li className="d-flex align-items-center" data-aos="zoom-in">
-                  <div className="icon-box shadow-box">
-                    <i className={en.contact.contact.mail.icon} />
-                  </div>
-                  <div className="right">
-                    <span>{en.contact.contact.mail.heading}</span>
-                    {en.contact.contact.mail.links.map((item, index) => (
-                      <h4 key={index}>
-                        <a href={`mailto:${item}`}>{item}</a>
-                      </h4>
-                    ))}
-                  </div>
-                </li>
-                <li className="d-flex align-items-center" data-aos="zoom-in">
-                  <div className="icon-box shadow-box">
-                    <i className={en.contact.contact.phone.icon} />
-                  </div>
-                  <div className="right">
-                    <span>{en.contact.contact.phone.heading}</span>
-                    {en.contact.contact.phone.links.map((item, index) => (
-                      <h4 key={index}>
-                        <a href={item.href}>{item.text}</a>
-                      </h4>
-                    ))}
-                  </div>
-                </li>
-                <li className="d-flex align-items-center" data-aos="zoom-in">
-                  <div className="icon-box shadow-box">
-                    <i className={en.contact.contact.location.icon} />
-                  </div>
-                  <div className="right">
-                    <span>{en.contact.contact.location.heading}</span>
-                    <h4>{en.contact.contact.location.location}</h4>
-                  </div>
-                </li>
-              </ul>
-              <h3 data-aos="fade-up">{en.contact.profiles.heading}</h3>
-              <ul
-                className="social-links d-flex align-center"
-                data-aos="zoom-in"
-              >
-                <li>
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-6">
+        <div className="lg:col-span-5">
+          <h3 className="mb-6 text-5xl font-semibold uppercase text-foreground md:text-6xl">
+            <SplitWords text={contact.heading} />
+          </h3>
+          <div className="space-y-4">
+            <InfoTile
+              icon={contact.mail.icon}
+              heading={contact.mail.heading}
+              delay={0}
+            >
+              {contact.mail.links.map((item) => (
+                <p key={item}>
+                  <a href={`mailto:${item}`} className={linkClass}>
+                    {item}
+                  </a>
+                </p>
+              ))}
+            </InfoTile>
+            <InfoTile
+              icon={contact.phone.icon}
+              heading={contact.phone.heading}
+              delay={0.08}
+            >
+              {contact.phone.links.map((item) => (
+                <p key={item.href}>
+                  <a href={item.href} className={linkClass}>
+                    {item.text}
+                  </a>
+                </p>
+              ))}
+            </InfoTile>
+            <InfoTile
+              icon={contact.location.icon}
+              heading={contact.location.heading}
+              delay={0.16}
+            >
+              <p>{contact.location.location}</p>
+            </InfoTile>
+          </div>
+
+          <Reveal delay={0.2}>
+            <h3 className="mb-4 mt-10 text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
+              {profiles.heading}
+            </h3>
+            <ul className="flex items-center gap-3">
+              {profiles.profiles.map((item) => (
+                <li key={item.link}>
                   <a
-                    className="shadow-box"
-                    href="https://github.com/msanvarov"
+                    href={item.link}
                     target="_blank"
                     rel="noreferrer noopener"
+                    aria-label={item.icon.replace('iconoir-', '')}
+                    className="bento grid size-14 place-items-center text-2xl text-foreground transition-all duration-300 hover:-translate-y-1 hover:text-brand"
                   >
-                    <i className="iconoir-github" />
+                    <i className={item.icon} />
                   </a>
                 </li>
-                <li>
-                  <a
-                    className="shadow-box"
-                    href="https://linkedin.com/in/sal-anvarov"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    <i className="iconoir-linkedin" />
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div data-aos="zoom-in" className="contact-form">
-              <div className="shadow-box">
-                <img src="/assets/bg1.png" alt="BG" className="bg-img" />
-                <img src="/assets/icons/icon3.png" alt="Icon" />
-                <h1
-                  dangerouslySetInnerHTML={{
-                    __html: en.contact.form.heading,
-                  }}
-                />
-                <Form onSubmit={handleSubmit}>
+              ))}
+            </ul>
+          </Reveal>
+        </div>
+
+        <BentoCard tilt={0} delay={0.1} className="p-6 md:p-10 lg:col-span-7">
+          <img
+            src="/assets/icons/icon3.png"
+            alt="Icon"
+            className="h-16 w-auto animate-float invert dark:invert-0"
+          />
+          <h1
+            className="mt-6 text-5xl font-semibold text-foreground md:text-6xl [&_span]:font-serif [&_span]:font-normal [&_span]:italic [&_span]:text-brand"
+            dangerouslySetInnerHTML={{ __html: form.heading }}
+          />
+          <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+            <AnimatePresence>
+              {displayBanner ? (
+                <motion.div
+                  initial={{ opacity: 0, y: -8, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: 'auto' }}
+                  exit={{ opacity: 0, y: -8, height: 0 }}
+                >
                   <Alert
-                    className="messenger-box-contact__msg"
                     role="alert"
-                    color="success"
-                    isOpen={displayBanner}
-                    toggle={() => setDisplayBanner(false)}
+                    className="border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                   >
-                    {en.contact.form.onCompletion}
+                    <CheckCircle2 />
+                    <AlertDescription className="flex items-center justify-between gap-4 text-current">
+                      {form.onCompletion}
+                      <button
+                        type="button"
+                        aria-label="Dismiss"
+                        onClick={() => setDisplayBanner(false)}
+                        className="rounded-full p-1 transition-colors hover:bg-emerald-500/15"
+                      >
+                        <X className="size-4" />
+                      </button>
+                    </AlertDescription>
                   </Alert>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      name="name"
-                      id="name"
-                      required
-                      placeholder="Name *"
-                    />
-                    <ValidationError
-                      prefix="Name"
-                      field="name"
-                      errors={state.errors}
-                    />
-                  </div>
-                  <div className="input-group">
-                    <input
-                      id="email"
-                      type="email"
-                      name="email"
-                      required
-                      placeholder="Email *"
-                    />
-                    <ValidationError
-                      prefix="Email"
-                      field="email"
-                      errors={state.errors}
-                    />
-                  </div>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      name="topic"
-                      id="topic"
-                      required
-                      placeholder="Topic *"
-                    />
-                    <ValidationError
-                      prefix="topic"
-                      field="topic"
-                      errors={state.errors}
-                    />
-                  </div>
-                  <div className="input-group">
-                    <textarea
-                      name="message"
-                      id="message"
-                      required
-                      placeholder="Message *"
-                    />
-                    <ValidationError
-                      prefix="Message"
-                      field="message"
-                      errors={state.errors}
-                    />
-                  </div>
-                  <div className="input-group">
-                    <button
-                      className="theme-btn submit-btn"
-                      type="submit"
-                      disabled={state.submitting}
-                    >
-                      {en.contact.form.button.text}
-                    </button>
-                  </div>
-                </Form>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <Input
+                  type="text"
+                  name="name"
+                  id="name"
+                  required
+                  placeholder="Name *"
+                  aria-label="Name"
+                  className="h-12 rounded-2xl bg-background/50 px-4"
+                />
+                <ValidationError
+                  prefix="Name"
+                  field="name"
+                  errors={state.errors}
+                  className={fieldError}
+                />
+              </div>
+              <div>
+                <Input
+                  id="email"
+                  type="email"
+                  name="email"
+                  required
+                  placeholder="Email *"
+                  aria-label="Email"
+                  className="h-12 rounded-2xl bg-background/50 px-4"
+                />
+                <ValidationError
+                  prefix="Email"
+                  field="email"
+                  errors={state.errors}
+                  className={fieldError}
+                />
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+            <div>
+              <Input
+                type="text"
+                name="topic"
+                id="topic"
+                required
+                placeholder="Topic *"
+                aria-label="Topic"
+                className="h-12 rounded-2xl bg-background/50 px-4"
+              />
+              <ValidationError
+                prefix="topic"
+                field="topic"
+                errors={state.errors}
+                className={fieldError}
+              />
+            </div>
+            <div>
+              <Textarea
+                name="message"
+                id="message"
+                required
+                placeholder="Message *"
+                aria-label="Message"
+                className="min-h-40 rounded-2xl bg-background/50 px-4 py-3"
+              />
+              <ValidationError
+                prefix="Message"
+                field="message"
+                errors={state.errors}
+                className={fieldError}
+              />
+            </div>
+            <Button
+              type="submit"
+              disabled={state.submitting}
+              className="group/btn h-12 w-full rounded-full bg-brand text-base text-brand-foreground hover:bg-brand/90"
+            >
+              {form.button.text}
+              <Send className="size-4 transition-transform duration-300 group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-1" />
+            </Button>
+          </form>
+        </BentoCard>
+      </div>
     </Layout>
   );
 };

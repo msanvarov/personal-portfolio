@@ -1,6 +1,6 @@
 # Sal Anvarov
 
-> Personal portfolio of Sal Anvarov — full stack developer and Co-founder of Cleanlist.ai, based in Toronto. The site catalogs hands-on case studies (Cleanlist, Hopin Technologies, Flurrish, Hellotax, Natura Market) and long-form writing on software architecture, developer experience, frontend safety, and ML internals.
+> Personal portfolio of Sal Anvarov — full stack developer and Co-founder of Cleanlist.ai, based in Toronto. The site catalogs hands-on case studies (TANNED TO, Pairus, Cleanlist, Hopin Technologies, Flurrish, Hellotax, Natura Market) and long-form writing on software architecture, developer experience, frontend safety, and ML internals.
 
 Sal builds production software across the stack: TypeScript / React / Next.js on the frontend, Node.js / NestJS / FastAPI on the backend, with deployments on AWS and GCP. Recent focus: AI-powered B2B tooling (Cleanlist.ai), Chrome extension engineering, and lead-enrichment data pipelines.
 
@@ -13,11 +13,22 @@ Sal builds production software across the stack: TypeScript / React / Next.js on
 
 ## Portfolio case studies
 
+- [TANNED TO](https://www.sal-anvarov.com/portfolio/tanned-to): Automated spray tan and skincare studio in Toronto — booking, Stripe memberships, and smart-lock check-in across a web app and native iOS app. Stack: React, React Native + Expo, FastAPI, PostgreSQL, Stripe, Clerk, Seam.
+- [Pairus](https://www.sal-anvarov.com/portfolio/pairus): Anti-dating app — premium matchmaking that pairs AI matching with expert human matchmakers. Stack: Next.js PWA, React, TypeScript, Supabase.
 - [Cleanlist.ai](https://www.sal-anvarov.com/portfolio/cleanlist): SaaS platform for cleaning leads and enriching LinkedIn contacts. Stack: Next.js, React, TypeScript, FastAPI, MongoDB. Includes a Chrome extension for LinkedIn extraction.
 - [Hopin Technologies](https://www.sal-anvarov.com/portfolio/hopin-technologies): Tailored shuttle transportation for daily commutes. Stack: React Native, Expo, Firebase, TypeScript, Samsara.
 - [Flurrish](https://www.sal-anvarov.com/portfolio/flurrish): Campus-focused social media app for personalized, interest-based experiences.
 - [Hellotax](https://www.sal-anvarov.com/portfolio/hellotax): VAT compliance automation for multi-channel traders across Europe.
 - [Natura Market](https://www.sal-anvarov.com/portfolio/natura-market): Canadian e-commerce business specializing in wholesale distribution of perishable goods.
+
+## Open source
+
+- [Algo Vision](https://algo-vision.sal-anvarov.com/): Twenty-two interactive visualizations of how algorithms compute, from sorting to Raft consensus. [Source](https://github.com/msanvarov/algo-vision)
+- [gated-attention-minimal](https://github.com/msanvarov/gated-attention-minimal): Minimal PyTorch implementation of gated attention, the G1 variant (arXiv:2505.06708).
+- [titans-minimal](https://github.com/msanvarov/titans-minimal): Minimal PyTorch implementation of Titans' test-time neural memory (arXiv:2501.00663).
+- [gspo-minimal](https://github.com/msanvarov/gspo-minimal): Minimal PyTorch implementation of Group Sequence Policy Optimization (arXiv:2507.18071).
+- [muon-minimal](https://github.com/msanvarov/muon-minimal): Minimal PyTorch implementation of the Muon optimizer and Moonshot's LLM-scale fixes (arXiv:2502.16982).
+- [nsa-minimal](https://github.com/msanvarov/nsa-minimal): Minimal PyTorch implementation of Native Sparse Attention (arXiv:2502.11089).
 
 ## Blog posts
 

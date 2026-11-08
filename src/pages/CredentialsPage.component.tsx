@@ -53,7 +53,7 @@ const GroupTile = ({
 const ProfileTile = () => (
   <BentoCard className="p-4 sm:p-5 lg:sticky lg:top-28">
     <div className="flex items-center gap-4 lg:flex-col lg:items-stretch lg:text-center">
-      <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br from-[#c4b5fd] via-[#8b5cf6] to-[#5b21b6] sm:size-28 lg:aspect-square lg:size-auto lg:w-full">
+      <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br from-[#e6e3f1] via-[#b9b2dc] to-[#6f6896] sm:size-28 lg:aspect-square lg:size-auto lg:w-full">
         <img
           src={navbar.media}
           alt="bio"
@@ -125,7 +125,7 @@ const CapabilityTile = ({
       </h3>
       <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-secondary">
         <motion.div
-          className="h-full origin-left rounded-full bg-gradient-to-r from-brand to-orchid"
+          className="h-full origin-left rounded-full bg-gradient-to-r from-brand/80 to-brand/30"
           style={{ width: `${(years(item.percent) / maxYears) * 100}%` }}
           initial={reduce ? false : { scaleX: 0 }}
           whileInView={{ scaleX: 1 }}

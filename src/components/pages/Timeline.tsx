@@ -36,7 +36,7 @@ export const Timeline = ({ items, className, size = 'sm' }: TimelineProps) => {
       <motion.span
         aria-hidden
         style={{ scaleY }}
-        className="absolute bottom-3 left-[7px] top-3 w-0.5 origin-top rounded-full bg-gradient-to-b from-brand to-orchid"
+        className="absolute bottom-3 left-[7px] top-3 w-0.5 origin-top rounded-full bg-gradient-to-b from-brand/80 to-brand/30"
       />
       {items.map((item, i) => {
         const present = item.date.includes('Present');

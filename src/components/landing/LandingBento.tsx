@@ -4,11 +4,13 @@ import { FormattedDate } from '@/components/FormattedDate.component';
 import { en } from '@/i18n';
 import { cn } from '@/lib/utils';
 import { caseStudies, postsAsStoreShape } from '@/utils/content';
+import { STUDIO } from '@/utils/studio';
 import { Link } from '@tanstack/react-router';
 import { StaggerItem, StaggerList } from '@/components/motion/Reveal';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import {
   ArrowRight,
+  ArrowUpRight,
   BriefcaseBusiness,
   CalendarDays,
   Code2,
@@ -94,7 +96,7 @@ const Monogram = ({ name }: { name: string }) => (
 const ProfileTile = ({ className }: { className?: string }) => (
   <BentoCard delay={0.05} className={cn('beam p-4 sm:p-6', className)}>
     <div className="flex items-start gap-4">
-      <div className="relative size-20 shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br from-[#c4b5fd] via-[#8b5cf6] to-[#5b21b6] sm:size-24">
+      <div className="relative size-20 shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br from-[#e6e3f1] via-[#b9b2dc] to-[#6f6896] sm:size-24">
         <img
           src={bio.media}
           alt="Sal Anvarov"
@@ -302,12 +304,14 @@ const OfferingsTile = ({ className }: { className?: string }) => {
     );
   return (
     <BentoCard
+      href={STUDIO.offerings}
+      label={`Offerings at ${STUDIO.name}`}
       delay={0.15}
       className={cn('flex flex-col p-4 sm:p-5', className)}
     >
       <TileHeader
         icon={<Sparkles />}
-        caption="Offerings"
+        caption={`Offerings · ${STUDIO.name}`}
         title="Solutions suite"
       />
       <div className="flex flex-col gap-2.5 py-4">
@@ -317,12 +321,14 @@ const OfferingsTile = ({ className }: { className?: string }) => {
           </Marquee>
         ))}
       </div>
-      <Link
-        to="/offerings"
+      <a
+        href={STUDIO.offerings}
+        target="_blank"
+        rel="noopener"
         className="btn-brand relative z-20 mx-auto h-11 w-fit px-5 text-sm"
       >
-        View all offerings <ArrowRight className="size-4" />
-      </Link>
+        Explore offerings at by-sal.dev <ArrowUpRight className="size-4" />
+      </a>
     </BentoCard>
   );
 };
@@ -483,7 +489,7 @@ const ContactTile = ({ className }: { className?: string }) => (
       className,
     )}
   >
-    <span className="ring-spin grid size-14 place-items-center rounded-full bg-brand-soft text-brand">
+    <span className="ring-spin grid size-14 place-items-center rounded-full bg-brand-soft text-foreground">
       <Handshake className="size-6" strokeWidth={1.75} />
     </span>
     <h2

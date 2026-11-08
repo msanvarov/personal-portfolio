@@ -8,16 +8,20 @@ import remarkGfm from 'remark-gfm';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import { defineConfig, type Plugin } from 'vite';
 import { writeSitemap } from './scripts/build-sitemap';
+import { prerender } from './scripts/prerender';
 
 const SITE_URL = process.env.VITE_SITE_URL ?? 'https://www.sal-anvarov.com';
 
 const sitemapPlugin = (): Plugin => ({
   name: 'sal-portfolio:sitemap',
   apply: 'build',
-  closeBundle() {
+  async closeBundle() {
     const outDir = path.resolve(__dirname, 'dist');
     writeSitemap(outDir, __dirname, SITE_URL);
     this.info?.(`sitemap written to ${path.join(outDir, 'sitemap.xml')}`);
+    // Static HTML per route + llms-full.txt + rss.xml for crawlers / AI.
+    const count = await prerender(outDir, __dirname, SITE_URL);
+    this.info?.(`prerendered ${count} routes, llms-full.txt and rss.xml`);
   },
 });
 

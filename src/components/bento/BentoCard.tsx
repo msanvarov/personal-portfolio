@@ -115,7 +115,7 @@ export const TileHeader = ({
   >
     <p className="flex items-center gap-1.5 text-[0.8rem] font-medium text-muted-foreground">
       {icon ? (
-        <span className="text-brand [&_svg]:size-3.5">{icon}</span>
+        <span className="text-foreground/60 [&_svg]:size-3.5">{icon}</span>
       ) : null}
       {caption}
     </p>

@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#050506" />
     <script>
+      // JS is on: hide the static prerendered markup (for crawlers) while
+      // React renders the app over it.
+      document.documentElement.classList.add('js');
       // Apply the saved theme before first paint so there is no flash.
       try {
         var t = localStorage.getItem('theme');
@@ -15,6 +18,12 @@
       }
     </script>
 
+    <style>
+      .js #root > .prerender { display: none; }
+      .prerender { max-width: 46rem; margin: 0 auto; padding: 1.5rem; font: 16px/1.65 -apple-system, BlinkMacSystemFont, Inter, sans-serif; }
+    </style>
+    <link rel="alternate" type="application/rss+xml" title="Sal Anvarov — Blog" href="/rss.xml" />
+    <link rel="alternate" type="text/plain" title="LLM guide" href="/llms.txt" />
     <title>Sal Anvarov - Personal Portfolio</title>
     <meta name="title" content="Sal Anvarov" />
     <meta
@@ -66,7 +75,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/iconoir/6.9.0/css/iconoir.min.css"
     />
-    <link rel="canonical" href="https://www.sal-anvarov.com/" />
 
     <!--
       Site-level structured data: rendered statically so non-JS-rendering

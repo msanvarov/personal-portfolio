@@ -13,7 +13,6 @@ const STATIC_ROUTES: Array<Omit<Entry, 'lastmod'>> = [
   { loc: '/', changefreq: 'monthly', priority: 1.0 },
   { loc: '/bio', changefreq: 'yearly', priority: 0.8 },
   { loc: '/credentials', changefreq: 'yearly', priority: 0.7 },
-  { loc: '/offerings', changefreq: 'yearly', priority: 0.7 },
   { loc: '/portfolio', changefreq: 'monthly', priority: 0.9 },
   { loc: '/blog', changefreq: 'weekly', priority: 0.9 },
   { loc: '/contact', changefreq: 'yearly', priority: 0.6 },

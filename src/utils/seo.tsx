@@ -86,11 +86,21 @@ export const personLd = () => ({
   alternateName: 'Salimjon Anvarov',
   url: SITE_URL,
   image: DEFAULT_OG_IMAGE,
-  jobTitle: 'Full Stack Developer & Co-founder',
+  jobTitle: 'Full Stack Developer, Founder of DEV BY SAL & Co-founder of Cleanlist.ai',
   sameAs: [
     'https://github.com/msanvarov',
     'https://linkedin.com/in/sal-anvarov',
     'https://cleanlist.ai',
+    'https://by-sal.dev',
+  ],
+  worksFor: [
+    {
+      '@type': 'Organization',
+      name: 'DEV BY SAL LTD.',
+      alternateName: 'DEV BY SAL',
+      url: 'https://by-sal.dev',
+    },
+    { '@type': 'Organization', name: 'Cleanlist.ai', url: 'https://cleanlist.ai' },
   ],
   knowsAbout: [
     'TypeScript',

@@ -53,7 +53,7 @@
   "offerings": {
     "heading": "Offerings",
     "caption": "Explore offerings",
-    "link": "/offerings",
+    "link": "https://by-sal.dev/offerings",
     "icons": [
       "iconoir-figma",
       "iconoir-input-output",
@@ -61,7 +61,7 @@
       "iconoir-code"
     ],
     "button": {
-      "link": "/offerings",
+      "link": "https://by-sal.dev/offerings",
       "icon": {
         "light": "/assets/icons/icon-2.svg",
         "dark": "/assets/icons/icon.svg"

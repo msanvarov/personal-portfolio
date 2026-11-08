@@ -32,7 +32,7 @@ const BioPage = () => {
 
       <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-12">
         <BentoCard className="p-2 md:col-span-5">
-          <div className="relative aspect-square overflow-hidden rounded-[calc(var(--radius-bento)-0.5rem)] bg-gradient-to-br from-[#c4b5fd] via-[#8b5cf6] to-[#5b21b6]">
+          <div className="relative aspect-square overflow-hidden rounded-[calc(var(--radius-bento)-0.5rem)] bg-gradient-to-br from-[#e6e3f1] via-[#b9b2dc] to-[#6f6896]">
             <div
               aria-hidden
               className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_30%,rgb(255_255_255/0.35),transparent_70%)]"

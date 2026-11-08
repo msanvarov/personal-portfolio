@@ -96,5 +96,6 @@ Disallow: /assets/icons/
 Disallow: /*?*
 
 # ---- Discovery hints ----
+# LLM guide: https://www.sal-anvarov.com/llms.txt (full text: /llms-full.txt)
 Sitemap: https://www.sal-anvarov.com/sitemap.xml
 Host: https://www.sal-anvarov.com

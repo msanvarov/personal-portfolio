@@ -60,7 +60,7 @@ export const ProfileContactCredentialsRow = ({
       delay={0.08}
       className="flex flex-col items-center justify-center p-5 text-center sm:p-6"
     >
-      <span className="ring-spin grid size-14 place-items-center rounded-full bg-brand-soft text-brand">
+      <span className="ring-spin grid size-14 place-items-center rounded-full bg-brand-soft text-foreground">
         <Handshake className="size-6" strokeWidth={1.75} />
       </span>
       <h2

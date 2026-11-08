@@ -1,14 +1,14 @@
 # Sal Anvarov
 
-> Personal portfolio of Sal Anvarov — full stack developer and Co-founder of Cleanlist.ai, based in Toronto. The site catalogs hands-on case studies (TANNED TO, Pairus, Cleanlist, Hopin Technologies, Flurrish, Hellotax, Natura Market) and long-form writing on software architecture, developer experience, frontend safety, and ML internals.
+> Personal portfolio of Sal Anvarov — full stack developer, founder of the software studio DEV BY SAL (https://by-sal.dev) and Co-founder of Cleanlist.ai, based in Toronto. The site catalogs hands-on case studies (TANNED TO, Pairus, Cleanlist, Hopin Technologies, Flurrish, Hellotax, Natura Market) and long-form writing on software architecture, developer experience, frontend safety, and ML internals.
 
 Sal builds production software across the stack: TypeScript / React / Next.js on the frontend, Node.js / NestJS / FastAPI on the backend, with deployments on AWS and GCP. Recent focus: AI-powered B2B tooling (Cleanlist.ai), Chrome extension engineering, and lead-enrichment data pipelines.
 
 ## About
 
+- [DEV BY SAL — studio](https://by-sal.dev): Sal's software studio (DEV BY SAL LTD.). Consulting and product engineering offerings live at [by-sal.dev/offerings](https://by-sal.dev/offerings).
 - [Bio](https://www.sal-anvarov.com/bio): Background, work history, and how Sal moved from a CS undergrad in Ontario into AI-powered B2B tooling.
 - [Credentials](https://www.sal-anvarov.com/credentials): Resume — current role at Cleanlist.ai (Co-founder), prior roles at Oproma, Permion.ai, and earlier positions, plus capabilities and expertise breakdown.
-- [Offerings](https://www.sal-anvarov.com/offerings): Consulting offerings — full stack product development, AI-powered B2B tooling, and DevOps for startups.
 - [Contact](https://www.sal-anvarov.com/contact): Reach Sal via Formspree, email, or schedule a chat on Calendly.
 
 ## Portfolio case studies
@@ -49,9 +49,11 @@ Sal builds production software across the stack: TypeScript / React / Next.js on
 
 ## Discovery
 
+- [llms-full.txt](https://www.sal-anvarov.com/llms-full.txt): Full text of every blog post and case study in one file.
+- [rss.xml](https://www.sal-anvarov.com/rss.xml): Blog feed.
 - [robots.txt](https://www.sal-anvarov.com/robots.txt)
 - [sitemap.xml](https://www.sal-anvarov.com/sitemap.xml)
 
 ## Notes for crawlers
 
-This site is a Vite + React 18 SPA, so the most reliable representation of each page for ingestion is the URL above plus the canonical link tag in the HTML head. Per-route JSON-LD (Person, WebSite, BlogPosting, CreativeWork, BreadcrumbList) is injected at runtime via react-helmet-async; the static index.html additionally embeds a Person + WebSite graph for non-JS-rendering crawlers.
+Every route is prerendered to static HTML at build time, so the full page text, canonical URL, Open Graph tags and JSON-LD (Person, WebSite, BlogPosting, CreativeWork, BreadcrumbList) are present without running JavaScript. The interactive app renders over that markup in the browser.

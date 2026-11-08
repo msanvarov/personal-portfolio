@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as OfferingsRouteImport } from './routes/offerings'
 import { Route as CredentialsRouteImport } from './routes/credentials'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BioRouteImport } from './routes/bio'
@@ -19,11 +18,6 @@ import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as PortfolioEntryRouteImport } from './routes/portfolio/$entry'
 import { Route as BlogPostRouteImport } from './routes/blog/$post'
 
-const OfferingsRoute = OfferingsRouteImport.update({
-  id: '/offerings',
-  path: '/offerings',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CredentialsRoute = CredentialsRouteImport.update({
   id: '/credentials',
   path: '/credentials',
@@ -70,7 +64,6 @@ export interface FileRoutesByFullPath {
   '/bio': typeof BioRoute
   '/contact': typeof ContactRoute
   '/credentials': typeof CredentialsRoute
-  '/offerings': typeof OfferingsRoute
   '/blog/$post': typeof BlogPostRoute
   '/portfolio/$entry': typeof PortfolioEntryRoute
   '/blog/': typeof BlogIndexRoute
@@ -81,7 +74,6 @@ export interface FileRoutesByTo {
   '/bio': typeof BioRoute
   '/contact': typeof ContactRoute
   '/credentials': typeof CredentialsRoute
-  '/offerings': typeof OfferingsRoute
   '/blog/$post': typeof BlogPostRoute
   '/portfolio/$entry': typeof PortfolioEntryRoute
   '/blog': typeof BlogIndexRoute
@@ -93,7 +85,6 @@ export interface FileRoutesById {
   '/bio': typeof BioRoute
   '/contact': typeof ContactRoute
   '/credentials': typeof CredentialsRoute
-  '/offerings': typeof OfferingsRoute
   '/blog/$post': typeof BlogPostRoute
   '/portfolio/$entry': typeof PortfolioEntryRoute
   '/blog/': typeof BlogIndexRoute
@@ -106,7 +97,6 @@ export interface FileRouteTypes {
     | '/bio'
     | '/contact'
     | '/credentials'
-    | '/offerings'
     | '/blog/$post'
     | '/portfolio/$entry'
     | '/blog/'
@@ -117,7 +107,6 @@ export interface FileRouteTypes {
     | '/bio'
     | '/contact'
     | '/credentials'
-    | '/offerings'
     | '/blog/$post'
     | '/portfolio/$entry'
     | '/blog'
@@ -128,7 +117,6 @@ export interface FileRouteTypes {
     | '/bio'
     | '/contact'
     | '/credentials'
-    | '/offerings'
     | '/blog/$post'
     | '/portfolio/$entry'
     | '/blog/'
@@ -140,7 +128,6 @@ export interface RootRouteChildren {
   BioRoute: typeof BioRoute
   ContactRoute: typeof ContactRoute
   CredentialsRoute: typeof CredentialsRoute
-  OfferingsRoute: typeof OfferingsRoute
   BlogPostRoute: typeof BlogPostRoute
   PortfolioEntryRoute: typeof PortfolioEntryRoute
   BlogIndexRoute: typeof BlogIndexRoute
@@ -149,13 +136,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/offerings': {
-      id: '/offerings'
-      path: '/offerings'
-      fullPath: '/offerings'
-      preLoaderRoute: typeof OfferingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/credentials': {
       id: '/credentials'
       path: '/credentials'
@@ -220,7 +200,6 @@ const rootRouteChildren: RootRouteChildren = {
   BioRoute: BioRoute,
   ContactRoute: ContactRoute,
   CredentialsRoute: CredentialsRoute,
-  OfferingsRoute: OfferingsRoute,
   BlogPostRoute: BlogPostRoute,
   PortfolioEntryRoute: PortfolioEntryRoute,
   BlogIndexRoute: BlogIndexRoute,

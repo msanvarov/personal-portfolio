@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import { STUDIO } from '@/utils/studio';
 import { menu } from './menu';
 
 export const Footer = () => {
@@ -31,6 +32,16 @@ export const Footer = () => {
               </Link>
             </li>
           ))}
+          <li>
+            <a
+              href={STUDIO.url}
+              target="_blank"
+              rel="noopener"
+              className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {STUDIO.name} — studio ↗
+            </a>
+          </li>
         </ul>
       </div>
     </footer>

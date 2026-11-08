@@ -19,6 +19,13 @@
   status = 301
   force = true
 
+# Offerings moved to the studio site, DEV BY SAL.
+[[redirects]]
+  from = "/offerings"
+  to = "https://by-sal.dev/offerings"
+  status = 301
+  force = true
+
 # SPA fallback — let the TanStack router handle every other unknown URL.
 [[redirects]]
   from = "/*"

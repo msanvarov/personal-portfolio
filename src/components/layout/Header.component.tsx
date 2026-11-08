@@ -8,8 +8,9 @@ import {
 import { cn } from '@/lib/utils';
 import { Link, useLocation } from '@tanstack/react-router';
 import { motion, useMotionValueEvent, useScroll } from 'framer-motion';
-import { Coffee } from 'lucide-react';
+import { ArrowUpRight, Coffee } from 'lucide-react';
 import { useState } from 'react';
+import { STUDIO } from '@/utils/studio';
 import { menu } from './menu';
 
 const calendlyUrl = import.meta.env.VITE_CALENDLY_URL;
@@ -85,6 +86,14 @@ export const Header = () => {
               </Link>
             );
           })}
+          <a
+            href={STUDIO.url}
+            target="_blank"
+            rel="noopener"
+            className="inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-[0.8rem] text-foreground/65 transition-colors hover:text-foreground"
+          >
+            Studio <ArrowUpRight className="size-3" />
+          </a>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -132,6 +141,14 @@ export const Header = () => {
                     {entry.label}
                   </Link>
                 ))}
+                <a
+                  href={STUDIO.url}
+                  target="_blank"
+                  rel="noopener"
+                  className="flex items-center gap-2 rounded-2xl py-2.5 text-[1.75rem] font-semibold tracking-[-0.02em] text-foreground/55 transition-colors hover:text-foreground"
+                >
+                  Studio <ArrowUpRight className="size-6" />
+                </a>
                 {calendlyUrl ? (
                   <a
                     href={calendlyUrl}

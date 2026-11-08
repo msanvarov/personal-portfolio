@@ -3,12 +3,30 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "cleanUrls": true,
+  "trailingSlash": false,
   "redirects": [
-    { "source": "/posts", "destination": "/blog", "permanent": true },
-    { "source": "/posts/:slug*", "destination": "/blog/:slug*", "permanent": true }
+    {
+      "source": "/posts",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/posts/:slug*",
+      "destination": "/blog/:slug*",
+      "permanent": true
+    },
+    {
+      "source": "/offerings",
+      "destination": "https://by-sal.dev/offerings",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
@@ -21,7 +39,7 @@
       ]
     },
     {
-      "source": "/(robots.txt|sitemap.xml|llms.txt)",
+      "source": "/(robots.txt|sitemap.xml|llms.txt|llms-full.txt|rss.xml)",
       "headers": [
         {
           "key": "Cache-Control",

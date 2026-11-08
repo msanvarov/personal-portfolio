@@ -51,7 +51,7 @@ export const Header = () => {
           'mx-auto flex max-w-6xl items-center justify-between gap-4 rounded-full border px-2 py-2 transition-[background-color,border-color,box-shadow] duration-500 md:px-3',
           scrolled
             ? 'border-border bg-background/70 shadow-[0_20px_50px_-25px_rgb(0_0_0/0.5)] backdrop-blur-xl'
-            : 'border-transparent'
+            : 'border-transparent',
         )}
       >
         <Link to="/" aria-label="Home" className="group shrink-0">
@@ -76,7 +76,7 @@ export const Header = () => {
                   'relative rounded-full px-4 py-2 text-sm font-medium transition-colors',
                   active
                     ? 'text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
+                    : 'text-muted-foreground hover:text-foreground',
                 )}
               >
                 {active ? (
@@ -121,26 +121,20 @@ export const Header = () => {
                 <SheetTitle className="font-heading text-left">Menu</SheetTitle>
               </SheetHeader>
               <nav aria-label="Mobile" className="flex flex-col gap-1 px-4">
-                {menu.map((entry, i) => (
-                  <motion.div
+                {menu.map((entry) => (
+                  <Link
                     key={entry.path}
-                    initial={{ opacity: 0, x: 24 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.05 * i + 0.1, ease: 'easeOut' }}
+                    to={entry.path}
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      'block rounded-2xl px-4 py-3 font-heading text-3xl font-semibold transition-colors',
+                      isActive(pathname, entry.path)
+                        ? 'bg-secondary text-foreground'
+                        : 'text-muted-foreground hover:text-foreground',
+                    )}
                   >
-                    <Link
-                      to={entry.path}
-                      onClick={() => setOpen(false)}
-                      className={cn(
-                        'block rounded-2xl px-4 py-3 font-heading text-3xl font-semibold transition-colors',
-                        isActive(pathname, entry.path)
-                          ? 'bg-secondary text-foreground'
-                          : 'text-muted-foreground hover:text-foreground'
-                      )}
-                    >
-                      {entry.label}
-                    </Link>
-                  </motion.div>
+                    {entry.label}
+                  </Link>
                 ))}
                 {calendlyUrl ? (
                   <Button

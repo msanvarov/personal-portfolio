@@ -83,6 +83,6 @@
   <!-- title -->
   <g font-family="'Space Grotesk', 'Inter', system-ui, sans-serif" fill="#f6f1ea">
     <text x="80" y="535" font-size="22" letter-spacing="6" fill-opacity="0.55">GENERATIVE AI · VIDEO</text>
-    <text x="80" y="582" font-size="44" font-weight="600">Pack Your References for Seedance</text>
+    <text x="80" y="582" font-size="44" font-weight="600">Pack Your References for AI Video</text>
   </g>
 </svg>

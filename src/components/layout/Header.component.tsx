@@ -1,21 +1,14 @@
 import { ThemeConfigurator } from '@/components/ThemeConfigurator.component';
-import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { Link, useLocation } from '@tanstack/react-router';
-import {
-  motion,
-  useMotionValueEvent,
-  useReducedMotion,
-  useScroll,
-} from 'framer-motion';
-import { Coffee, Menu } from 'lucide-react';
+import { motion, useMotionValueEvent, useScroll } from 'framer-motion';
+import { Coffee } from 'lucide-react';
 import { useState } from 'react';
 import { menu } from './menu';
 
@@ -24,48 +17,50 @@ const calendlyUrl = import.meta.env.VITE_CALENDLY_URL;
 const isActive = (pathname: string, path: string) =>
   path === '/' ? pathname === '/' : pathname.startsWith(path);
 
+/** Two-line "hamburger" that morphs into an X, like Apple's mobile nav. */
+const MenuGlyph = ({ open }: { open: boolean }) => (
+  <span className="relative block h-3 w-4" aria-hidden>
+    <span
+      className={cn(
+        'absolute left-0 h-[1.5px] w-4 rounded-full bg-current transition-transform duration-300 ease-[var(--ease-apple)]',
+        open ? 'top-[5px] rotate-45' : 'top-[2px]',
+      )}
+    />
+    <span
+      className={cn(
+        'absolute left-0 h-[1.5px] w-4 rounded-full bg-current transition-transform duration-300 ease-[var(--ease-apple)]',
+        open ? 'top-[5px] -rotate-45' : 'top-[8px]',
+      )}
+    />
+  </span>
+);
+
 export const Header = () => {
   const { pathname } = useLocation();
-  const reduce = useReducedMotion();
   const { scrollY } = useScroll();
-  const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
-  // Hide while scrolling down, reveal on any upward scroll.
-  useMotionValueEvent(scrollY, 'change', (y) => {
-    const previous = scrollY.getPrevious() ?? 0;
-    setScrolled(y > 24);
-    setHidden(y > previous && y > 220);
-  });
+  // Scroll edge effect: the hairline appears only once content is underneath.
+  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 8));
 
   return (
-    <motion.header
-      initial={reduce ? false : { y: -40, opacity: 0 }}
-      animate={{ y: hidden && !open ? -120 : 0, opacity: 1 }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed inset-x-0 top-0 z-50 px-3 pt-3 md:px-6 md:pt-5"
+    <header
+      className={cn(
+        'material sticky top-0 z-50 border-b transition-[border-color] duration-300',
+        scrolled ? 'border-border' : 'border-transparent',
+      )}
     >
-      <div
-        className={cn(
-          'mx-auto flex max-w-6xl items-center justify-between gap-4 rounded-full border px-2 py-2 transition-[background-color,border-color,box-shadow] duration-500 md:px-3',
-          scrolled
-            ? 'border-border bg-background/70 shadow-[0_20px_50px_-25px_rgb(0_0_0/0.5)] backdrop-blur-xl'
-            : 'border-transparent',
-        )}
-      >
+      <div className="mx-auto flex h-12 max-w-6xl items-center justify-between gap-4 px-4 md:px-6">
         <Link to="/" aria-label="Home" className="group shrink-0">
           <img
             src="/assets/logo/logo.png"
             alt="Sal Anvarov logo"
-            className="h-11 w-auto transition-transform duration-500 group-hover:-rotate-12 group-hover:scale-110 md:h-12"
+            className="h-8 w-auto transition-transform duration-500 ease-[var(--ease-apple)] group-hover:-rotate-12 group-active:scale-90"
           />
         </Link>
 
-        <nav
-          aria-label="Main"
-          className="hidden items-center gap-1 rounded-full border border-border bg-background/40 p-1 backdrop-blur md:flex"
-        >
+        <nav aria-label="Main" className="hidden items-center gap-1 md:flex">
           {menu.map((entry) => {
             const active = isActive(pathname, entry.path);
             return (
@@ -73,17 +68,17 @@ export const Header = () => {
                 key={entry.path}
                 to={entry.path}
                 className={cn(
-                  'relative rounded-full px-4 py-2 text-sm font-medium transition-colors',
+                  'relative rounded-full px-3.5 py-1.5 text-[0.8rem] transition-colors',
                   active
-                    ? 'text-foreground'
-                    : 'text-muted-foreground hover:text-foreground',
+                    ? 'font-medium text-foreground'
+                    : 'text-foreground/65 hover:text-foreground',
                 )}
               >
                 {active ? (
                   <motion.span
                     layoutId="nav-pill"
-                    className="absolute inset-0 rounded-full bg-secondary shadow-[inset_0_0_0_1px_var(--bento-edge)]"
-                    transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                    className="absolute inset-0 rounded-full bg-foreground/[0.07]"
+                    transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
                   />
                 ) : null}
                 <span className="relative">{entry.label}</span>
@@ -94,67 +89,64 @@ export const Header = () => {
 
         <div className="flex items-center gap-2">
           {calendlyUrl ? (
-            <Button
-              asChild
-              size="sm"
-              className="hidden h-10 rounded-full bg-brand px-4 text-brand-foreground hover:bg-brand/90 lg:inline-flex"
+            <a
+              href={calendlyUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="btn-brand hidden h-8 rounded-full px-3.5 text-[0.8rem] md:inline-flex"
             >
-              <a href={calendlyUrl} target="_blank" rel="noreferrer noopener">
-                <Coffee className="size-4" /> Chat with Sal
-              </a>
-            </Button>
+              <Coffee className="size-3.5" /> Chat with Sal
+            </a>
           ) : null}
           <ThemeConfigurator />
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                aria-label="Open menu"
-                className="size-10 rounded-full bg-background/40 backdrop-blur md:hidden"
-              >
-                <Menu className="size-4" />
-              </Button>
+            <SheetTrigger
+              aria-label={open ? 'Close menu' : 'Open menu'}
+              className="grid size-8 place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/[0.07] active:scale-95 md:hidden"
+            >
+              <MenuGlyph open={open} />
             </SheetTrigger>
-            <SheetContent side="right" className="w-[80vw] max-w-sm">
-              <SheetHeader>
-                <SheetTitle className="font-heading text-left">Menu</SheetTitle>
-              </SheetHeader>
-              <nav aria-label="Mobile" className="flex flex-col gap-1 px-4">
+            <SheetContent
+              side="top"
+              showCloseButton={false}
+              overlayClassName="top-12 bg-transparent"
+              className="material border-0 bg-transparent shadow-none data-[side=top]:top-12 data-[side=top]:h-[calc(100dvh-3rem)] data-[side=top]:border-b-0"
+            >
+              <SheetTitle className="sr-only">Menu</SheetTitle>
+              <nav
+                aria-label="Mobile"
+                className="flex flex-col gap-1 px-6 pt-4"
+              >
                 {menu.map((entry) => (
                   <Link
                     key={entry.path}
                     to={entry.path}
                     onClick={() => setOpen(false)}
                     className={cn(
-                      'block rounded-2xl px-4 py-3 font-heading text-3xl font-semibold transition-colors',
+                      'rounded-2xl py-2.5 text-[1.75rem] font-semibold tracking-[-0.02em] transition-colors',
                       isActive(pathname, entry.path)
-                        ? 'bg-secondary text-foreground'
-                        : 'text-muted-foreground hover:text-foreground',
+                        ? 'text-foreground'
+                        : 'text-foreground/55 hover:text-foreground',
                     )}
                   >
                     {entry.label}
                   </Link>
                 ))}
                 {calendlyUrl ? (
-                  <Button
-                    asChild
-                    className="mt-4 h-12 rounded-full bg-brand text-brand-foreground hover:bg-brand/90"
+                  <a
+                    href={calendlyUrl}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="btn-brand mt-6 h-12 text-base"
                   >
-                    <a
-                      href={calendlyUrl}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                    >
-                      <Coffee className="size-4" /> Chat with Sal
-                    </a>
-                  </Button>
+                    <Coffee className="size-4" /> Chat with Sal
+                  </a>
                 ) : null}
               </nav>
             </SheetContent>
           </Sheet>
         </div>
       </div>
-    </motion.header>
+    </header>
   );
 };

@@ -1,8 +1,5 @@
 import { ArrowChip, BentoCard } from '@/components/bento/BentoCard';
-import { SplitWords } from '@/components/motion/Reveal';
-import { StarMark } from '@/components/SectionHeading';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { en } from '@/i18n';
 import { cn } from '@/lib/utils';
 import {
@@ -14,7 +11,7 @@ import {
   useTransform,
 } from 'framer-motion';
 import { Link } from '@tanstack/react-router';
-import { BookOpen, ExternalLink } from 'lucide-react';
+import { BookOpen, Code2, ExternalLink } from 'lucide-react';
 import { useLayoutEffect, useRef, useState } from 'react';
 
 const os = en.opensource;
@@ -26,24 +23,23 @@ const GithubIcon = ({ className }: { className?: string }) => (
 
 const Intro = ({ className }: { className?: string }) => (
   <div className={cn('flex flex-col justify-center', className)}>
-    <p className="mb-4 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.3em] text-brand">
-      <StarMark className="size-3" /> {os.caption}
+    <p className="mb-3 flex items-center gap-1.5 text-sm font-semibold text-brand">
+      <Code2 className="size-4" /> {os.caption}
     </p>
-    <h2 className="text-5xl font-semibold uppercase leading-[0.95] text-foreground md:text-7xl">
-      <SplitWords text={os.heading} />
+    <h2 className="text-gradient pb-1 text-5xl font-semibold md:text-6xl">
+      {os.heading}.
     </h2>
     <p className="mt-6 max-w-sm leading-relaxed text-muted-foreground">
       {os.description}
     </p>
-    <Button
-      asChild
-      variant="outline"
-      className="mt-8 h-11 w-fit rounded-full px-5"
+    <a
+      href={os.github}
+      target="_blank"
+      rel="noreferrer noopener"
+      className="btn-quiet mt-8 h-11 w-fit px-5 text-sm"
     >
-      <a href={os.github} target="_blank" rel="noreferrer noopener">
-        <GithubIcon className="text-base" /> github.com/msanvarov
-      </a>
-    </Button>
+      <GithubIcon className="text-base" /> github.com/msanvarov
+    </a>
   </div>
 );
 
@@ -53,7 +49,6 @@ const FeaturedCard = ({ className }: { className?: string }) => {
     <BentoCard
       href={f.live}
       label={`Open ${f.name}`}
-      tilt={2}
       className={cn('flex flex-col p-3', className)}
     >
       <div className="relative overflow-hidden rounded-[1.25rem] border border-border">
@@ -82,23 +77,22 @@ const FeaturedCard = ({ className }: { className?: string }) => {
         <h3 className="text-3xl font-semibold text-foreground">{f.name}</h3>
         <p className="leading-relaxed text-muted-foreground">{f.description}</p>
         <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-border pt-5">
-          <Button
-            asChild
-            className="relative z-20 h-10 rounded-full bg-brand px-4 text-brand-foreground hover:bg-brand/90"
+          <a
+            href={f.live}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="btn-brand relative z-20 h-11 px-4 text-sm"
           >
-            <a href={f.live} target="_blank" rel="noreferrer noopener">
-              <ExternalLink className="size-4" /> Live demo
-            </a>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            className="relative z-20 h-10 rounded-full px-4"
+            <ExternalLink className="size-4" /> Live demo
+          </a>
+          <a
+            href={f.repo}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="btn-quiet relative z-20 h-11 px-4 text-sm"
           >
-            <a href={f.repo} target="_blank" rel="noreferrer noopener">
-              <GithubIcon /> Source
-            </a>
-          </Button>
+            <GithubIcon /> Source
+          </a>
           <a
             href={f.repo}
             target="_blank"
@@ -129,38 +123,42 @@ const RepoCard = ({
     href={repo.repo}
     label={`Open ${repo.name} on GitHub`}
     delay={0.05 * index}
-    className={cn('flex flex-col gap-6 p-6', className)}
+    className={cn('flex flex-col gap-4 p-3', className)}
   >
-    <div className="flex items-start justify-between gap-4">
-      <span className="font-heading text-6xl font-semibold leading-none text-foreground/10 transition-colors duration-500 group-hover:text-brand/40">
-        {String(index + 2).padStart(2, '0')}
-      </span>
-      <Badge variant="outline" className="rounded-full font-mono text-[0.7rem]">
+    {/* The post's illustrated thumbnail doubles as the card's visual. */}
+    <div className="relative overflow-hidden rounded-[calc(var(--radius-bento)-0.5rem)] bg-secondary">
+      <img
+        src={`/assets/thumbnails/${repo.post}.svg`}
+        alt=""
+        loading="lazy"
+        className="aspect-[16/9] w-full object-cover transition-[scale] duration-700 ease-[var(--ease-apple)] group-hover:scale-[1.04]"
+      />
+      <span className="material absolute right-2.5 top-2.5 rounded-full px-2.5 py-1 font-mono text-[0.7rem] text-foreground">
         arXiv:{repo.arxiv}
-      </Badge>
-    </div>
-    <div>
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-        {repo.org}
-      </p>
-      <p className="mt-2 font-serif text-2xl italic leading-tight text-foreground">
-        {repo.paper}
-      </p>
-    </div>
-    <p className="leading-relaxed text-muted-foreground">{repo.description}</p>
-    <Link
-      to="/blog/$post"
-      params={{ post: repo.post }}
-      className="relative z-20 inline-flex w-fit items-center gap-1.5 text-sm font-medium text-brand underline-offset-4 hover:underline"
-    >
-      <BookOpen className="size-4" /> Read the breakdown
-    </Link>
-    <div className="mt-auto flex items-center justify-between gap-4 border-t border-border pt-5">
-      <span className="flex min-w-0 items-center gap-2 font-mono text-sm text-foreground">
-        <GithubIcon className="shrink-0 text-base" />
-        <span className="truncate">{repo.name}</span>
       </span>
-      <ArrowChip className="size-10" />
+    </div>
+    <div className="flex flex-1 flex-col gap-3 px-2 pb-2">
+      <p className="text-[0.8rem] font-medium text-brand">{repo.org}</p>
+      <h3 className="-mt-2 text-xl font-semibold leading-snug text-foreground">
+        {repo.paper}
+      </h3>
+      <p className="text-[0.95rem] leading-relaxed text-muted-foreground">
+        {repo.description}
+      </p>
+      <Link
+        to="/blog/$post"
+        params={{ post: repo.post }}
+        className="relative z-20 inline-flex w-fit items-center gap-1.5 text-sm font-medium text-brand underline-offset-4 hover:underline"
+      >
+        <BookOpen className="size-4" /> Read the breakdown
+      </Link>
+      <div className="mt-auto flex items-center justify-between gap-4 border-t border-border pt-4">
+        <span className="flex min-w-0 items-center gap-2 font-mono text-sm text-foreground">
+          <GithubIcon className="shrink-0 text-base" />
+          <span className="truncate">{repo.name}</span>
+        </span>
+        <ArrowChip />
+      </div>
     </div>
   </BentoCard>
 );
@@ -196,7 +194,7 @@ const HorizontalScroller = () => {
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
 
   useMotionValueEvent(scrollYProgress, 'change', (p) =>
-    setActive(Math.min(total - 1, Math.floor(p * total)))
+    setActive(Math.min(total - 1, Math.floor(p * total))),
   );
 
   return (
@@ -210,7 +208,7 @@ const HorizontalScroller = () => {
         <motion.div
           ref={trackRef}
           style={{ x }}
-          className="flex w-max items-stretch gap-6 px-[max(1.5rem,calc((100vw-72rem)/2+1.5rem))]"
+          className="flex w-max items-center gap-6 px-[max(1.5rem,calc((100vw-72rem)/2+1.5rem))]"
         >
           <Intro className="w-[26rem] shrink-0 pr-6" />
           <FeaturedCard className="w-[40rem] shrink-0" />
@@ -225,7 +223,8 @@ const HorizontalScroller = () => {
         </motion.div>
         <div className="mx-auto mt-10 flex w-full max-w-6xl items-center gap-4 px-6">
           <span className="font-mono text-xs tabular-nums text-muted-foreground">
-            {String(active + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+            {String(active + 1).padStart(2, '0')} /{' '}
+            {String(total).padStart(2, '0')}
           </span>
           <div className="h-px flex-1 overflow-hidden bg-border">
             <motion.div
@@ -240,7 +239,10 @@ const HorizontalScroller = () => {
 };
 
 const StackedGrid = () => (
-  <section aria-label="Open source projects" className="grid gap-4 md:grid-cols-2 md:gap-6">
+  <section
+    aria-label="Open source projects"
+    className="grid gap-4 md:grid-cols-2 md:gap-6"
+  >
     <Intro className="mb-4 md:col-span-2" />
     <FeaturedCard className="md:col-span-2" />
     {os.repos.map((repo, i) => (
@@ -250,7 +252,9 @@ const StackedGrid = () => (
         index={i}
         className={cn(
           // An odd last card spans the row instead of sitting alone.
-          i === os.repos.length - 1 && os.repos.length % 2 === 1 && 'md:col-span-2'
+          i === os.repos.length - 1 &&
+            os.repos.length % 2 === 1 &&
+            'md:col-span-2',
         )}
       />
     ))}
@@ -259,7 +263,7 @@ const StackedGrid = () => (
 
 const useMediaQuery = (query: string) => {
   const [matches, setMatches] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia(query).matches
+    () => typeof window !== 'undefined' && window.matchMedia(query).matches,
   );
   useLayoutEffect(() => {
     const mql = window.matchMedia(query);
@@ -273,7 +277,9 @@ const useMediaQuery = (query: string) => {
 
 export const OpenSourceSection = () => {
   const reduce = useReducedMotion();
-  const isDesktop = useMediaQuery('(min-width: 1024px) and (min-height: 640px)');
+  const isDesktop = useMediaQuery(
+    '(min-width: 1024px) and (min-height: 640px)',
+  );
   return (
     <div id="open-source" className="mt-24 md:mt-32">
       {isDesktop && !reduce ? <HorizontalScroller /> : <StackedGrid />}

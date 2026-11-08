@@ -1,9 +1,7 @@
-import { SplitWords } from '@/components/motion/Reveal';
+import { Reveal } from '@/components/motion/Reveal';
 import { cn } from '@/lib/utils';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
 
-/** The template's four-point star, drawn in currentColor so it themes. */
+/** Four-point sparkle (Apple-style), drawn in currentColor so it themes. */
 export const StarMark = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" aria-hidden className={cn('size-6', className)}>
     <path
@@ -16,42 +14,30 @@ export const StarMark = ({ className }: { className?: string }) => (
 type SectionHeadingProps = {
   children: string;
   eyebrow?: string;
+  description?: string;
   className?: string;
 };
 
-/**
- * Big uppercase page heading flanked by stars. The stars spin as the
- * heading scrolls through the viewport.
- */
+/** Apple-style page headline: big, tight, gradient, rising in on a spring. */
 export const SectionHeading = ({
   children,
   eyebrow,
+  description,
   className,
-}: SectionHeadingProps) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start'],
-  });
-  const rotate = useTransform(scrollYProgress, [0, 1], [0, 270]);
-  const rotateBack = useTransform(rotate, (r) => -r);
-
-  return (
-    <div ref={ref} className={cn('mb-10 text-center md:mb-14', className)}>
-      {eyebrow ? (
-        <p className="mb-3 text-xs font-medium uppercase tracking-[0.3em] text-brand">
-          {eyebrow}
-        </p>
-      ) : null}
-      <h1 className="flex items-center justify-center gap-3 text-5xl font-semibold uppercase text-foreground md:gap-5 md:text-7xl lg:text-8xl">
-        <motion.span style={{ rotate }} className="text-brand">
-          <StarMark className="size-6 md:size-9" />
-        </motion.span>
-        <SplitWords text={children} />
-        <motion.span style={{ rotate: rotateBack }} className="text-brand">
-          <StarMark className="size-6 md:size-9" />
-        </motion.span>
+}: SectionHeadingProps) => (
+  <div className={cn('mb-10 text-center md:mb-14', className)}>
+    {eyebrow ? (
+      <p className="mb-3 text-sm font-semibold text-brand">{eyebrow}</p>
+    ) : null}
+    <Reveal y={20}>
+      <h1 className="text-gradient pb-1 text-5xl font-semibold md:text-7xl">
+        {children}
       </h1>
-    </div>
-  );
-};
+    </Reveal>
+    {description ? (
+      <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
+        {description}
+      </p>
+    ) : null}
+  </div>
+);

@@ -1,142 +1,104 @@
-import { FormattedDate } from '@/components/FormattedDate.component';
-import { Reveal } from '@/components/motion/Reveal';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { TileHeader } from '@/components/bento/BentoCard';
+import { BlogSearch } from '@/components/blog/BlogSearch';
+import { PostMeta } from '@/components/blog/PostCards';
+import { postSlug } from '@/utils/content';
+import { Reveal, StaggerItem, StaggerList } from '@/components/motion/Reveal';
 import type { Post } from '@/store';
-import { Link, useLocation, useNavigate } from '@tanstack/react-router';
-import { Search } from 'lucide-react';
-import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
+import { Link } from '@tanstack/react-router';
+import { ArrowRight, Clock3, Folder, Hash } from 'lucide-react';
+import type { ReactNode } from 'react';
 
 type BlogNavbarProps = {
   posts: Post[];
   categories: string[];
   tags: string[];
+  className?: string;
 };
 
-const readQ = (locationSearch: string): string =>
-  new URLSearchParams(locationSearch).get('q') ?? '';
-
 const Widget = ({
-  title,
+  icon,
+  caption,
   delay,
   children,
 }: {
-  title: string;
+  icon: ReactNode;
+  caption: string;
   delay: number;
   children: ReactNode;
 }) => (
-  <Reveal delay={delay} className="bento p-6">
-    <h3 className="mb-4 text-lg font-semibold text-foreground">{title}</h3>
+  <Reveal delay={delay} className="bento p-4">
+    <TileHeader icon={icon} caption={caption} align="start" />
     {children}
   </Reveal>
 );
 
-export const BlogNavbar = ({ posts, categories, tags }: BlogNavbarProps) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  // Keep the input in sync with the current ?q= so deep-linking and the
-  // back button feel right.
-  const [query, setQuery] = useState<string>(() =>
-    readQ(typeof location.searchStr === 'string' ? location.searchStr : '')
-  );
-
-  useEffect(() => {
-    const urlQ =
-      typeof location.searchStr === 'string'
-        ? readQ(location.searchStr)
-        : '';
-    setQuery(urlQ);
-  }, [location.searchStr]);
-
-  const submit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const trimmed = query.trim();
-    navigate({
-      to: '/blog',
-      search: trimmed ? { q: trimmed } : {},
-    });
-  };
-
-  return (
-    <aside className="flex flex-col gap-5 lg:sticky lg:top-28">
+/** Blog sidebar: search, recent posts, categories and tags. */
+export const BlogNavbar = ({
+  posts,
+  categories,
+  tags,
+  className,
+}: BlogNavbarProps) => (
+  <aside className={className}>
+    <div className="flex flex-col gap-3">
       <Reveal>
-        <form
-          onSubmit={submit}
-          role="search"
-          className="bento flex items-center gap-2 p-2"
-        >
-          <Search className="ml-3 size-4 shrink-0 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Find blog by name or category"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            aria-label="Find blog by name or category"
-            className="h-11 border-0 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent"
-          />
-          <Button
-            type="submit"
-            className="h-11 rounded-full bg-brand px-5 text-brand-foreground hover:bg-brand/90"
-          >
-            Find
-          </Button>
-        </form>
+        <BlogSearch />
       </Reveal>
 
-      <Widget title="Recent Posts" delay={0.05}>
-        <ul className="flex flex-col gap-4">
-          {posts.slice(0, 5).map((post, i) => (
-            <li key={i} className="group">
+      <Widget icon={<Clock3 />} caption="Recent posts" delay={0.05}>
+        <StaggerList className="mt-1 flex flex-col divide-y divide-border">
+          {posts.slice(0, 4).map((post) => (
+            <StaggerItem key={post.filePath}>
               <Link
                 to="/blog/$post"
-                params={{ post: post.filePath.replace(/\.mdx?$/, '') }}
-                className="text-sm font-medium leading-snug text-foreground transition-colors group-hover:text-brand"
+                params={{ post: postSlug(post) }}
+                className="group/post block py-2.5"
               >
-                {post.metadata.title}
+                <PostMeta post={post} className="text-[0.7rem]" />
+                <p className="mt-1 flex items-start justify-between gap-3 text-sm font-medium leading-snug text-foreground transition-colors group-hover/post:text-brand">
+                  <span className="line-clamp-2">{post.metadata.title}</span>
+                  <ArrowRight className="mt-0.5 size-3.5 shrink-0 -translate-x-2 opacity-0 transition-all duration-300 ease-[var(--ease-apple)] group-hover/post:translate-x-0 group-hover/post:opacity-100" />
+                </p>
               </Link>
-              <p className="mt-1 text-xs text-muted-foreground">
-                <FormattedDate value={post.metadata.modified} />
-              </p>
-            </li>
+            </StaggerItem>
           ))}
-        </ul>
+        </StaggerList>
       </Widget>
 
-      <Widget title="Categories" delay={0.1}>
-        <ul className="flex flex-col gap-2">
-          {categories.map((category, i) => (
-            <li key={i}>
+      <Widget icon={<Folder />} caption="Categories" delay={0.1}>
+        <StaggerList className="mt-2 flex flex-col gap-1">
+          {categories.map((category) => (
+            <StaggerItem key={category}>
               <Link
                 to="/blog"
                 search={{ q: category }}
-                className="text-sm text-muted-foreground transition-colors hover:text-brand"
+                className="-mx-2 flex h-9 items-center justify-between rounded-xl px-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               >
-                - {category}
+                {category}
+                <span className="rounded-full bg-secondary px-2 py-0.5 text-[0.7rem] tabular-nums">
+                  {posts.filter((p) => p.metadata.category === category).length}
+                </span>
               </Link>
-            </li>
+            </StaggerItem>
           ))}
-        </ul>
+        </StaggerList>
       </Widget>
 
-      <Widget title="Tags" delay={0.15}>
-        <ul className="flex flex-wrap gap-2">
-          {tags.map((tag, i) => (
-            <li key={i}>
-              <Badge
-                asChild
-                variant="outline"
-                className="h-7 rounded-full px-3 transition-colors hover:border-brand hover:bg-brand hover:text-brand-foreground"
+      <Widget icon={<Hash />} caption="Tags" delay={0.15}>
+        <StaggerList className="mt-3 flex flex-wrap gap-1.5">
+          {tags.map((tag) => (
+            <StaggerItem key={tag}>
+              <Link
+                to="/blog"
+                search={{ q: tag }}
+                className="inline-flex h-8 items-center rounded-full bg-secondary px-3 text-xs font-medium text-muted-foreground shadow-[inset_0_0_0_1px_var(--bento-edge)] transition-colors hover:bg-brand hover:text-brand-foreground"
               >
-                <Link to="/blog" search={{ q: tag }}>
-                  {tag}
-                </Link>
-              </Badge>
-            </li>
+                {tag}
+              </Link>
+            </StaggerItem>
           ))}
-        </ul>
+        </StaggerList>
       </Widget>
-    </aside>
-  );
-};
+    </div>
+  </aside>
+);

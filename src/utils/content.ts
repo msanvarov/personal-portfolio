@@ -14,17 +14,16 @@ export type ContentEntry = {
 
 const caseStudyModules = import.meta.glob<MDXModule>(
   '../../content/case-studies/*.mdx',
-  { eager: true }
+  { eager: true },
 );
 
-const postModules = import.meta.glob<MDXModule>(
-  '../../content/posts/*.mdx',
-  { eager: true }
-);
+const postModules = import.meta.glob<MDXModule>('../../content/posts/*.mdx', {
+  eager: true,
+});
 
 const toEntries = (
   modules: Record<string, MDXModule>,
-  prefix: string
+  prefix: string,
 ): ContentEntry[] => {
   return Object.entries(modules).map(([file, mod]) => {
     const fileName = file.split('/').pop() ?? '';
@@ -46,7 +45,7 @@ const sortByCreatedDesc = (entries: ContentEntry[]) =>
   });
 
 export const caseStudies = sortByCreatedDesc(
-  toEntries(caseStudyModules, 'case-studies')
+  toEntries(caseStudyModules, 'case-studies'),
 );
 
 export const posts = sortByCreatedDesc(toEntries(postModules, 'posts'));
@@ -62,3 +61,10 @@ export const postsAsStoreShape = posts.map((entry) => ({
   metadata: entry.metadata,
   filePath: `${entry.slug}.mdx`,
 }));
+
+/** Route slug for a post ("foo.mdx" → "foo"). */
+export const postSlug = (post: { filePath: string }) =>
+  post.filePath.replace(/\.mdx?$/, '');
+
+/** "Cleanlist.ai Case Study" → "Cleanlist.ai" */
+export const studyName = (title = '') => title.replace(/\s*Case Study$/i, '');

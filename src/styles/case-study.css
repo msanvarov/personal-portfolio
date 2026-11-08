@@ -1,8 +1,20 @@
 /* Case-study MDX files (content/case-studies) are authored with the old
-   template's class names. These rules restyle that markup in the bento
-   design, scoped to the .case-study wrapper on PortfolioEntryPage.
+   template's class names. These rules restyle that markup as bento tiles,
+   scoped to the .case-study wrapper on PortfolioEntryPage.
    Plain (unlayered) CSS on purpose: it outranks Tailwind's same-named
    utilities such as `.container` and `.flex-1`. */
+
+.case-study {
+  --cs-gap: 0.75rem;
+  --cs-ease: cubic-bezier(0.32, 0.72, 0, 1);
+}
+@media (min-width: 640px) {
+  .case-study {
+    --cs-gap: 1rem;
+  }
+}
+
+/* ── Layout ─────────────────────────────────────────────────────── */
 
 .case-study .container {
   width: 100%;
@@ -12,22 +24,25 @@
 }
 
 .case-study .mb-24 {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--cs-gap);
 }
 
-.case-study .bg-img {
+/* Old-template decoration: background art and tiny star icons. */
+.case-study .bg-img,
+.case-study .shadow-box > img,
+.case-study .left-details > img {
   display: none;
 }
 
 .case-study .d-flex {
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: 1.5rem;
 }
 
 .case-study .row {
   display: grid;
-  gap: 1.5rem;
+  gap: var(--cs-gap);
 }
 
 .case-study .flex-1 {
@@ -38,64 +53,66 @@
 @media (min-width: 768px) {
   .case-study .d-flex {
     flex-direction: row;
+    gap: 2rem;
   }
   .case-study .row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-/* Bento-style card, matching .bento in globals.css */
+/* ── Tiles ──────────────────────────────────────────────────────── */
+
 .case-study .shadow-box {
   position: relative;
   isolation: isolate;
-  padding: 1.75rem;
+  overflow: hidden;
+  padding: 1.25rem;
   border-radius: var(--radius-bento);
   background:
-    linear-gradient(140deg, var(--bento-sheen), transparent 38%),
+    radial-gradient(120% 80% at 50% 0%, var(--bento-sheen), transparent 60%),
     var(--card);
   color: var(--card-foreground);
-  box-shadow:
-    0 1px 0 0 rgb(255 255 255 / 0.04) inset,
-    0 30px 60px -30px rgb(0 0 0 / 0.35);
+  box-shadow: var(--tile-shadow);
+  transition: box-shadow 400ms var(--cs-ease);
 }
-
-.case-study .shadow-box::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(140deg, var(--bento-edge-hi), var(--bento-edge) 45%);
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+.case-study .shadow-box:hover {
+  box-shadow: var(--tile-shadow-hover);
 }
-
 @media (min-width: 768px) {
+  .case-study .shadow-box {
+    padding: 2rem;
+  }
+}
+@media (min-width: 1024px) {
   .case-study .shadow-box {
     padding: 2.5rem;
   }
 }
 
-/* Shared type inside the cards */
+/* ── Type ───────────────────────────────────────────────────────── */
+
 .case-study h3 {
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.75rem;
   font-family: var(--font-heading);
-  font-size: 1.5rem;
+  font-size: 1.375rem;
   font-weight: 600;
+  letter-spacing: -0.022em;
+  line-height: 1.2;
   color: var(--foreground);
+}
+@media (min-width: 768px) {
+  .case-study h3 {
+    font-size: 1.625rem;
+  }
 }
 
 .case-study p {
+  font-size: 0.975rem;
   color: var(--muted-foreground);
-  line-height: 1.75;
+  line-height: 1.7;
 }
-
 .case-study p + p {
-  margin-top: 0.9rem;
+  margin-top: 0.85rem;
 }
 
 .case-study b {
@@ -105,33 +122,20 @@
 
 .case-study .shadow-box a {
   color: var(--brand);
+  font-weight: 500;
   text-underline-offset: 4px;
+  overflow-wrap: anywhere;
 }
-
 .case-study .shadow-box a:hover {
   text-decoration: underline;
 }
 
-.case-study ul {
-  display: grid;
-  gap: 0.45rem;
-  color: var(--muted-foreground);
-}
-
-/* Intro card: star icon + description + technologies */
-.case-study .project-infos-wrap > img:not(.bg-img),
-.case-study .left-details > img {
-  align-self: flex-start;
-  width: auto;
-  height: 4rem;
-  opacity: 0.9;
-}
+/* ── Intro tile: summary | technologies ─────────────────────────── */
 
 .case-study .project-details-info + .project-details-info {
   border-top: 1px solid var(--border);
-  padding-top: 1.75rem;
+  padding-top: 1.5rem;
 }
-
 @media (min-width: 768px) {
   .case-study .project-details-info + .project-details-info {
     border-top: 0;
@@ -141,78 +145,71 @@
   }
 }
 
-/* Full-width banner and two-up images */
-.case-study .project-details-2-img,
-.case-study .project-details-3-img {
-  overflow: hidden;
-  border-radius: var(--radius-bento);
-  box-shadow: 0 0 0 1px var(--bento-edge);
+/* The project name: gradient, like the page headline. */
+.case-study .project-infos-wrap .project-details-info:first-of-type h3 {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-.case-study .project-details-2-img img,
-.case-study .project-details-3-img img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.case-study .project-details-2-img:hover img,
-.case-study .project-details-3-img:hover img {
-  transform: scale(1.03);
-}
-
-/* Phone screenshot grid (TANNED TO) */
-.case-study .project-screens {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-@media (min-width: 768px) {
-  .case-study .project-screens {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.5rem;
-  }
-}
-
-.case-study .project-screens img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 1.5rem;
-  box-shadow: 0 0 0 1px var(--bento-edge), 0 24px 48px -28px rgb(0 0 0 / 0.45);
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.case-study .project-screens img:hover {
-  transform: translateY(-6px);
-}
-
-/* Year / client / role + contribution */
-.case-study .left-details {
+/* Technologies list → chips (PortfolioEntryPage strips the "- " prefix). */
+.case-study .project-details-info ul {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
+.case-study .project-details-info li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.85rem;
+  background: var(--chip);
+  box-shadow: inset 0 0 0 1px var(--bento-edge);
+  padding: 0.45rem 0.8rem 0.45rem 0.5rem;
+  font-size: 0.875rem;
+  color: var(--foreground);
+  transition: box-shadow 300ms var(--cs-ease);
+}
+.case-study .project-details-info li::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: var(--brand);
+  box-shadow: 0 0 0 4px var(--brand-soft);
+}
+.case-study .project-details-info li:hover {
+  box-shadow: inset 0 0 0 1px var(--bento-edge-hi);
+}
+
+/* ── About tile: meta list | contribution ───────────────────────── */
 
 .case-study .left-details ul {
-  gap: 1.25rem;
+  display: grid;
+  border-radius: calc(var(--radius-bento) - 0.5rem);
+  background: var(--chip);
+  box-shadow: inset 0 0 0 1px var(--bento-edge);
 }
-
+.case-study .left-details li {
+  padding: 0.75rem 1rem;
+}
+.case-study .left-details li + li {
+  border-top: 1px solid var(--border);
+}
 .case-study .left-details li p {
-  margin-bottom: 0.25rem;
-  font-size: 0.7rem;
+  margin: 0 0 0.15rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  line-height: 1.4;
+  color: var(--brand);
 }
-
 .case-study .left-details h4 {
   font-family: var(--font-heading);
-  font-size: 1.1rem;
+  font-size: 0.975rem;
   font-weight: 500;
+  line-height: 1.35;
   color: var(--foreground);
 }
 
@@ -223,11 +220,131 @@
 
 @media (min-width: 768px) {
   .case-study .left-details {
-    width: 17rem;
+    width: 16rem;
     flex-shrink: 0;
   }
-  .case-study .right-details {
-    border-left: 1px solid var(--border);
-    padding-left: 2.5rem;
+}
+
+/* ── Images ─────────────────────────────────────────────────────── */
+
+.case-study .project-details-img {
+  margin-top: var(--cs-gap);
+}
+
+.case-study .project-details-img,
+.case-study .project-details-2-img,
+.case-study .project-details-3-img {
+  overflow: hidden;
+  border-radius: var(--radius-bento);
+  background: var(--card);
+  box-shadow: var(--tile-shadow);
+  transition: box-shadow 400ms var(--cs-ease);
+}
+.case-study .project-details-img:hover,
+.case-study .project-details-2-img:hover,
+.case-study .project-details-3-img:hover {
+  box-shadow: var(--tile-shadow-hover);
+}
+
+.case-study .project-details-img img,
+.case-study .project-details-2-img img,
+.case-study .project-details-3-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 0.8s var(--cs-ease);
+}
+.case-study .project-details-img:hover img,
+.case-study .project-details-2-img:hover img,
+.case-study .project-details-3-img:hover img {
+  scale: 1.03;
+}
+
+.case-study .col-md-6,
+.case-study .project-details-3-img {
+  height: 100%;
+}
+
+/* Phone screenshot grid (TANNED TO, Pairus) */
+.case-study .project-screens {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cs-gap);
+}
+@media (min-width: 768px) {
+  .case-study .project-screens {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.case-study .project-screens img {
+  --d: 0ms;
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-bento);
+  box-shadow: var(--tile-shadow);
+  transition:
+    opacity 0.8s var(--cs-ease),
+    translate 0.9s var(--cs-ease),
+    scale 0.5s var(--cs-ease),
+    box-shadow 0.4s var(--cs-ease);
+  transition-delay: var(--d), var(--d), 0s, 0s;
+}
+@media (hover: hover) {
+  .case-study .project-screens img:hover {
+    scale: 1.02;
+    box-shadow: var(--tile-shadow-hover);
+  }
+}
+
+/* ── Entrance (PortfolioEntryPage adds .aos-ready, then .is-in) ─── */
+
+.case-study [data-aos] {
+  transition:
+    opacity 0.8s var(--cs-ease),
+    translate 0.9s var(--cs-ease),
+    scale 0.9s var(--cs-ease);
+}
+.case-study.aos-ready [data-aos]:not(.is-in) {
+  opacity: 0;
+  translate: 0 2rem;
+  scale: 0.98;
+}
+.case-study .row > [data-aos]:nth-child(2) {
+  transition-delay: 90ms;
+}
+
+/* Screenshot grid: the phones cascade in one after another. */
+.case-study .project-screens[data-aos] {
+  translate: none;
+  scale: none;
+  opacity: 1;
+}
+.case-study.aos-ready .project-screens:not(.is-in) img {
+  opacity: 0;
+  translate: 0 1.5rem;
+}
+.case-study .project-screens img:nth-child(2) {
+  --d: 70ms;
+}
+.case-study .project-screens img:nth-child(3) {
+  --d: 140ms;
+}
+.case-study .project-screens img:nth-child(4) {
+  --d: 210ms;
+}
+.case-study .project-screens img:nth-child(5) {
+  --d: 280ms;
+}
+.case-study .project-screens img:nth-child(6) {
+  --d: 350ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-study *,
+  .case-study [data-aos] {
+    transition: none !important;
   }
 }

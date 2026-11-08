@@ -1,12 +1,7 @@
 import { DocumentHead } from '@/components/DocumentHead.component';
 import { cn } from '@/lib/utils';
 import { useLocation } from '@tanstack/react-router';
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { type ReactNode } from 'react';
 import { Footer } from './Footer.component';
 import { Header } from './Header.component';
@@ -18,48 +13,32 @@ type LayoutProps = {
   head?: ReactNode;
 };
 
-/** Grid + glow backdrop; the glows drift as the page scrolls. */
-const Backdrop = () => {
-  const { scrollYProgress } = useScroll();
-  const y1 = useTransform(scrollYProgress, [0, 1], ['0%', '60%']);
-  const y2 = useTransform(scrollYProgress, [0, 1], ['0%', '-40%']);
-  return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <div className="bg-grid absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,#000_20%,transparent_70%)]" />
-      <motion.div
-        style={{ y: y1 }}
-        className="absolute -left-40 -top-40 size-[34rem] rounded-full bg-brand/20 blur-[120px] dark:bg-brand/15"
-      />
-      <motion.div
-        style={{ y: y2 }}
-        className="absolute -right-40 top-1/3 size-[30rem] rounded-full bg-[#9aa9ff]/20 blur-[140px] dark:bg-[#7c5cff]/10"
-      />
-    </div>
-  );
-};
-
 export const Layout = ({ title, className, head, children }: LayoutProps) => {
   const { pathname } = useLocation();
   const reduce = useReducedMotion();
 
   return (
-    <>
+    <div className="relative isolate">
       <DocumentHead title={title}>{head}</DocumentHead>
-      <Backdrop />
+      {/* Soft lavender light at the top of the page; static, never moves. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[640px] bg-[radial-gradient(60%_55%_at_50%_0%,var(--glow),transparent_70%)]"
+      />
       <Header />
       <motion.main
         key={pathname}
-        initial={reduce ? false : { opacity: 0, y: 16 }}
+        initial={reduce ? { opacity: 0 } : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ type: 'spring', bounce: 0, duration: 0.6 }}
         className={cn(
-          'relative mx-auto w-full max-w-6xl px-4 pb-24 pt-28 md:px-6 md:pt-36',
-          className
+          'relative mx-auto w-full max-w-6xl px-3 pb-20 pt-6 sm:px-4 md:px-6 md:pt-12',
+          className,
         )}
       >
         {children}
       </motion.main>
       <Footer />
-    </>
+    </div>
   );
 };

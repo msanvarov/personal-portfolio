@@ -1,6 +1,6 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
 @plugin "@tailwindcss/typography";
 
 /* MDX case studies are authored as raw markup in content/, so Tailwind must
@@ -10,13 +10,22 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-heading: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Apple system type first (SF Pro on Apple devices), Inter elsewhere. */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Helvetica Neue',
+    ui-sans-serif, system-ui, sans-serif;
+  --font-heading:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter',
+    'Helvetica Neue', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'New York', ui-serif, 'Instrument Serif', Georgia, serif;
+  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
 
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
+  --color-brand-soft: var(--brand-soft);
+  --color-violet-hue: var(--violet-hue);
+  --color-orchid: var(--orchid);
+  --color-indigo-hue: var(--indigo-hue);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -43,77 +52,126 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-  --radius-bento: 1.75rem;
+  --radius-bento: 1.5rem;
 
-  --animate-marquee: marquee var(--marquee-duration, 32s) linear infinite;
-  --animate-spin-slow: spin 14s linear infinite;
-  --animate-float: float 6s ease-in-out infinite;
+  /* Apple's standard "ease out" curve for short CSS transitions. */
+  --ease-apple: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --animate-marquee: marquee var(--marquee-duration, 36s) linear infinite;
+  --animate-marquee-reverse: marquee var(--marquee-duration, 36s) linear
+    infinite reverse;
+  --animate-caret: caret 1s steps(1) infinite;
 
   @keyframes marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
   }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+  @keyframes caret {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
   }
 }
 
-/* Light theme */
+/* Light (Apple light surfaces) */
 :root {
-  --brand: #5b78f6;
+  --brand: #7c3aed;
   --brand-foreground: #ffffff;
-  --background: #f4f6fb;
-  --foreground: #14151a;
+  --brand-soft: #ede7fe;
+  --violet-hue: #a78bfa;
+  --orchid: #c026d3;
+  --indigo-hue: #5b5bd6;
+  --background: #f5f5f7;
+  --foreground: #1d1d1f;
   --card: #ffffff;
-  --card-foreground: #14151a;
+  --card-foreground: #1d1d1f;
   --popover: #ffffff;
-  --popover-foreground: #14151a;
-  --primary: #5b78f6;
+  --popover-foreground: #1d1d1f;
+  --primary: #7c3aed;
   --primary-foreground: #ffffff;
-  --secondary: #eceff6;
-  --secondary-foreground: #14151a;
-  --muted: #eceff6;
-  --muted-foreground: #6b6f7b;
-  --accent: #e7ebfe;
-  --accent-foreground: #2c46c7;
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: rgb(20 21 26 / 0.08);
-  --input: rgb(20 21 26 / 0.12);
-  --ring: #5b78f6;
+  --secondary: #f2f1f7;
+  --secondary-foreground: #1d1d1f;
+  --muted: #f2f1f7;
+  --muted-foreground: #6e6e73;
+  --accent: #ede7fe;
+  --accent-foreground: #5b21b6;
+  --destructive: #e5484d;
+  --border: rgb(0 0 0 / 0.07);
+  --input: rgb(0 0 0 / 0.1);
+  --ring: #7c3aed;
   --radius: 0.75rem;
 
-  --bento-edge: rgb(20 21 26 / 0.09);
-  --bento-edge-hi: rgb(20 21 26 / 0.16);
-  --bento-sheen: rgb(91 120 246 / 0.10);
-  --grid-line: rgb(20 21 26 / 0.045);
+  --bento-edge: rgb(0 0 0 / 0.06);
+  --bento-edge-hi: rgb(124 58 237 / 0.28);
+  --bento-sheen: rgb(124 58 237 / 0.05);
+  --tile-shadow:
+    0 1px 2px rgb(0 0 0 / 0.04), 0 10px 30px -12px rgb(30 10 70 / 0.12);
+  --tile-shadow-hover:
+    0 2px 4px rgb(0 0 0 / 0.05), 0 22px 44px -16px rgb(76 29 149 / 0.25);
+  --chip: #f4f2fa;
+  --gradient-text: linear-gradient(
+    120deg,
+    #4c1d95 0%,
+    #7c3aed 45%,
+    #c026d3 100%
+  );
+  --glow: rgb(124 58 237 / 0.16);
+  --material: rgb(245 245 247 / 0.72);
 }
 
-/* Dark theme (default) */
+/* Dark (default) — near-black canvas, graphite tiles, lavender accents */
 .dark {
-  --background: #0b0b0d;
-  --foreground: #f4f4f5;
-  --card: #121215;
-  --card-foreground: #f4f4f5;
+  --brand: #9b87f5;
+  --brand-foreground: #0b0618;
+  --brand-soft: #1e1838;
+  --violet-hue: #c4b5fd;
+  --orchid: #e879f9;
+  --indigo-hue: #818cf8;
+  --background: #050506;
+  --foreground: #f5f5f7;
+  --card: #0e0e11;
+  --card-foreground: #f5f5f7;
   --popover: #141418;
-  --popover-foreground: #f4f4f5;
-  --primary: #5b78f6;
-  --primary-foreground: #ffffff;
-  --secondary: #1b1b20;
-  --secondary-foreground: #f4f4f5;
-  --muted: #1b1b20;
-  --muted-foreground: #9a9aa3;
-  --accent: #1d2140;
-  --accent-foreground: #b9c6ff;
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: rgb(255 255 255 / 0.08);
-  --input: rgb(255 255 255 / 0.12);
-  --ring: #5b78f6;
+  --popover-foreground: #f5f5f7;
+  --primary: #9b87f5;
+  --primary-foreground: #0b0618;
+  --secondary: #17171c;
+  --secondary-foreground: #f5f5f7;
+  --muted: #17171c;
+  --muted-foreground: #8e8e96;
+  --accent: #1e1838;
+  --accent-foreground: #d8ceff;
+  --destructive: #ff6369;
+  --border: rgb(255 255 255 / 0.07);
+  --input: rgb(255 255 255 / 0.1);
+  --ring: #9b87f5;
 
-  --bento-edge: rgb(255 255 255 / 0.07);
-  --bento-edge-hi: rgb(255 255 255 / 0.2);
-  --bento-sheen: rgb(91 120 246 / 0.16);
-  --grid-line: rgb(255 255 255 / 0.035);
+  --bento-edge: rgb(255 255 255 / 0.06);
+  --bento-edge-hi: rgb(155 135 245 / 0.35);
+  --bento-sheen: rgb(155 135 245 / 0.05);
+  --tile-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.04), 0 0 0 1px rgb(255 255 255 / 0.05);
+  --tile-shadow-hover:
+    inset 0 1px 0 rgb(255 255 255 / 0.06), 0 0 0 1px rgb(155 135 245 / 0.28),
+    0 20px 50px -20px rgb(155 135 245 / 0.35);
+  --chip: #15151a;
+  --gradient-text: linear-gradient(
+    120deg,
+    #ede9fe 0%,
+    #c4b5fd 40%,
+    #9b87f5 70%,
+    #e879f9 100%
+  );
+  --glow: rgb(155 135 245 / 0.18);
+  --material: rgb(5 5 6 / 0.7);
 }
 
 @layer base {
@@ -122,8 +180,8 @@
   }
   html {
     @apply font-sans antialiased;
-    font-feature-settings: "ss01", "cv01", "cv11";
     color-scheme: light;
+    -webkit-text-size-adjust: 100%;
   }
   html.dark {
     color-scheme: dark;
@@ -132,118 +190,347 @@
     @apply min-h-dvh bg-background text-foreground;
     overflow-x: clip;
     text-rendering: optimizeLegibility;
+    letter-spacing: -0.003em;
+    /* Ease light↔dark changes instead of a hard brightness jump. */
+    transition:
+      background-color 300ms var(--ease-apple),
+      color 300ms var(--ease-apple);
   }
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-heading tracking-tight;
+  /* Apple-style tracking: tighter as type grows. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading;
+    font-weight: 600;
+  }
+  h1 {
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+  }
+  h2 {
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+  h3 {
+    letter-spacing: -0.018em;
+    line-height: 1.2;
+  }
+  h4,
+  h5,
+  h6 {
+    letter-spacing: -0.01em;
   }
   ::selection {
-    background: rgb(91 120 246 / 0.35);
+    background: rgb(155 135 245 / 0.35);
   }
   /* Content JSON uses this class inside inline HTML snippets. */
-  .text-primary-color,
-  [class*="text-primary-color"] {
+  .text-primary-color {
     color: var(--brand);
   }
 }
 
 @layer components {
-  /* Bento card: gradient hairline edge + cursor spotlight. The spotlight
-     follows --mx/--my, which BentoCard sets on pointer move. */
+  /* Bento tile: a quiet surface with a hairline edge; hover adds a soft
+     lavender lift. Motion is handled by BentoCard (springs). */
   .bento {
     position: relative;
     isolation: isolate;
     border-radius: var(--radius-bento);
     background:
-      linear-gradient(140deg, var(--bento-sheen), transparent 38%),
+      radial-gradient(120% 80% at 50% 0%, var(--bento-sheen), transparent 60%),
       var(--card);
     color: var(--card-foreground);
-    box-shadow:
-      0 1px 0 0 rgb(255 255 255 / 0.04) inset,
-      0 30px 60px -30px rgb(0 0 0 / 0.35);
-    transform-style: preserve-3d;
+    box-shadow: var(--tile-shadow);
+    transition: box-shadow 400ms var(--ease-apple);
   }
-  .bento::before {
-    content: "";
+  .bento:hover {
+    box-shadow: var(--tile-shadow-hover);
+  }
+
+  /* Inset tile used inside bento cards (stats, icon wells, chips). */
+  .bento-well {
+    border-radius: calc(var(--radius-bento) - 0.5rem);
+    background: var(--chip);
+    box-shadow: inset 0 0 0 1px var(--bento-edge);
+  }
+
+  /* Small rounded chip with an icon square, as used across tiles. */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.85rem;
+    background: var(--chip);
+    box-shadow: inset 0 0 0 1px var(--bento-edge);
+    padding: 0.4rem 0.75rem 0.4rem 0.4rem;
+    font-size: 0.875rem;
+    color: var(--foreground);
+    white-space: nowrap;
+  }
+  .chip-icon {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.55rem;
+    background: var(--brand-soft);
+    color: var(--brand);
+    font-size: 1rem;
+  }
+
+  /* Lavender call-to-action with a soft inner highlight and glow. */
+  .btn-brand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.9rem;
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--brand) 85%, white),
+      var(--brand)
+    );
+    color: var(--brand-foreground);
+    font-weight: 600;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.35),
+      0 10px 24px -10px var(--brand);
+    transition:
+      transform 160ms var(--ease-apple),
+      box-shadow 300ms var(--ease-apple),
+      filter 200ms;
+  }
+  .btn-brand:hover {
+    filter: brightness(1.06);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.4),
+      0 14px 30px -10px var(--brand);
+  }
+  .btn-brand:active {
+    transform: scale(0.97);
+    transition-duration: 80ms;
+  }
+
+  .btn-quiet {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.9rem;
+    background: var(--chip);
+    box-shadow: inset 0 0 0 1px var(--bento-edge);
+    color: var(--foreground);
+    font-weight: 500;
+    transition:
+      transform 160ms var(--ease-apple),
+      background-color 200ms,
+      box-shadow 300ms;
+  }
+  .btn-quiet:hover {
+    box-shadow: inset 0 0 0 1px var(--bento-edge-hi);
+  }
+  .btn-quiet:active {
+    transform: scale(0.97);
+    transition-duration: 80ms;
+  }
+
+  .text-gradient {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Translucent chrome (Apple material). */
+  .material {
+    background: var(--material);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+  }
+
+  .mask-fade-x {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 14%,
+      #000 86%,
+      transparent
+    );
+  }
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, #000 60%, transparent);
+  }
+}
+
+@property --beam-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@layer components {
+  /* ── In-tile motion ─────────────────────────────────────────────── */
+
+  /* Cursor spotlight inside tiles (desktop pointers only). BentoCard sets
+   --mx/--my on pointer move. */
+  @media (hover: hover) and (pointer: fine) {
+    .bento::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      opacity: 0;
+      transition: opacity 500ms var(--ease-apple);
+      background: radial-gradient(
+        380px circle at var(--mx, 50%) var(--my, 0%),
+        var(--glow),
+        transparent 60%
+      );
+    }
+    .bento:hover::after {
+      opacity: 1;
+    }
+  }
+  .bento > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* A light beam that travels around a tile's border. */
+  .beam::before {
+    content: '';
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 2;
     pointer-events: none;
     border-radius: inherit;
-    padding: 1px;
-    background:
-      radial-gradient(
-        420px circle at var(--mx, 50%) var(--my, -20%),
-        var(--bento-edge-hi),
-        transparent 45%
-      ),
-      linear-gradient(140deg, var(--bento-edge-hi), var(--bento-edge) 45%);
+    padding: 1.5px;
+    background: conic-gradient(
+      from var(--beam-angle),
+      transparent 0deg 250deg,
+      var(--violet-hue) 300deg,
+      var(--orchid) 330deg,
+      transparent 360deg
+    );
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
+    animation: beam 7s linear infinite;
   }
-  .bento::after {
-    content: "";
+  @keyframes beam {
+    to {
+      --beam-angle: 360deg;
+    }
+  }
+
+  /* Periodic light sweep across the lavender buttons. */
+  .btn-brand {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .btn-brand::after {
+    content: '';
     position: absolute;
     inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    border-radius: inherit;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    background: radial-gradient(
-      560px circle at var(--mx, 50%) var(--my, 50%),
-      rgb(91 120 246 / 0.13),
-      transparent 42%
+    z-index: -1;
+    background: linear-gradient(
+      105deg,
+      transparent 35%,
+      rgb(255 255 255 / 0.45) 50%,
+      transparent 65%
     );
+    transform: translateX(-120%);
+    animation: shine 4.5s var(--ease-apple) infinite;
   }
-  .bento:hover::after {
-    opacity: 1;
+  @keyframes shine {
+    0%,
+    55% {
+      transform: translateX(-120%);
+    }
+    85%,
+    100% {
+      transform: translateX(120%);
+    }
   }
-  .bento > * {
+
+  /* Slowly shifting gradient for big numbers. */
+  .text-gradient-pan {
+    background-size: 220% 100%;
+    animation: pan 8s ease-in-out infinite alternate;
+  }
+  @keyframes pan {
+    from {
+      background-position: 0% 50%;
+    }
+    to {
+      background-position: 100% 50%;
+    }
+  }
+
+  /* Spinning conic ring (e.g. around the contact icon). */
+  .ring-spin {
     position: relative;
-    z-index: 2;
   }
-
-  /* Inset tile used inside bento cards (stats, icon wells). */
-  .bento-well {
-    border-radius: calc(var(--radius-bento) - 0.5rem);
-    background: linear-gradient(160deg, var(--secondary), transparent 140%);
-    box-shadow: inset 0 0 0 1px var(--bento-edge);
+  .ring-spin::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 9999px;
+    background: conic-gradient(
+      from var(--beam-angle),
+      var(--brand),
+      var(--orchid),
+      transparent 60%,
+      var(--brand)
+    );
+    -webkit-mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 2px),
+      #000 calc(100% - 1.5px)
+    );
+    mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 2px),
+      #000 calc(100% - 1.5px)
+    );
+    animation: beam 3s linear infinite;
   }
-
-  .bg-grid {
-    background-image:
-      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-    background-size: 56px 56px;
-  }
-
-  .mask-fade-x {
-    mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
-  }
-}
-
-/* Lenis smooth scrolling */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-.lenis.lenis-stopped {
-  overflow: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
-  .animate-spin-slow,
-  .animate-float {
+  .animate-marquee-reverse,
+  .animate-caret,
+  .beam::before,
+  .btn-brand::after,
+  .text-gradient-pan,
+  .ring-spin::before {
     animation: none !important;
+  }
+  .beam::before,
+  .btn-brand::after {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .material {
+    background: var(--background);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .bento {
+    box-shadow: 0 0 0 1px var(--foreground);
   }
 }

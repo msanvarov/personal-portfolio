@@ -1,78 +1,91 @@
-import { BentoCard, CardMeta } from '@/components/bento/BentoCard';
-import { FormattedDate } from '@/components/FormattedDate.component';
+import { ArrowChip, BentoCard } from '@/components/bento/BentoCard';
+import { CategoryChip } from '@/components/portfolio/CategoryChip.component';
 import { Layout } from '@/components/layout/Layout.component';
 import { SectionHeading } from '@/components/SectionHeading';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { caseStudies } from '@/utils/content';
+import { caseStudies, studyName } from '@/utils/content';
 import { breadcrumbLd, Seo } from '@/utils/seo';
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from 'framer-motion';
-import { useRef } from 'react';
 
-type Group = typeof caseStudies;
+type Entry = (typeof caseStudies)[number];
 
-const CaseStudyCard = ({
-  entry,
-  index,
-}: {
-  entry: Group[number];
-  index: number;
-}) => {
+/**
+ * Bento rhythm on desktop (3 cols): the featured tile fills 2×2, the next
+ * two stack beside it, then rows of two alternate wide/narrow.
+ */
+const tileSpan = (i: number, total: number) => {
+  if (i === 0) return 'md:col-span-2 lg:row-span-2';
+  if (i < 3) return '';
+  const j = i - 3;
+  const lastAlone = j === total - 4 && j % 2 === 0;
+  if (lastAlone) return 'lg:col-span-3';
+  const row = Math.floor(j / 2);
+  return j % 2 === row % 2 ? 'lg:col-span-2' : '';
+};
+
+const CaseStudyTile = ({ entry, index }: { entry: Entry; index: number }) => {
+  const { title, description, thumbnail, category, created, cover } =
+    entry.metadata;
   const featured = index === 0;
-  // Photo thumbnails (frontmatter `cover: true`) fill the frame; logos sit centered.
-  const cover = featured || Boolean(entry.metadata.cover);
-  const dateValue = entry.metadata.modified ?? entry.metadata.created ?? '';
-  const imageRef = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-  // Thumbnail drifts against the scroll for a little depth.
-  const { scrollYProgress } = useScroll({
-    target: imageRef,
-    offset: ['start end', 'end start'],
-  });
-  const y = useTransform(scrollYProgress, [0, 1], ['-6%', '6%']);
+  // Photo thumbnails (frontmatter `cover: true`) fill the well; logos sit centered.
+  const isCover = String(cover) === 'true';
+  const year = created ? new Date(created).getFullYear() : undefined;
 
   return (
     <BentoCard
       to={`/portfolio/${entry.slug}`}
-      label={`Open ${entry.metadata.title} case study`}
-      delay={(index % 3) * 0.08}
+      label={`Open ${title} case study`}
+      delay={(index % 3) * 0.06}
       className={cn(
-        'flex flex-col gap-5 p-4 md:p-5',
-        featured && 'md:col-span-2 lg:row-span-2'
+        'flex flex-col gap-4 p-3 sm:p-4',
+        tileSpan(index, caseStudies.length),
       )}
     >
       <div
-        ref={imageRef}
         className={cn(
-          'bento-well relative grid flex-1 place-items-center overflow-hidden',
-          featured ? 'min-h-56 md:min-h-80' : 'aspect-[16/10]'
+          'bento-well relative grid place-items-center overflow-hidden',
+          featured ? 'h-56 sm:h-72 lg:h-auto lg:flex-1' : 'h-44 sm:h-52',
         )}
       >
-        <motion.img
-          src={entry.metadata.thumbnail}
-          alt="thumbnail"
-          style={reduce ? undefined : { y }}
+        <img
+          src={thumbnail}
+          alt=""
+          loading={index < 3 ? 'eager' : 'lazy'}
           className={cn(
-            'transition-[scale] duration-700 ease-out group-hover:scale-105',
-            cover
-              ? 'absolute inset-x-0 -top-[8%] h-[116%] w-full object-cover'
-              : 'max-h-24 w-auto max-w-[75%] object-contain'
+            'transition-[scale] duration-700 ease-[var(--ease-apple)] group-hover:scale-105',
+            isCover
+              ? 'absolute inset-0 size-full object-cover'
+              : 'max-h-16 w-auto max-w-[65%] object-contain sm:max-h-20',
           )}
         />
       </div>
-      <div className="flex flex-col gap-3 px-1 pb-1">
-        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-          <Badge variant="secondary" className="rounded-full">
-            {entry.metadata.category}
-          </Badge>
-          <FormattedDate value={dateValue} format="L - h:mm a" />
+      <div className="flex flex-col gap-2.5 px-1 pb-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <CategoryChip category={category} />
+          {year ? (
+            <span className="text-xs text-muted-foreground">{year}</span>
+          ) : null}
         </div>
-        <CardMeta heading={entry.metadata.title} />
+        <div className="flex items-end justify-between gap-4">
+          <div className="min-w-0">
+            <h2
+              className={cn(
+                'font-semibold text-foreground',
+                featured ? 'text-2xl md:text-3xl' : 'text-xl',
+              )}
+            >
+              {studyName(title)}
+            </h2>
+            <p
+              className={cn(
+                'mt-1 text-[0.9rem] leading-relaxed text-muted-foreground',
+                featured ? 'line-clamp-3' : 'line-clamp-2',
+              )}
+            >
+              {description}
+            </p>
+          </div>
+          <ArrowChip />
+        </div>
       </div>
     </BentoCard>
   );
@@ -96,19 +109,23 @@ const PortfolioListPage = () => {
             itemListElement: caseStudies.map((entry, idx) => ({
               '@type': 'ListItem',
               position: idx + 1,
-              url: `${
-                (import.meta.env.VITE_SITE_URL ??
-                  'https://www.sal-anvarov.com').replace(/\/+$/, '')
-              }/portfolio/${entry.slug}`,
+              url: `${(
+                import.meta.env.VITE_SITE_URL ?? 'https://www.sal-anvarov.com'
+              ).replace(/\/+$/, '')}/portfolio/${entry.slug}`,
               name: entry.metadata.title,
             })),
           },
         ]}
       />
-      <SectionHeading>Portfolio</SectionHeading>
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+      <SectionHeading
+        eyebrow="Selected case studies"
+        description="Full stack engagements across SaaS, logistics, e-commerce, and AI tooling."
+      >
+        Portfolio
+      </SectionHeading>
+      <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
         {caseStudies.map((entry, i) => (
-          <CaseStudyCard entry={entry} index={i} key={entry.slug} />
+          <CaseStudyTile entry={entry} index={i} key={entry.slug} />
         ))}
       </div>
     </Layout>

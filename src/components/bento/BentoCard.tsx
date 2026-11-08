@@ -1,30 +1,23 @@
-import { EASE } from '@/components/motion/Reveal';
 import { cn } from '@/lib/utils';
 import { Link } from '@tanstack/react-router';
-import {
-  motion,
-  useReducedMotion,
-  useSpring,
-  type HTMLMotionProps,
-} from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
-import { useRef, type PointerEvent, type ReactNode } from 'react';
+import { motion, useReducedMotion, type HTMLMotionProps } from 'framer-motion';
+import { ENTER, SPRING } from '@/components/motion/springs';
+import { Plus } from 'lucide-react';
+import type { PointerEvent, ReactNode } from 'react';
 
 type BentoCardProps = Omit<HTMLMotionProps<'div'>, 'children'> & {
   children?: ReactNode;
-  /** Internal route — the whole card becomes a link. */
+  /** Internal route — the whole tile becomes a link. */
   to?: string;
-  /** External URL — the whole card becomes a link. */
+  /** External URL — the whole tile becomes a link. */
   href?: string;
-  /** Accessible name for the card-wide link. */
+  /** Accessible name for the tile-wide link. */
   label?: string;
-  /** Max tilt in degrees on pointer move; 0 disables. */
-  tilt?: number;
   /** Entrance delay (seconds) for the scroll-in reveal. */
   delay?: number;
+  /** Lift on hover; on by default for linked tiles. */
+  interactive?: boolean;
 };
-
-const SPRING = { stiffness: 180, damping: 18, mass: 0.6 };
 
 export const BentoCard = ({
   children,
@@ -32,36 +25,21 @@ export const BentoCard = ({
   to,
   href,
   label,
-  tilt = 4,
   delay = 0,
+  interactive,
   onPointerMove,
-  onPointerLeave,
-  style,
   ...props
 }: BentoCardProps) => {
-  const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
-  const rotateX = useSpring(0, SPRING);
-  const rotateY = useSpring(0, SPRING);
+  const lift = !reduce && (interactive ?? Boolean(to || href));
 
+  // Feeds the cursor spotlight (CSS ::after); mouse/pen only.
   const handleMove = (e: PointerEvent<HTMLDivElement>) => {
     onPointerMove?.(e);
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    el.style.setProperty('--mx', `${x}px`);
-    el.style.setProperty('--my', `${y}px`);
-    if (reduce || !tilt || e.pointerType !== 'mouse') return;
-    rotateY.set((x / rect.width - 0.5) * tilt * 2);
-    rotateX.set(-(y / rect.height - 0.5) * tilt * 2);
-  };
-
-  const handleLeave = (e: PointerEvent<HTMLDivElement>) => {
-    onPointerLeave?.(e);
-    rotateX.set(0);
-    rotateY.set(0);
+    if (e.pointerType === 'touch') return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+    e.currentTarget.style.setProperty('--my', `${e.clientY - rect.top}px`);
   };
 
   const overlayClass =
@@ -69,15 +47,17 @@ export const BentoCard = ({
 
   return (
     <motion.div
-      ref={ref}
-      initial={reduce ? false : { opacity: 0, y: 48, scale: 0.97 }}
+      initial={reduce ? { opacity: 0 } : { opacity: 0, y: 32, scale: 0.97 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 0.85, delay, ease: EASE }}
+      transition={{ ...ENTER, delay }}
+      whileHover={lift ? { y: -4, transition: SPRING } : undefined}
+      // Feedback on press, not release.
+      whileTap={
+        lift ? { scale: 0.985, transition: { duration: 0.08 } } : undefined
+      }
       onPointerMove={handleMove}
-      onPointerLeave={handleLeave}
-      style={{ rotateX, rotateY, transformPerspective: 1200, ...style }}
-      className={cn('bento group overflow-hidden', className)}
+      className={cn('bento group min-w-0 overflow-hidden', className)}
       {...props}
     >
       {to ? <Link to={to} aria-label={label} className={overlayClass} /> : null}
@@ -95,18 +75,54 @@ export const BentoCard = ({
   );
 };
 
-/** The round arrow chip in each card's corner; spins on card hover. */
+/** Apple-style round "+" button in a tile's corner. */
 export const ArrowChip = ({ className }: { className?: string }) => (
   <span
     aria-hidden
     className={cn(
-      'grid size-12 shrink-0 place-items-center rounded-full border border-border bg-background/40 text-muted-foreground backdrop-blur transition-all duration-500 ease-out',
-      'group-hover:rotate-45 group-hover:border-brand group-hover:bg-brand group-hover:text-brand-foreground',
-      className
+      'grid size-9 shrink-0 place-items-center rounded-full bg-secondary text-foreground/80 shadow-[inset_0_0_0_1px_var(--bento-edge)]',
+      'transition-[background-color,color,rotate] duration-500 ease-[var(--ease-apple)]',
+      'group-hover:rotate-90 group-hover:bg-brand group-hover:text-brand-foreground',
+      className,
     )}
   >
-    <ArrowUpRight className="size-5" />
+    <Plus className="size-4" strokeWidth={2.25} />
   </span>
+);
+
+type TileHeaderProps = {
+  icon?: ReactNode;
+  caption: string;
+  title?: ReactNode;
+  className?: string;
+  align?: 'center' | 'start';
+};
+
+/** Small purple icon + caption, then a short title — tops most tiles. */
+export const TileHeader = ({
+  icon,
+  caption,
+  title,
+  className,
+  align = 'center',
+}: TileHeaderProps) => (
+  <div
+    className={cn(
+      'flex flex-col gap-1',
+      align === 'center' ? 'items-center text-center' : 'items-start',
+      className,
+    )}
+  >
+    <p className="flex items-center gap-1.5 text-[0.8rem] font-medium text-muted-foreground">
+      {icon ? (
+        <span className="text-brand [&_svg]:size-3.5">{icon}</span>
+      ) : null}
+      {caption}
+    </p>
+    {title ? (
+      <h3 className="text-[1.05rem] font-semibold text-foreground">{title}</h3>
+    ) : null}
+  </div>
 );
 
 type CardMetaProps = {
@@ -116,7 +132,7 @@ type CardMetaProps = {
   arrow?: boolean;
 };
 
-/** Caption + heading + arrow footer used by most bento cards. */
+/** Caption + heading + "+" button footer used by link tiles. */
 export const CardMeta = ({
   caption,
   heading,
@@ -126,11 +142,9 @@ export const CardMeta = ({
   <div className={cn('flex items-end justify-between gap-4', className)}>
     <div className="min-w-0">
       {caption ? (
-        <p className="mb-1.5 text-[0.7rem] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-          {caption}
-        </p>
+        <p className="mb-1 text-[0.8rem] font-medium text-brand">{caption}</p>
       ) : null}
-      <h3 className="text-2xl font-semibold text-foreground transition-transform duration-500 group-hover:translate-x-1">
+      <h3 className="text-xl font-semibold text-foreground md:text-2xl">
         {heading}
       </h3>
     </div>

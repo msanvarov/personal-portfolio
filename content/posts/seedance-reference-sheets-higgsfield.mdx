@@ -1,0 +1,153 @@
+---
+title: 'Pack Your References: Getting Higher-Quality Seedance Videos on Higgsfield'
+uid: seedance-reference-sheets-higgsfield
+thumbnail: /assets/thumbnails/seedance-reference-sheets-higgsfield.svg
+category: Generative AI
+tag: Video
+description: 'The single biggest quality lever I have found for Seedance video on Higgsfield: package several reference images into one clean sheet. Plus the prompt structure, two-pass workflow, and shot-chaining habits that keep characters and products consistent.'
+created: '2026-11-08T14:00:00.000Z'
+modified: '2026-11-08T14:00:00.000Z'
+---
+
+Most of the "AI video looks off" problems I run into are not prompt problems. They are input problems. The face drifts between shots, the product label melts, the jacket changes colour halfway through a clip. When I trace those back, the cause is almost always the same: the model was given too little, too inconsistent, or too scattered visual information about the thing it was supposed to keep stable.
+
+This post is the workflow I use with ByteDance's Seedance models on [Higgsfield](https://higgsfield.ai), and the technique that made the biggest difference for me: **packing multiple reference images into a single, well-composed reference sheet** before they ever reach the model.
+
+## Why references are the bottleneck
+
+Seedance on Higgsfield is multimodal. Besides text, you can attach reference images, short video clips and audio, and point at them from the prompt with tags like `@character`, `@style`, `@product` and `@motion`. Each tag maps to a file you uploaded.
+
+Those inputs are budgeted. At the time of writing, Higgsfield's help centre lists Seedance 2.0 at up to **9 images, 3 video clips and 3 audio files** per generation, and Seedance 2.5 at up to **50 references** (30 images, 10 videos, 10 audio). Other platforms that host Seedance 2.0 quote a combined cap of around 12 files. And one mode constraint matters a lot in practice: a **first-frame image can't be combined with reference images** in the same run.
+
+So every slot is a decision. If one character eats five slots (front, profile, three-quarter, close-up, outfit), you have little left for the product, the environment, a style frame or a motion clip. And even when slots are plentiful, five separate uploads are five separate photos with five slightly different lighting setups, crops and colour casts. The model has to reconcile all of that on its own.
+
+## The technique: one subject, one sheet
+
+Instead of uploading angles as separate files, I compose them into **one image per subject**: a reference sheet.
+
+- **Character sheet:** front, three-quarter, profile and back views, plus a face close-up and a detail panel (hands, a logo on the jacket, a tattoo, whatever must survive).
+- **Product sheet:** the hero angle, the back, the side, a close-up of the label or texture, and one "in hand" shot for scale.
+- **Environment sheet:** a wide establishing view, a reverse angle, and two or three key props or surfaces.
+
+What this buys you:
+
+1. **More information per slot.** One `@character` reference now carries every angle that matters. On 2.0 that leaves slots free for `@product`, `@style` and a `@motion` clip.
+2. **Consistency inside the reference itself.** When every panel shares the same lighting, background and scale, the only thing that changes between panels is the angle. The model sees one subject from several sides, not several slightly different subjects.
+3. **Relationships stay intact.** Putting a product next to a hand on the same sheet tells the model how big it is far more reliably than describing it in words.
+
+This is a workflow I've arrived at through use, not something Higgsfield documents. Their guidance is about clean, front-facing, well-lit references and saved identities. The sheet is how I get the most out of both.
+
+## How I prep a reference sheet
+
+The rules that matter most, in order:
+
+- **Same lighting across every panel.** Shoot or generate all angles in one session. Mismatched light between panels is the fastest way to get a face that changes between cuts.
+- **Plain background.** A seamless light-grey or off-white backdrop. A busy background makes the model work out what's subject and what's scenery.
+- **Same scale.** Heads at roughly the same height across a character's angles. Products filling a similar share of each panel.
+- **Even gutters, no overlaps.** Each panel is clearly separate, with consistent spacing.
+- **No text on the sheet.** Labels like "FRONT" or "SIDE" are lettering the model may try to reproduce. The prompt is where you explain the layout.
+- **Resolution with headroom.** Every panel should still be sharp after the sheet is downscaled, so I aim for at least 2048 px on the long edge.
+- **One subject per sheet.** Don't mix the character and the product on one sheet unless their relationship (scale, how it's held) is the point.
+
+I build sheets with a short script rather than by hand, so spacing, background and sizing are identical every time:
+
+```python
+# make_sheet.py — pack reference images into one even grid on a plain background.
+# usage: python make_sheet.py out.png front.png three_quarter.png profile.png back.png face.png detail.png
+import math
+import sys
+
+from PIL import Image
+
+BG = (236, 236, 238)   # light neutral grey
+CELL = 1024            # each panel's box, in px
+GAP = 48               # gutter between panels
+
+
+def make_sheet(paths, out, cols=None):
+    images = [Image.open(p).convert("RGB") for p in paths]
+    cols = cols or math.ceil(math.sqrt(len(images)))
+    rows = math.ceil(len(images) / cols)
+    width = cols * CELL + (cols + 1) * GAP
+    height = rows * CELL + (rows + 1) * GAP
+    sheet = Image.new("RGB", (width, height), BG)
+
+    for i, img in enumerate(images):
+        img.thumbnail((CELL, CELL), Image.LANCZOS)   # fit inside the cell, keep aspect
+        r, c = divmod(i, cols)
+        x = GAP + c * (CELL + GAP) + (CELL - img.width) // 2
+        y = GAP + r * (CELL + GAP) + (CELL - img.height) // 2
+        sheet.paste(img, (x, y))
+
+    sheet.save(out, quality=95)
+
+
+if __name__ == "__main__":
+    make_sheet(sys.argv[2:], sys.argv[1])
+```
+
+Six panels give a 3×2 grid around 3,300 px wide. It's big enough that each panel keeps its detail and small enough to upload comfortably. If your inputs have mismatched backgrounds, cut them out first so every panel sits on the same grey.
+
+## Tell the model what the sheet is
+
+A sheet works best when the prompt explains it. I open every prompt with a short block that maps tags to roles and states the one rule that matters: these panels are the same subject.
+
+```text
+@character is a reference sheet of ONE woman shown from several angles.
+Keep her face, short black bob, silver hoop earrings and olive bomber jacket
+identical to the sheet in every frame.
+@product is a reference sheet of ONE matte-white water bottle with a green cap.
+
+She walks toward camera along a rainy neon street at night, unscrews the
+@product bottle and takes a sip. Slow dolly-in, shallow depth of field,
+cool blue light with warm signage reflections. 6 seconds.
+```
+
+The pieces doing the work:
+
+- **"ONE … shown from several angles"** stops the model from treating panels as different people or a crowd.
+- **Identity anchors in words.** Hair, accessories and clothing are restated in text. Higgsfield's own advice for drift is to add specific visual anchors like these, and I keep that sentence identical across every shot.
+- **One action per shot.** Walk, unscrew, sip is already plenty. Complex choreography is better split into separate clips.
+- **Camera and light are explicit.** The model fills any gap with its own choice, and its choice changes from shot to shot.
+
+## Two passes: compose the still, then animate it
+
+Because first-frame mode can't be combined with reference images, I split the work in two:
+
+1. **Compose the hero still** with an image model, feeding it the same reference sheets. Iterate here until framing, wardrobe and product placement are right. Stills are fast and cheap to redo.
+2. **Animate that still** with Seedance in image-to-video mode, using it as the first frame. The model no longer has to invent the composition; it only has to move it.
+
+Prep the still at your delivery aspect ratio, 9:16 for vertical and 16:9 for landscape. Higgsfield's "Auto" ratio infers the shape from your input, so a mis-sized first frame quietly becomes a mis-sized video.
+
+## Keep identity across clips
+
+A `@character` reference keeps a face consistent within one generation. For a series of clips, Higgsfield's answer is to save the subject once and reuse it:
+
+- **Elements** are saved, reusable references you pull into any prompt with `@`. I save each finished reference sheet as an Element so every shot starts from exactly the same pixels.
+- **Soul ID** is a trained identity, recommended for real people. Train it first, then create the Element from its portraits.
+
+The failure mode to avoid is "fixing" a shot by swapping in a slightly different reference or rewording the identity sentence. That drift compounds. **Freeze the references and the identity block for the whole project.**
+
+## Chain shots instead of asking for everything at once
+
+Long, multi-action clips are where quality falls apart. I get much better results by building sequences from short shots:
+
+- **Continuity:** use the last frame of one clip as the first frame of the next.
+- **Transitions:** generate the in-between shot with first-and-last-frame mode, giving it both ends.
+- **Camera moves:** a short `@motion` clip of the move you want is clearer than a paragraph describing it.
+
+## Iterate cheap, finish sharp
+
+Credits scale with resolution and length, so I explore at 480p or 720p and render only the approved shots at 1080p or 4K. Seedance 2.0 on Higgsfield lists 480p to 4K, and 2.5 generates up to 1080p with 4K upscaling. Durations differ too: 4 to 15 seconds on 2.0, up to 30 seconds on 2.5. Short shots almost always hold together better than long ones, whatever the limit.
+
+## Checklist
+
+- One subject per reference sheet: same light, plain background, even gutters, no text, at least 2048 px.
+- Map every tag to a role in the first lines of the prompt, and say the sheet shows **one** subject.
+- Restate the identity anchors (hair, clothing, marks) word for word in every prompt.
+- Compose the still first, then animate it as the first frame at the delivery aspect ratio.
+- Save finished sheets as Elements (or train a Soul ID) and freeze them for the project.
+- Keep shots short, one action each, and chain them with last-frame and first-and-last-frame.
+- Explore at low resolution and finish at high resolution.
+
+The limits and model lineup move quickly; these numbers are from Higgsfield's [Seedance help page](https://higgsfield.ai/creator-hub/help-center/ai-models/how-do-i-use-seedance) and [Seedance 2.0 tutorial](https://higgsfield.ai/blog/generating-with-seedance-2-0) as of November 2026. Check the current caps in the Higgsfield UI before planning a big batch. The principle doesn't change with the numbers, though: the model can only stay as consistent as the references you give it, so spend your effort there first.

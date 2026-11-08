@@ -32,6 +32,7 @@ Sal builds production software across the stack: TypeScript / React / Next.js on
 
 ## Blog posts
 
+- [Pack Your References: Getting Higher-Quality Seedance Videos on Higgsfield](https://www.sal-anvarov.com/blog/seedance-reference-sheets-higgsfield): Packing multiple reference images into one sheet per subject, prompt structure, a two-pass still-then-animate workflow, and shot chaining for consistent Seedance video.
 - [Practical npm Supply-Chain Defenses for Node.js](https://www.sal-anvarov.com/blog/npm-supply-chain-defenses): A walkthrough of my nodejs-supply-chain-security repo: a safe .npmrc, a least-privilege CI audit workflow, an install-script scanner, and the Node.js permission model, with the tests that prove each one works.
 - [GSPO Explained: Sequence-Level Importance Ratios for LLM Reinforcement Learning](https://www.sal-anvarov.com/blog/gspo-explained): A practical walkthrough of Group Sequence Policy Optimization (GSPO) from the Qwen team, and of my minimal PyTorch implementation that puts it side by side with GRPO.
 - [Node.js Crypto and Secrets, Done Right with node:crypto](https://www.sal-anvarov.com/blog/nodejs-crypto-and-secrets-done-right): A walkthrough of password hashing, secure tokens, JWT verification, AES-GCM encryption and secret handling in Node.js using only the built-in crypto module, with tests that show each mistake and each fix.

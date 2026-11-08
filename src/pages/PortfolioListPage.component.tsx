@@ -12,20 +12,43 @@ type Entry = (typeof caseStudies)[number];
  * Bento rhythm on desktop (3 cols): the featured tile fills 2×2, the next
  * two stack beside it, then rows of two alternate wide/narrow.
  */
-const tileSpan = (i: number, total: number) => {
-  if (i === 0) return 'md:col-span-2 lg:row-span-2';
-  if (i < 3) return '';
+type Shape = 'featured' | 'wide' | 'full' | 'narrow';
+
+const tileShape = (i: number, total: number): Shape => {
+  if (i === 0) return 'featured';
+  if (i < 3) return 'narrow';
   const j = i - 3;
-  const lastAlone = j === total - 4 && j % 2 === 0;
-  if (lastAlone) return 'lg:col-span-3';
+  if (j === total - 4 && j % 2 === 0) return 'full';
   const row = Math.floor(j / 2);
-  return j % 2 === row % 2 ? 'lg:col-span-2' : '';
+  return j % 2 === row % 2 ? 'wide' : 'narrow';
+};
+
+/**
+ * Covers are 6:5 and are always shown at that ratio (never cropped). Wide
+ * tiles put the text beside the image instead of squashing the image:
+ * the featured tile on tablets, and 2- or 3-column tiles on desktop.
+ */
+const SHAPE: Record<Shape, { tile: string; well: string }> = {
+  featured: {
+    tile: 'md:col-span-2 md:flex-row md:items-center lg:row-span-2 lg:flex-col lg:items-stretch',
+    well: 'md:w-[55%] lg:w-auto',
+  },
+  wide: {
+    tile: 'lg:col-span-2 lg:flex-row lg:items-center',
+    well: 'lg:w-1/2',
+  },
+  full: {
+    tile: 'md:col-span-2 md:flex-row md:items-center lg:col-span-3',
+    well: 'md:w-1/2 lg:w-[38%]',
+  },
+  narrow: { tile: '', well: '' },
 };
 
 const CaseStudyTile = ({ entry, index }: { entry: Entry; index: number }) => {
   const { title, description, thumbnail, category, created, cover } =
     entry.metadata;
   const featured = index === 0;
+  const shape = SHAPE[tileShape(index, caseStudies.length)];
   // Photo thumbnails (frontmatter `cover: true`) fill the well; logos sit centered.
   const isCover = String(cover) === 'true';
   const year = created ? new Date(created).getFullYear() : undefined;
@@ -35,15 +58,12 @@ const CaseStudyTile = ({ entry, index }: { entry: Entry; index: number }) => {
       to={`/portfolio/${entry.slug}`}
       label={`Open ${title} case study`}
       delay={(index % 3) * 0.06}
-      className={cn(
-        'flex flex-col gap-4 p-3 sm:p-4',
-        tileSpan(index, caseStudies.length),
-      )}
+      className={cn('flex flex-col gap-4 p-3 sm:p-4', shape.tile)}
     >
       <div
         className={cn(
-          'bento-well relative grid place-items-center overflow-hidden',
-          featured ? 'h-56 sm:h-72 lg:h-auto lg:flex-1' : 'h-44 sm:h-52',
+          'bento-well relative grid aspect-[6/5] shrink-0 place-items-center overflow-hidden',
+          shape.well,
         )}
       >
         <img
@@ -58,7 +78,7 @@ const CaseStudyTile = ({ entry, index }: { entry: Entry; index: number }) => {
           )}
         />
       </div>
-      <div className="flex flex-col gap-2.5 px-1 pb-1">
+      <div className="flex min-w-0 flex-1 flex-col gap-2.5 px-1 pb-1 md:justify-center">
         <div className="flex flex-wrap items-center gap-2">
           <CategoryChip category={category} />
           {year ? (

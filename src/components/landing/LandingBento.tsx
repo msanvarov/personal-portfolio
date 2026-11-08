@@ -284,7 +284,7 @@ const WorksTile = ({ className }: { className?: string }) => (
       to="/portfolio"
       className="btn-brand relative z-20 mx-auto mt-4 h-11 w-fit px-5 text-sm"
     >
-      View works <ArrowRight className="size-4" />
+      Browse portfolio <ArrowRight className="size-4" />
     </Link>
   </BentoCard>
 );

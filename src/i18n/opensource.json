@@ -19,8 +19,8 @@
     {
       "name": "Reference Packer",
       "description": "Packs several reference images into one clean sheet per subject for Seedance video on Higgsfield, lints it for lighting and resolution, and builds the prompt. Runs entirely in the browser; Python CLI included.",
-      "live": "https://seedance-reference-sheets.netlify.app/",
-      "repo": "https://github.com/msanvarov/seedance-reference-sheets",
+      "live": "https://reference-packer.netlify.app/",
+      "repo": "https://github.com/msanvarov/reference-packer",
       "media": "/assets/open-source/reference-packer.jpg",
       "post": "seedance-reference-sheets-higgsfield",
       "tags": [

@@ -46,7 +46,7 @@ const esc = (s = '') =>
     (c) =>
       ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[
         c
-      ] as string
+      ] as string,
   );
 
 const stripTags = (html = '') =>
@@ -93,7 +93,7 @@ const loadDocs = async (root: string, dir: string): Promise<Doc[]> => {
       remarkPlugins: [remarkGfm],
     })) as { default: ComponentType<{ components: unknown }> };
     const html = renderToStaticMarkup(
-      createElement(Content, { components: mdxComponents })
+      createElement(Content, { components: mdxComponents }),
     )
       // MDX keeps raw `class` attributes; drop styling hooks and data-aos.
       .replace(/\s(class|className|data-aos)="[^"]*"/g, '');
@@ -107,7 +107,7 @@ const loadDocs = async (root: string, dir: string): Promise<Doc[]> => {
   return docs.sort(
     (a, b) =>
       (Date.parse(b.data.created ?? '') || 0) -
-      (Date.parse(a.data.created ?? '') || 0)
+      (Date.parse(a.data.created ?? '') || 0),
   );
 };
 
@@ -124,7 +124,7 @@ const fmtDate = (iso?: string) =>
 export const prerender = async (
   outDir: string,
   root: string,
-  siteUrl: string
+  siteUrl: string,
 ) => {
   const site = siteUrl.replace(/\/+$/, '');
   const abs = (p: string) => (/^https?:/.test(p) ? p : `${site}${p}`);
@@ -135,7 +135,6 @@ export const prerender = async (
   const bio = readJson(root, 'bio');
   const credentials = readJson(root, 'credentials');
   const contact = readJson(root, 'contact');
-  const offerings = readJson(root, 'offerings');
   const opensource = readJson(root, 'opensource');
   const posts = await loadDocs(root, 'posts');
   const studies = await loadDocs(root, 'case-studies');
@@ -150,10 +149,18 @@ export const prerender = async (
     image: defaultImage,
     jobTitle:
       'Full Stack Developer, Founder of DEV BY SAL & Co-founder of Cleanlist.ai',
-    address: { '@type': 'PostalAddress', addressLocality: 'Toronto', addressCountry: 'CA' },
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Toronto',
+      addressCountry: 'CA',
+    },
     worksFor: [
       { '@type': 'Organization', name: 'DEV BY SAL LTD.', url: STUDIO.url },
-      { '@type': 'Organization', name: 'Cleanlist.ai', url: 'https://cleanlist.ai' },
+      {
+        '@type': 'Organization',
+        name: 'Cleanlist.ai',
+        url: 'https://cleanlist.ai',
+      },
     ],
     sameAs: [
       'https://github.com/msanvarov',
@@ -162,7 +169,12 @@ export const prerender = async (
       STUDIO.url,
     ],
   };
-  const author = { '@type': 'Person', '@id': `${site}/#sal`, name: NAME, url: `${site}/` };
+  const author = {
+    '@type': 'Person',
+    '@id': `${site}/#sal`,
+    name: NAME,
+    url: `${site}/`,
+  };
   const crumbs = (trail: Array<[string, string]>) => ({
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -178,7 +190,7 @@ export const prerender = async (
   const nav = `<nav aria-label="Main"><ul>
 <li><a href="/">Home</a></li><li><a href="/bio">Bio</a></li><li><a href="/credentials">Credentials</a></li><li><a href="/portfolio">Portfolio</a></li><li><a href="/blog">Blog</a></li><li><a href="/contact">Contact</a></li><li><a href="${STUDIO.url}">${STUDIO.name} (studio)</a></li>
 </ul></nav>`;
-  const footer = `<footer><p>${NAME} — designer and full stack developer in Toronto. Founder of <a href="${STUDIO.url}">${STUDIO.name}</a>, a software studio (offerings: <a href="${STUDIO.url}/offerings">${STUDIO.url.replace('https://', '')}/offerings</a>). <a href="https://github.com/msanvarov">GitHub</a> · <a href="https://linkedin.com/in/sal-anvarov">LinkedIn</a> · <a href="/rss.xml">RSS</a> · <a href="/llms.txt">llms.txt</a></p></footer>`;
+  const footer = `<footer><p>${NAME} — designer and full stack developer in Toronto. Founder of <a href="${STUDIO.url}">${STUDIO.name}</a>, a software studio. <a href="https://github.com/msanvarov">GitHub</a> · <a href="https://linkedin.com/in/sal-anvarov">LinkedIn</a> · <a href="/rss.xml">RSS</a> · <a href="/llms.txt">llms.txt</a></p></footer>`;
 
   const postItem = (d: Doc) =>
     `<li><a href="/blog/${d.slug}">${esc(d.data.title)}</a> — <time datetime="${esc(d.data.created)}">${fmtDate(d.data.created)}</time> · ${esc(d.data.category)}<br/>${esc(d.data.description)}</li>`;
@@ -188,7 +200,7 @@ export const prerender = async (
     `<ul>${items
       .map(
         (e) =>
-          `<li><strong>${esc(e[role])}</strong> — ${esc(e[org])} (${esc(e.date)})${e.description ? `<br/>${e.description}` : ''}</li>`
+          `<li><strong>${esc(e[role])}</strong> — ${esc(e[org])} (${esc(e.date)})${e.description ? `<br/>${e.description}` : ''}</li>`,
       )
       .join('')}</ul>`;
 
@@ -199,7 +211,7 @@ export const prerender = async (
   {
     const m = meta('LandingPage.component.tsx');
     const present = credentials.experience.experience.filter((e: Json) =>
-      String(e.date).includes('Present')
+      String(e.date).includes('Present'),
     );
     pages.push({
       path: '/',
@@ -226,7 +238,7 @@ export const prerender = async (
 <li><a href="${opensource.featured.live}">${esc(opensource.featured.name)}</a> (<a href="${opensource.featured.repo}">source</a>) — ${esc(opensource.featured.description)}</li>
 ${opensource.repos.map((r: Json) => `<li><a href="${r.repo}">${esc(r.name)}</a> — ${esc(r.description)} Implements “${esc(r.paper)}” (${esc(r.org)}, <a href="https://arxiv.org/abs/${r.arxiv}">arXiv:${r.arxiv}</a>). <a href="/blog/${r.post}">Read the breakdown</a>.</li>`).join('')}
 </ul></section>
-<section><h2>Offerings</h2><p>Consulting and product engineering are offered through <a href="${STUDIO.url}/offerings">${STUDIO.name}</a>: ${offerings.navbar.entries.map((e: Json) => esc(e.text)).join(', ')}.</p></section>
+<section><h2>Studio</h2><p>Consulting and product engineering run through <a href="${STUDIO.url}">${STUDIO.name}</a>, Sal's software studio.</p></section>
 <section><h2>Contact</h2><p>Email <a href="mailto:${contact.contact.mail.links[0]}">${contact.contact.mail.links[0]}</a> or <a href="${contact.contact.phone.links[0].href}">book a call</a>.</p></section>`,
     });
   }
@@ -238,7 +250,13 @@ ${opensource.repos.map((r: Json) => `<li><a href="${r.repo}">${esc(r.name)}</a> 
       title: `${m.title} | ${NAME}`,
       description: m.description,
       type: 'profile',
-      jsonLd: [person, crumbs([['Home', '/'], ['Bio', '/bio']])],
+      jsonLd: [
+        person,
+        crumbs([
+          ['Home', '/'],
+          ['Bio', '/bio'],
+        ]),
+      ],
       body: `<h1>${esc(bio.bio.details.name)}</h1><p>${esc(bio.bio.details.description)}</p>
 <h2>${esc(bio.experience.heading)}</h2>${timeline(bio.experience.experience, 'title', 'company')}
 <h2>${esc(bio.education.heading)}</h2>${timeline(bio.education.education, 'degree', 'university')}`,
@@ -252,7 +270,13 @@ ${opensource.repos.map((r: Json) => `<li><a href="${r.repo}">${esc(r.name)}</a> 
       title: `${m.title} | ${NAME}`,
       description: m.description,
       type: 'profile',
-      jsonLd: [person, crumbs([['Home', '/'], ['Credentials', '/credentials']])],
+      jsonLd: [
+        person,
+        crumbs([
+          ['Home', '/'],
+          ['Credentials', '/credentials'],
+        ]),
+      ],
       body: `<h1>Credentials — ${NAME}</h1>
 <h2>${esc(credentials.bio.heading)}</h2>${credentials.bio.description.map((p: string) => `<p>${p}</p>`).join('')}
 <h2>${esc(credentials.experience.heading)}</h2>${timeline(credentials.experience.experience, 'title', 'company')}
@@ -269,7 +293,13 @@ ${opensource.repos.map((r: Json) => `<li><a href="${r.repo}">${esc(r.name)}</a> 
       path: '/contact',
       title: `${m.title} | ${NAME}`,
       description: m.description,
-      jsonLd: [person, crumbs([['Home', '/'], ['Contact', '/contact']])],
+      jsonLd: [
+        person,
+        crumbs([
+          ['Home', '/'],
+          ['Contact', '/contact'],
+        ]),
+      ],
       body: `<h1>Contact ${NAME}</h1><ul>
 ${c.mail.links.map((l: string) => `<li>Email: <a href="mailto:${l}">${l}</a></li>`).join('')}
 ${c.phone.links.map((l: Json) => `<li>Schedule: <a href="${l.href}">${esc(l.text)}</a></li>`).join('')}
@@ -285,7 +315,10 @@ ${c.phone.links.map((l: Json) => `<li>Schedule: <a href="${l.href}">${esc(l.text
       title: `${m.title} | ${NAME}`,
       description: m.description,
       jsonLd: [
-        crumbs([['Home', '/'], ['Portfolio', '/portfolio']]),
+        crumbs([
+          ['Home', '/'],
+          ['Portfolio', '/portfolio'],
+        ]),
         {
           '@context': 'https://schema.org',
           '@type': 'ItemList',
@@ -320,7 +353,11 @@ ${c.phone.links.map((l: Json) => `<li>Schedule: <a href="${l.href}">${esc(l.text
             genre: d.data.category,
             dateCreated: d.data.created,
           },
-          crumbs([['Home', '/'], ['Portfolio', '/portfolio'], [d.data.title, path]]),
+          crumbs([
+            ['Home', '/'],
+            ['Portfolio', '/portfolio'],
+            [d.data.title, path],
+          ]),
         ],
         body: `<article><h1>${esc(d.data.title)}</h1><p>${esc(d.data.category)}</p><p>${esc(d.data.description)}</p>${d.html}</article>
 <p><a href="/portfolio">All case studies</a></p>`,
@@ -335,7 +372,10 @@ ${c.phone.links.map((l: Json) => `<li>Schedule: <a href="${l.href}">${esc(l.text
       title: `${m.title} | ${NAME}`,
       description: m.description,
       jsonLd: [
-        crumbs([['Home', '/'], ['Blog', '/blog']]),
+        crumbs([
+          ['Home', '/'],
+          ['Blog', '/blog'],
+        ]),
         {
           '@context': 'https://schema.org',
           '@type': 'Blog',
@@ -379,7 +419,11 @@ ${c.phone.links.map((l: Json) => `<li>Schedule: <a href="${l.href}">${esc(l.text
             keywords: d.data.tag,
             inLanguage: 'en',
           },
-          crumbs([['Home', '/'], ['Blog', '/blog'], [d.data.title, path]]),
+          crumbs([
+            ['Home', '/'],
+            ['Blog', '/blog'],
+            [d.data.title, path],
+          ]),
         ],
         body: `<article><header><h1>${esc(d.data.title)}</h1>
 <p><time datetime="${esc(d.data.created)}">${fmtDate(d.data.created)}</time> · ${esc(d.data.category)} · by <a href="/bio">${NAME}</a></p>
@@ -417,7 +461,7 @@ ${c.phone.links.map((l: Json) => `<li>Schedule: <a href="${l.href}">${esc(l.text
       .replace('</head>', head)
       .replace(
         '<div id="root"></div>',
-        `<div id="root"><div class="prerender">${nav}<main>${page.body}</main>${footer}</div></div>`
+        `<div id="root"><div class="prerender">${nav}<main>${page.body}</main>${footer}</div></div>`,
       );
     const dir = page.path === '/' ? outDir : join(outDir, page.path);
     mkdirSync(dir, { recursive: true });
@@ -475,7 +519,7 @@ ${posts
     <pubDate>${new Date(d.data.created ?? Date.now()).toUTCString()}</pubDate>
     <category>${esc(d.data.category)}</category>
     <description>${esc(d.data.description)}</description>
-  </item>`
+  </item>`,
   )
   .join('\n')}
 </channel>

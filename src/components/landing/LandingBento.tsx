@@ -12,6 +12,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   BriefcaseBusiness,
+  Building2,
   CalendarDays,
   Code2,
   FolderGit2,
@@ -22,7 +23,6 @@ import {
   MessagesSquare,
   PenLine,
   Rocket,
-  Sparkles,
 } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
@@ -289,49 +289,26 @@ const WorksTile = ({ className }: { className?: string }) => (
   </BentoCard>
 );
 
-const OfferingsTile = ({ className }: { className?: string }) => {
-  const entries = en.offerings.navbar.entries;
-  const row = (items: typeof entries) =>
-    items.flatMap((e) =>
-      e.topics.map((topic) => (
-        <span key={`${e.text}-${topic}`} className="chip shrink-0">
-          <span className="chip-icon">
-            <i className={e.icon} aria-hidden />
-          </span>
-          {topic}
-        </span>
-      )),
-    );
-  return (
-    <BentoCard
-      href={STUDIO.offerings}
-      label={`Offerings at ${STUDIO.name}`}
-      delay={0.15}
-      className={cn('flex flex-col p-4 sm:p-5', className)}
-    >
-      <TileHeader
-        icon={<Sparkles />}
-        caption={`Offerings · ${STUDIO.name}`}
-        title="Solutions suite"
-      />
-      <div className="flex flex-col gap-2.5 py-4">
-        {entries.map((entry, i) => (
-          <Marquee key={entry.text} duration={30 + i * 4} reverse={i % 2 === 1}>
-            {row([entry])}
-          </Marquee>
-        ))}
-      </div>
-      <a
-        href={STUDIO.offerings}
-        target="_blank"
-        rel="noopener"
-        className="btn-brand relative z-20 mx-auto h-11 w-fit px-5 text-sm"
-      >
-        Explore offerings at by-sal.dev <ArrowUpRight className="size-4" />
-      </a>
-    </BentoCard>
-  );
-};
+/** Offerings live on the studio site; this tile just points there. */
+const StudioTile = ({ className }: { className?: string }) => (
+  <BentoCard
+    href={STUDIO.url}
+    label={`${STUDIO.name} — visit by-sal.dev`}
+    delay={0.15}
+    className={cn(
+      'flex flex-col items-center p-5 text-center sm:p-6',
+      className,
+    )}
+  >
+    <TileHeader icon={<Building2 />} caption="Studio" title={STUDIO.name} />
+    <p className="mt-3 max-w-xs text-[0.95rem] leading-relaxed text-muted-foreground">
+      Consulting and product engineering now run through my studio.
+    </p>
+    <span className="btn-brand mt-5 h-11 w-fit px-5 text-sm">
+      by-sal.dev <ArrowUpRight className="size-4" />
+    </span>
+  </BentoCard>
+);
 
 const RepoRow = ({
   href,
@@ -556,7 +533,7 @@ export const LandingBento = () => (
     </div>
     <div className="contents lg:flex lg:min-w-0 lg:flex-col lg:gap-4">
       <ExperienceTile className="order-6 lg:order-none" />
-      <OfferingsTile className="order-5 md:col-span-2 lg:order-none lg:col-span-1" />
+      <StudioTile className="order-5 md:col-span-2 lg:order-none lg:col-span-1" />
       <ContactTile className="order-9 lg:order-none lg:flex-1" />
     </div>
   </div>

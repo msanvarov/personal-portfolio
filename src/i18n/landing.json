@@ -50,24 +50,6 @@
       }
     }
   },
-  "offerings": {
-    "heading": "Offerings",
-    "caption": "Explore offerings",
-    "link": "https://by-sal.dev/offerings",
-    "icons": [
-      "iconoir-figma",
-      "iconoir-input-output",
-      "iconoir-design-pencil",
-      "iconoir-code"
-    ],
-    "button": {
-      "link": "https://by-sal.dev/offerings",
-      "icon": {
-        "light": "/assets/icons/icon-2.svg",
-        "dark": "/assets/icons/icon.svg"
-      }
-    }
-  },
   "profiles": {
     "heading": "Profiles",
     "caption": "Stay Connected",

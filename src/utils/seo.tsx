@@ -87,6 +87,8 @@ export const personLd = () => ({
   url: SITE_URL,
   image: DEFAULT_OG_IMAGE,
   jobTitle: 'Full Stack Developer, Founder of DEV BY SAL & Co-founder of Cleanlist.ai',
+  description:
+    'Full stack developer in Toronto, founder of DEV BY SAL and co-founder of Cleanlist.ai. Presents at a Toronto Meetup on AI topics — using different AI techniques to build AI-native software.',
   sameAs: [
     'https://github.com/msanvarov',
     'https://linkedin.com/in/sal-anvarov',

@@ -125,7 +125,7 @@ const ProfileTile = ({ className }: { className?: string }) => (
     </p>
 
     <StaggerList className="mt-4 flex flex-wrap gap-2">
-      {presentRoles.slice(0, 3).map((role) => (
+      {presentRoles.map((role) => (
         <StaggerItem
           key={role.company}
           className="chip py-1.5 pl-2.5 text-[0.8rem] text-muted-foreground"
@@ -362,6 +362,18 @@ const OpenSourceTile = ({ className }: { className?: string }) => {
             </span>
           }
         />
+        {os.tools.map((tool) => (
+          <RepoRow
+            key={tool.name}
+            href={tool.live}
+            name={tool.name}
+            meta={
+              <span className="flex items-center gap-1.5">
+                <span className="size-1.5 rounded-full bg-emerald-400" /> Live
+              </span>
+            }
+          />
+        ))}
         {os.repos.map((repo) => (
           <RepoRow
             key={repo.name}

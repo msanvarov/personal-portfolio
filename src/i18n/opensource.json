@@ -15,6 +15,21 @@
       "Algorithms"
     ]
   },
+  "tools": [
+    {
+      "name": "Reference Sheet Kit",
+      "description": "Packs several reference images into one clean sheet per subject for Seedance video on Higgsfield, lints it for lighting and resolution, and builds the prompt. Runs entirely in the browser; Python CLI included.",
+      "live": "https://seedance-reference-sheets.netlify.app/",
+      "repo": "https://github.com/msanvarov/seedance-reference-sheets",
+      "media": "/assets/open-source/reference-sheet-kit.jpg",
+      "post": "seedance-reference-sheets-higgsfield",
+      "tags": [
+        "JavaScript",
+        "Generative AI",
+        "Video"
+      ]
+    }
+  ],
   "repos": [
     {
       "name": "gated-attention-minimal",

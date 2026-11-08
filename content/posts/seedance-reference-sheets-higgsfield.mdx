@@ -140,6 +140,10 @@ Long, multi-action clips are where quality falls apart. I get much better result
 
 Credits scale with resolution and length, so I explore at 480p or 720p and render only the approved shots at 1080p or 4K. Seedance 2.0 on Higgsfield lists 480p to 4K, and 2.5 generates up to 1080p with 4K upscaling. Durations differ too: 4 to 15 seconds on 2.0, up to 30 seconds on 2.5. Short shots almost always hold together better than long ones, whatever the limit.
 
+## Try it: Reference Sheet Kit
+
+I packaged this workflow into a small open-source tool: **[Reference Sheet Kit](https://seedance-reference-sheets.netlify.app/)**. Drop in your angles and it builds the sheet with even gutters on a neutral background. It flags the problems above (too few panels, low resolution, mismatched brightness between panels) and writes the prompt in the structure from this post. Everything runs in your browser, and the same layout ships as a Python CLI for batch work. Source on GitHub: [msanvarov/seedance-reference-sheets](https://github.com/msanvarov/seedance-reference-sheets).
+
 ## Checklist
 
 - One subject per reference sheet: same light, plain background, even gutters, no text, at least 2048 px.
@@ -149,5 +153,7 @@ Credits scale with resolution and length, so I explore at 480p or 720p and rende
 - Save finished sheets as Elements (or train a Soul ID) and freeze them for the project.
 - Keep shots short, one action each, and chain them with last-frame and first-and-last-frame.
 - Explore at low resolution and finish at high resolution.
+
+I also present at a Toronto Meetup on AI topics, mostly about how to use different AI techniques to build AI-native software. Workflows like this one are the kind of thing we dig into there.
 
 The limits and model lineup move quickly; these numbers are from Higgsfield's [Seedance help page](https://higgsfield.ai/creator-hub/help-center/ai-models/how-do-i-use-seedance) and [Seedance 2.0 tutorial](https://higgsfield.ai/blog/generating-with-seedance-2-0) as of November 2026. Check the current caps in the Higgsfield UI before planning a big batch. The principle doesn't change with the numbers, though: the model can only stay as consistent as the references you give it, so spend your effort there first.

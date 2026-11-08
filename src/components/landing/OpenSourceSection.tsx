@@ -43,8 +43,17 @@ const Intro = ({ className }: { className?: string }) => (
   </div>
 );
 
-const FeaturedCard = ({ className }: { className?: string }) => {
-  const f = os.featured;
+type Featured = typeof os.featured & { post?: string };
+/** Live projects shown as large cards: Algo Vision, then the tools. */
+const FEATURED: Featured[] = [os.featured, ...os.tools];
+
+const FeaturedCard = ({
+  item: f,
+  className,
+}: {
+  item: Featured;
+  className?: string;
+}) => {
   return (
     <BentoCard
       href={f.live}
@@ -93,6 +102,15 @@ const FeaturedCard = ({ className }: { className?: string }) => {
           >
             <GithubIcon /> Source
           </a>
+          {f.post ? (
+            <Link
+              to="/blog/$post"
+              params={{ post: f.post }}
+              className="btn-quiet relative z-20 h-11 px-4 text-sm"
+            >
+              <BookOpen className="size-4" /> Read the guide
+            </Link>
+          ) : null}
           <a
             href={f.repo}
             target="_blank"
@@ -169,7 +187,7 @@ const HorizontalScroller = () => {
   const trackRef = useRef<HTMLDivElement>(null);
   const [distance, setDistance] = useState(0);
   const [active, setActive] = useState(0);
-  const total = os.repos.length + 1;
+  const total = os.repos.length + FEATURED.length;
 
   useLayoutEffect(() => {
     const track = trackRef.current;
@@ -211,7 +229,13 @@ const HorizontalScroller = () => {
           className="flex w-max items-center gap-6 px-[max(1.5rem,calc((100vw-72rem)/2+1.5rem))]"
         >
           <Intro className="w-[26rem] shrink-0 pr-6" />
-          <FeaturedCard className="w-[40rem] shrink-0" />
+          {FEATURED.map((f) => (
+            <FeaturedCard
+              key={f.name}
+              item={f}
+              className="w-[40rem] shrink-0"
+            />
+          ))}
           {os.repos.map((repo, i) => (
             <RepoCard
               key={repo.name}
@@ -244,7 +268,9 @@ const StackedGrid = () => (
     className="grid gap-4 md:grid-cols-2 md:gap-6"
   >
     <Intro className="mb-4 md:col-span-2" />
-    <FeaturedCard className="md:col-span-2" />
+    {FEATURED.map((f) => (
+      <FeaturedCard key={f.name} item={f} className="md:col-span-2" />
+    ))}
     {os.repos.map((repo, i) => (
       <RepoCard
         key={repo.name}

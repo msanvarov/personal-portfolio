@@ -154,6 +154,8 @@ export const prerender = async (
       addressLocality: 'Toronto',
       addressCountry: 'CA',
     },
+    description:
+      'Full stack developer in Toronto, founder of DEV BY SAL and co-founder of Cleanlist.ai. Presents at a Toronto Meetup on AI topics — using different AI techniques to build AI-native software.',
     worksFor: [
       { '@type': 'Organization', name: 'DEV BY SAL LTD.', url: STUDIO.url },
       {
@@ -236,6 +238,7 @@ export const prerender = async (
 <section><h2>Writing</h2><ul>${posts.map(postItem).join('')}</ul></section>
 <section><h2>Open source</h2><p>${esc(opensource.description)}</p><ul>
 <li><a href="${opensource.featured.live}">${esc(opensource.featured.name)}</a> (<a href="${opensource.featured.repo}">source</a>) — ${esc(opensource.featured.description)}</li>
+${(opensource.tools ?? []).map((t: Json) => `<li><a href="${t.live}">${esc(t.name)}</a> (<a href="${t.repo}">source</a>) — ${esc(t.description)}${t.post ? ` <a href="/blog/${t.post}">Read the guide</a>.` : ''}</li>`).join('')}
 ${opensource.repos.map((r: Json) => `<li><a href="${r.repo}">${esc(r.name)}</a> — ${esc(r.description)} Implements “${esc(r.paper)}” (${esc(r.org)}, <a href="https://arxiv.org/abs/${r.arxiv}">arXiv:${r.arxiv}</a>). <a href="/blog/${r.post}">Read the breakdown</a>.</li>`).join('')}
 </ul></section>
 <section><h2>Studio</h2><p>Consulting and product engineering run through <a href="${STUDIO.url}">${STUDIO.name}</a>, Sal's software studio.</p></section>

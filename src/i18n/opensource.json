@@ -1,7 +1,7 @@
 {
   "caption": "Open source",
   "heading": "Built in public",
-  "description": "Interactive visualizations and minimal, readable PyTorch implementations of recent ML research papers.",
+  "description": "Interactive visualizations, AI video tooling, and minimal, readable PyTorch implementations of recent ML research papers.",
   "github": "https://github.com/msanvarov",
   "featured": {
     "name": "Algo Vision",

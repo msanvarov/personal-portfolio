@@ -1,7 +1,7 @@
 <h1 align="center">Sal's Personal Portfolio Website</h1>
 
 <p align="center">
-  <a href="https://www.sal-anvarov.com/" target="_blank"><img src="./public/assets/thumbnails/website.png" width="320" alt="portfolio website" /></a>
+  <a href="https://www.sal-anvarov.com/" target="_blank"><img src="./docs/preview.jpg" width="720" alt="Home page of sal-anvarov.com: a dark bento grid with stack, stats, bio, career highlights and studio cards" /></a>
 </p>
 
 <p align="center">A modern <a href="https://vitejs.dev" target="_blank" rel="noreferrer noopener">Vite</a> + <a href="https://react.dev" target="_blank" rel="noreferrer noopener">React 18</a> portfolio site by Sal Anvarov. Optionally wired up to <a href="https://www.hotjar.com/" target="_blank" rel="noreferrer noopener">HotJar</a>, <a href="https://tagmanager.google.com/#/home" target="_blank" rel="noreferrer noopener">GTM</a>, and <a href="https://formspree.io/" target="_blank" rel="noreferrer noopener">Formspree</a> via environment variables.

@@ -11,7 +11,14 @@ import {
   useTransform,
 } from 'framer-motion';
 import { Link } from '@tanstack/react-router';
-import { BookOpen, Code2, ExternalLink } from 'lucide-react';
+import { SPRING } from '@/components/motion/springs';
+import {
+  BookOpen,
+  ChevronLeft,
+  ChevronRight,
+  Code2,
+  ExternalLink,
+} from 'lucide-react';
 import { useLayoutEffect, useRef, useState } from 'react';
 
 const os = en.opensource;
@@ -139,19 +146,27 @@ type Card = {
   media?: string;
 };
 
-/** Paper recreations, then the Node.js security repos, as one card shape. */
-const CARDS: Card[] = [
-  ...os.repos.map((r) => ({
-    ...r,
-    title: r.paper,
-    kicker: r.org,
-    badge: `arXiv:${r.arxiv}`,
-  })),
-  ...os.series.repos.map((r) => ({
-    ...r,
-    kicker: os.series.name,
-    badge: 'Node.js',
-  })),
+type Group = { name: string; cards: Card[] };
+
+/** Paper recreations and the Node.js security repos, each shown as one deck. */
+const GROUPS: Group[] = [
+  {
+    name: os.papersName,
+    cards: os.repos.map((r) => ({
+      ...r,
+      title: r.paper,
+      kicker: r.org,
+      badge: `arXiv:${r.arxiv}`,
+    })),
+  },
+  {
+    name: os.series.name,
+    cards: os.series.repos.map((r) => ({
+      ...r,
+      kicker: r.topics,
+      badge: 'Node.js',
+    })),
+  },
 ];
 
 const RepoCard = ({
@@ -169,13 +184,13 @@ const RepoCard = ({
     delay={0.05 * index}
     className={cn('flex flex-col gap-4 p-3', className)}
   >
-    {/* A screenshot of the live demo; the post's illustration as a fallback. */}
-    <div className="relative overflow-hidden rounded-[calc(var(--radius-bento)-0.5rem)] border border-border bg-secondary">
+    {/* A screenshot of the live demo; it grows to fill a stretched card. */}
+    <div className="relative aspect-[16/9] flex-1 overflow-hidden rounded-[calc(var(--radius-bento)-0.5rem)] border border-border bg-secondary">
       <img
         src={repo.media ?? `/assets/thumbnails/${repo.post}.svg`}
         alt={repo.media ? `${repo.title} demo screenshot` : ''}
         loading="lazy"
-        className="aspect-[16/9] w-full object-cover object-top transition-[scale] duration-700 ease-[var(--ease-apple)] group-hover:scale-[1.04]"
+        className="absolute inset-0 size-full object-cover object-left-top transition-[scale] duration-700 ease-[var(--ease-apple)] group-hover:scale-[1.04]"
       />
       {repo.demo ? (
         <span className="material absolute left-2.5 top-2.5 flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.7rem] font-medium text-foreground">
@@ -186,11 +201,11 @@ const RepoCard = ({
         {repo.badge}
       </span>
     </div>
-    <div className="flex flex-1 flex-col gap-3 px-2 pb-2">
+    <div className="flex flex-col gap-3 px-2 pb-2">
       <p className="text-[0.8rem] font-medium text-brand">{repo.kicker}</p>
-      <h3 className="-mt-2 text-xl font-semibold leading-snug text-foreground">
+      <h4 className="-mt-2 text-xl font-semibold leading-snug text-foreground">
         {repo.title}
-      </h3>
+      </h4>
       <p className="text-[0.95rem] leading-relaxed text-muted-foreground">
         {repo.description}
       </p>
@@ -224,13 +239,89 @@ const RepoCard = ({
   </BentoCard>
 );
 
+const PEEK = 2; // cards visible behind the front one
+
+/** A group of repo cards as a deck: the front card is live, the next ones peek out behind it. */
+const CardStack = ({
+  group,
+  className,
+}: {
+  group: Group;
+  className?: string;
+}) => {
+  const reduce = useReducedMotion();
+  const [active, setActive] = useState(0);
+  const n = group.cards.length;
+  const go = (step: number) => setActive((a) => (a + step + n) % n);
+  const navClass =
+    'btn-quiet size-9 shrink-0 rounded-full p-0 focus-visible:outline-2 focus-visible:outline-brand';
+
+  return (
+    <div className={cn('flex flex-col gap-4', className)}>
+      <div className="flex items-center justify-between gap-4 px-1">
+        <h3 className="text-lg font-semibold text-foreground">{group.name}</h3>
+        <div className="flex items-center gap-2">
+          <span
+            aria-live="polite"
+            className="mr-1 font-mono text-xs tabular-nums text-muted-foreground"
+          >
+            {active + 1} / {n}
+          </span>
+          <button
+            type="button"
+            onClick={() => go(-1)}
+            aria-label={`Previous ${group.name} repo`}
+            className={navClass}
+          >
+            <ChevronLeft className="size-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => go(1)}
+            aria-label={`Next ${group.name} repo`}
+            className={navClass}
+          >
+            <ChevronRight className="size-4" />
+          </button>
+        </div>
+      </div>
+      {/* Every card sits in the same grid cell, so the deck is as tall as its tallest card. */}
+      <div className="grid flex-1" style={{ paddingTop: PEEK * 12 }}>
+        {group.cards.map((repo, i) => {
+          const pos = (i - active + n) % n;
+          const depth = Math.min(pos, PEEK);
+          return (
+            <motion.div
+              key={repo.name}
+              initial={false}
+              animate={{
+                y: -12 * depth,
+                scale: 1 - 0.05 * depth,
+                opacity: pos > PEEK ? 0 : 1 - 0.3 * depth,
+              }}
+              transition={reduce ? { duration: 0 } : SPRING}
+              style={{ zIndex: n - pos }}
+              className="flex origin-top [grid-area:1/1]"
+              aria-hidden={pos > 0}
+              // Cards behind the front one can't be focused or clicked.
+              {...{ inert: pos > 0 ? '' : undefined }}
+            >
+              <RepoCard repo={repo} index={0} className="w-full" />
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 /** Desktop: the row pins and slides sideways as you scroll down. */
 const HorizontalScroller = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [distance, setDistance] = useState(0);
   const [active, setActive] = useState(0);
-  const total = CARDS.length + FEATURED.length;
+  const total = GROUPS.length + FEATURED.length;
 
   useLayoutEffect(() => {
     const track = trackRef.current;
@@ -269,23 +360,18 @@ const HorizontalScroller = () => {
         <motion.div
           ref={trackRef}
           style={{ x }}
-          className="flex w-max items-center gap-6 px-[max(1.5rem,calc((100vw-72rem)/2+1.5rem))]"
+          className="flex w-max items-stretch gap-6 px-[max(1.5rem,calc((100vw-72rem)/2+1.5rem))]"
         >
           <Intro className="w-[26rem] shrink-0 pr-6" />
           {FEATURED.map((f) => (
             <FeaturedCard
               key={f.name}
               item={f}
-              className="w-[40rem] shrink-0 self-stretch"
+              className="w-[40rem] shrink-0"
             />
           ))}
-          {CARDS.map((repo, i) => (
-            <RepoCard
-              key={repo.name}
-              repo={repo}
-              index={i}
-              className="w-[22rem] shrink-0"
-            />
+          {GROUPS.map((g) => (
+            <CardStack key={g.name} group={g} className="w-[32rem] shrink-0" />
           ))}
         </motion.div>
         <div className="mx-auto mt-10 flex w-full max-w-6xl items-center gap-4 px-6">
@@ -314,18 +400,8 @@ const StackedGrid = () => (
     {FEATURED.map((f) => (
       <FeaturedCard key={f.name} item={f} className="md:col-span-2" />
     ))}
-    {CARDS.map((repo, i) => (
-      <RepoCard
-        key={repo.name}
-        repo={repo}
-        index={i}
-        className={cn(
-          // An odd last card spans the row instead of sitting alone.
-          i === CARDS.length - 1 &&
-            CARDS.length % 2 === 1 &&
-            'md:col-span-2',
-        )}
-      />
+    {GROUPS.map((g) => (
+      <CardStack key={g.name} group={g} />
     ))}
   </section>
 );

@@ -30,6 +30,37 @@
       ]
     }
   ],
+  "series": {
+    "name": "Node.js security",
+    "description": "Four runnable Node.js repos covering the security basics every backend needs: injection, HTTP hardening, the npm supply chain, and crypto.",
+    "tags": [
+      "JavaScript",
+      "Node.js",
+      "Security"
+    ],
+    "repos": [
+      {
+        "name": "nodejs-injection-defense",
+        "topics": "Command, SQL, path traversal, prototype pollution, ReDoS",
+        "repo": "https://github.com/msanvarov/nodejs-injection-defense"
+      },
+      {
+        "name": "nodejs-http-hardening",
+        "topics": "Headers, body limits, timeouts, rate limiting, CORS, safe errors",
+        "repo": "https://github.com/msanvarov/nodejs-http-hardening"
+      },
+      {
+        "name": "nodejs-supply-chain-security",
+        "topics": "npm config, CI auditing, install-script scanning, permission model",
+        "repo": "https://github.com/msanvarov/nodejs-supply-chain-security"
+      },
+      {
+        "name": "nodejs-crypto-secrets",
+        "topics": "Password hashing, tokens, JWTs, encryption, secrets",
+        "repo": "https://github.com/msanvarov/nodejs-crypto-secrets"
+      }
+    ]
+  },
   "repos": [
     {
       "name": "gated-attention-minimal",

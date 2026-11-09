@@ -374,6 +374,15 @@ const OpenSourceTile = ({ className }: { className?: string }) => {
             }
           />
         ))}
+        {os.series.repos.map((repo) => (
+          <RepoRow
+            key={repo.name}
+            href={repo.repo}
+            name={repo.name}
+            meta="Node.js"
+            mono
+          />
+        ))}
         {os.repos.map((repo) => (
           <RepoRow
             key={repo.name}

@@ -128,6 +128,48 @@ const FeaturedCard = ({
   );
 };
 
+/** A themed set of small repos, listed in one card. */
+const SeriesCard = ({ className }: { className?: string }) => (
+  <BentoCard className={cn('flex flex-col gap-4 p-5 md:p-6', className)}>
+    <div className="flex flex-wrap gap-2">
+      {os.series.tags.map((tag) => (
+        <Badge key={tag} variant="secondary" className="rounded-full">
+          {tag}
+        </Badge>
+      ))}
+    </div>
+    <h3 className="text-3xl font-semibold text-foreground">
+      {os.series.name}
+    </h3>
+    <p className="leading-relaxed text-muted-foreground">
+      {os.series.description}
+    </p>
+    <ul className="mt-auto flex flex-col divide-y divide-border border-t border-border">
+      {os.series.repos.map((r) => (
+        <li key={r.name}>
+          <a
+            href={r.repo}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="group/repo flex items-center justify-between gap-4 py-3.5"
+          >
+            <span className="min-w-0">
+              <span className="flex items-center gap-2 font-mono text-sm text-foreground transition-colors group-hover/repo:text-brand">
+                <GithubIcon className="shrink-0 text-base" />
+                <span className="truncate">{r.name}</span>
+              </span>
+              <span className="mt-1 block text-sm text-muted-foreground">
+                {r.topics}
+              </span>
+            </span>
+            <ArrowChip />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </BentoCard>
+);
+
 const RepoCard = ({
   repo,
   index,
@@ -187,7 +229,7 @@ const HorizontalScroller = () => {
   const trackRef = useRef<HTMLDivElement>(null);
   const [distance, setDistance] = useState(0);
   const [active, setActive] = useState(0);
-  const total = os.repos.length + FEATURED.length;
+  const total = os.repos.length + FEATURED.length + 1;
 
   useLayoutEffect(() => {
     const track = trackRef.current;
@@ -236,6 +278,7 @@ const HorizontalScroller = () => {
               className="w-[40rem] shrink-0"
             />
           ))}
+          <SeriesCard className="w-[34rem] shrink-0" />
           {os.repos.map((repo, i) => (
             <RepoCard
               key={repo.name}
@@ -271,6 +314,7 @@ const StackedGrid = () => (
     {FEATURED.map((f) => (
       <FeaturedCard key={f.name} item={f} className="md:col-span-2" />
     ))}
+    <SeriesCard className="md:col-span-2" />
     {os.repos.map((repo, i) => (
       <RepoCard
         key={repo.name}

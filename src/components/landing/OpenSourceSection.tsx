@@ -15,7 +15,6 @@ import { BookOpen, Code2, ExternalLink } from 'lucide-react';
 import { useLayoutEffect, useRef, useState } from 'react';
 
 const os = en.opensource;
-type Repo = (typeof os.repos)[number];
 
 const GithubIcon = ({ className }: { className?: string }) => (
   <i className={cn('iconoir-github', className)} aria-hidden />
@@ -128,54 +127,39 @@ const FeaturedCard = ({
   );
 };
 
-/** A themed set of small repos, listed in one card. */
-const SeriesCard = ({ className }: { className?: string }) => (
-  <BentoCard className={cn('flex flex-col gap-4 p-5 md:p-6', className)}>
-    <div className="flex flex-wrap gap-2">
-      {os.series.tags.map((tag) => (
-        <Badge key={tag} variant="secondary" className="rounded-full">
-          {tag}
-        </Badge>
-      ))}
-    </div>
-    <h3 className="text-3xl font-semibold text-foreground">
-      {os.series.name}
-    </h3>
-    <p className="leading-relaxed text-muted-foreground">
-      {os.series.description}
-    </p>
-    <ul className="mt-auto flex flex-col divide-y divide-border border-t border-border">
-      {os.series.repos.map((r) => (
-        <li key={r.name}>
-          <a
-            href={r.repo}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="group/repo flex items-center justify-between gap-4 py-3.5"
-          >
-            <span className="min-w-0">
-              <span className="flex items-center gap-2 font-mono text-sm text-foreground transition-colors group-hover/repo:text-brand">
-                <GithubIcon className="shrink-0 text-base" />
-                <span className="truncate">{r.name}</span>
-              </span>
-              <span className="mt-1 block text-sm text-muted-foreground">
-                {r.topics}
-              </span>
-            </span>
-            <ArrowChip />
-          </a>
-        </li>
-      ))}
-    </ul>
-  </BentoCard>
-);
+type Card = {
+  name: string;
+  repo: string;
+  post: string;
+  title: string;
+  kicker: string;
+  badge: string;
+  description: string;
+  demo?: string;
+  media?: string;
+};
+
+/** Paper recreations, then the Node.js security repos, as one card shape. */
+const CARDS: Card[] = [
+  ...os.repos.map((r) => ({
+    ...r,
+    title: r.paper,
+    kicker: r.org,
+    badge: `arXiv:${r.arxiv}`,
+  })),
+  ...os.series.repos.map((r) => ({
+    ...r,
+    kicker: os.series.name,
+    badge: 'Node.js',
+  })),
+];
 
 const RepoCard = ({
   repo,
   index,
   className,
 }: {
-  repo: Repo;
+  repo: Card;
   index: number;
   className?: string;
 }) => (
@@ -185,33 +169,50 @@ const RepoCard = ({
     delay={0.05 * index}
     className={cn('flex flex-col gap-4 p-3', className)}
   >
-    {/* The post's illustrated thumbnail doubles as the card's visual. */}
-    <div className="relative overflow-hidden rounded-[calc(var(--radius-bento)-0.5rem)] bg-secondary">
+    {/* A screenshot of the live demo; the post's illustration as a fallback. */}
+    <div className="relative overflow-hidden rounded-[calc(var(--radius-bento)-0.5rem)] border border-border bg-secondary">
       <img
-        src={`/assets/thumbnails/${repo.post}.svg`}
-        alt=""
+        src={repo.media ?? `/assets/thumbnails/${repo.post}.svg`}
+        alt={repo.media ? `${repo.title} demo screenshot` : ''}
         loading="lazy"
-        className="aspect-[16/9] w-full object-cover transition-[scale] duration-700 ease-[var(--ease-apple)] group-hover:scale-[1.04]"
+        className="aspect-[16/9] w-full object-cover object-top transition-[scale] duration-700 ease-[var(--ease-apple)] group-hover:scale-[1.04]"
       />
+      {repo.demo ? (
+        <span className="material absolute left-2.5 top-2.5 flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.7rem] font-medium text-foreground">
+          <span className="size-1.5 rounded-full bg-emerald-400" /> Live
+        </span>
+      ) : null}
       <span className="material absolute right-2.5 top-2.5 rounded-full px-2.5 py-1 font-mono text-[0.7rem] text-foreground">
-        arXiv:{repo.arxiv}
+        {repo.badge}
       </span>
     </div>
     <div className="flex flex-1 flex-col gap-3 px-2 pb-2">
-      <p className="text-[0.8rem] font-medium text-brand">{repo.org}</p>
+      <p className="text-[0.8rem] font-medium text-brand">{repo.kicker}</p>
       <h3 className="-mt-2 text-xl font-semibold leading-snug text-foreground">
-        {repo.paper}
+        {repo.title}
       </h3>
       <p className="text-[0.95rem] leading-relaxed text-muted-foreground">
         {repo.description}
       </p>
-      <Link
-        to="/blog/$post"
-        params={{ post: repo.post }}
-        className="relative z-20 inline-flex w-fit items-center gap-1.5 text-sm font-medium text-brand underline-offset-4 hover:underline"
-      >
-        <BookOpen className="size-4" /> Read the breakdown
-      </Link>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        {repo.demo ? (
+          <a
+            href={repo.demo}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="relative z-20 inline-flex w-fit items-center gap-1.5 text-sm font-medium text-brand underline-offset-4 hover:underline"
+          >
+            <ExternalLink className="size-4" /> Live demo
+          </a>
+        ) : null}
+        <Link
+          to="/blog/$post"
+          params={{ post: repo.post }}
+          className="relative z-20 inline-flex w-fit items-center gap-1.5 text-sm font-medium text-brand underline-offset-4 hover:underline"
+        >
+          <BookOpen className="size-4" /> Read the breakdown
+        </Link>
+      </div>
       <div className="mt-auto flex items-center justify-between gap-4 border-t border-border pt-4">
         <span className="flex min-w-0 items-center gap-2 font-mono text-sm text-foreground">
           <GithubIcon className="shrink-0 text-base" />
@@ -229,7 +230,7 @@ const HorizontalScroller = () => {
   const trackRef = useRef<HTMLDivElement>(null);
   const [distance, setDistance] = useState(0);
   const [active, setActive] = useState(0);
-  const total = os.repos.length + FEATURED.length + 1;
+  const total = CARDS.length + FEATURED.length;
 
   useLayoutEffect(() => {
     const track = trackRef.current;
@@ -278,8 +279,7 @@ const HorizontalScroller = () => {
               className="w-[40rem] shrink-0"
             />
           ))}
-          <SeriesCard className="w-[34rem] shrink-0" />
-          {os.repos.map((repo, i) => (
+          {CARDS.map((repo, i) => (
             <RepoCard
               key={repo.name}
               repo={repo}
@@ -314,16 +314,15 @@ const StackedGrid = () => (
     {FEATURED.map((f) => (
       <FeaturedCard key={f.name} item={f} className="md:col-span-2" />
     ))}
-    <SeriesCard className="md:col-span-2" />
-    {os.repos.map((repo, i) => (
+    {CARDS.map((repo, i) => (
       <RepoCard
         key={repo.name}
         repo={repo}
         index={i}
         className={cn(
           // An odd last card spans the row instead of sitting alone.
-          i === os.repos.length - 1 &&
-            os.repos.length % 2 === 1 &&
+          i === CARDS.length - 1 &&
+            CARDS.length % 2 === 1 &&
             'md:col-span-2',
         )}
       />

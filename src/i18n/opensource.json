@@ -1,7 +1,7 @@
 {
   "caption": "Open source",
   "heading": "Built in public",
-  "description": "Interactive visualizations, AI video tooling, and minimal, readable PyTorch implementations of recent ML research papers.",
+  "description": "Interactive demos of recent ML papers and Node.js security basics, AI video tooling, and visualizations, each with readable source you can run.",
   "github": "https://github.com/msanvarov",
   "featured": {
     "name": "Algo Vision",
@@ -33,31 +33,46 @@
   "series": {
     "name": "Node.js security",
     "description": "Four runnable Node.js repos covering the security basics every backend needs: injection, HTTP hardening, the npm supply chain, and crypto.",
-    "tags": [
-      "JavaScript",
-      "Node.js",
-      "Security"
-    ],
     "repos": [
       {
         "name": "nodejs-injection-defense",
         "topics": "Command, SQL, path traversal, prototype pollution, ReDoS",
-        "repo": "https://github.com/msanvarov/nodejs-injection-defense"
+        "repo": "https://github.com/msanvarov/nodejs-injection-defense",
+        "title": "Injection defense",
+        "post": "nodejs-injection-attacks-and-fixes",
+        "description": "Five classic injection bugs, each with the exploit, the fix and a test that proves it.",
+        "demo": "https://nodejs-injection-defense.netlify.app/",
+        "media": "/assets/open-source/nodejs-injection-defense.jpg"
       },
       {
         "name": "nodejs-http-hardening",
         "topics": "Headers, body limits, timeouts, rate limiting, CORS, safe errors",
-        "repo": "https://github.com/msanvarov/nodejs-http-hardening"
+        "repo": "https://github.com/msanvarov/nodejs-http-hardening",
+        "title": "HTTP hardening",
+        "post": "hardening-a-nodejs-http-server",
+        "description": "A zero-dependency Node.js server that sets safe headers, limits bodies, times out slow clients and rate-limits.",
+        "demo": "https://nodejs-http-hardening.netlify.app/",
+        "media": "/assets/open-source/nodejs-http-hardening.jpg"
       },
       {
         "name": "nodejs-supply-chain-security",
         "topics": "npm config, CI auditing, install-script scanning, permission model",
-        "repo": "https://github.com/msanvarov/nodejs-supply-chain-security"
+        "repo": "https://github.com/msanvarov/nodejs-supply-chain-security",
+        "title": "Supply-chain security",
+        "post": "npm-supply-chain-defenses",
+        "description": "Safe npm config, CI auditing, an install-script scanner and the Node permission model.",
+        "demo": "https://nodejs-supply-chain-security.netlify.app/",
+        "media": "/assets/open-source/nodejs-supply-chain-security.jpg"
       },
       {
         "name": "nodejs-crypto-secrets",
         "topics": "Password hashing, tokens, JWTs, encryption, secrets",
-        "repo": "https://github.com/msanvarov/nodejs-crypto-secrets"
+        "repo": "https://github.com/msanvarov/nodejs-crypto-secrets",
+        "title": "Crypto and secrets",
+        "post": "nodejs-crypto-and-secrets-done-right",
+        "description": "Password hashing, secure tokens, JWT checks and AES-GCM encryption with node:crypto.",
+        "demo": "https://nodejs-crypto-secrets.netlify.app/",
+        "media": "/assets/open-source/nodejs-crypto-secrets.jpg"
       }
     ]
   },
@@ -69,7 +84,9 @@
       "org": "Qwen Team",
       "arxiv": "2505.06708",
       "repo": "https://github.com/msanvarov/gated-attention-minimal",
-      "post": "gated-attention-explained"
+      "post": "gated-attention-explained",
+      "demo": "https://gated-attention-minimal.netlify.app/",
+      "media": "/assets/open-source/gated-attention-minimal.jpg"
     },
     {
       "name": "titans-minimal",
@@ -78,7 +95,9 @@
       "org": "Google",
       "arxiv": "2501.00663",
       "repo": "https://github.com/msanvarov/titans-minimal",
-      "post": "titans-test-time-memory-explained"
+      "post": "titans-test-time-memory-explained",
+      "demo": "https://titans-minimal.netlify.app/",
+      "media": "/assets/open-source/titans-minimal.jpg"
     },
     {
       "name": "gspo-minimal",
@@ -87,7 +106,9 @@
       "org": "Qwen Team",
       "arxiv": "2507.18071",
       "repo": "https://github.com/msanvarov/gspo-minimal",
-      "post": "gspo-explained"
+      "post": "gspo-explained",
+      "demo": "https://gspo-minimal.netlify.app/",
+      "media": "/assets/open-source/gspo-minimal.jpg"
     },
     {
       "name": "muon-minimal",
@@ -96,7 +117,9 @@
       "org": "Moonshot AI",
       "arxiv": "2502.16982",
       "repo": "https://github.com/msanvarov/muon-minimal",
-      "post": "muon-optimizer-explained"
+      "post": "muon-optimizer-explained",
+      "demo": "https://muon-minimal.netlify.app/",
+      "media": "/assets/open-source/muon-minimal.jpg"
     },
     {
       "name": "nsa-minimal",
@@ -105,7 +128,9 @@
       "org": "DeepSeek-AI",
       "arxiv": "2502.11089",
       "repo": "https://github.com/msanvarov/nsa-minimal",
-      "post": "native-sparse-attention-explained"
+      "post": "native-sparse-attention-explained",
+      "demo": "https://nsa-minimal.netlify.app/",
+      "media": "/assets/open-source/nsa-minimal.jpg"
     }
   ]
 }

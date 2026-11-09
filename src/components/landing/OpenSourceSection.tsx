@@ -276,7 +276,7 @@ const HorizontalScroller = () => {
             <FeaturedCard
               key={f.name}
               item={f}
-              className="w-[40rem] shrink-0"
+              className="w-[40rem] shrink-0 self-stretch"
             />
           ))}
           {CARDS.map((repo, i) => (

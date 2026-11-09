@@ -1,7 +1,7 @@
 {
   "caption": "Open source",
   "heading": "Built in public",
-  "description": "Interactive demos of recent ML papers and Node.js security basics, AI video tooling, and visualizations, each with readable source you can run.",
+  "description": "Interactive demos of recent ML papers and Node.js security basics, AI video tooling, a Toronto parking-ticket checker, and visualizations, each with readable source you can run.",
   "github": "https://github.com/msanvarov",
   "featured": {
     "name": "Algo Vision",
@@ -27,6 +27,18 @@
         "JavaScript",
         "Generative AI",
         "Video"
+      ]
+    },
+    {
+      "name": "Ticket Risk TO",
+      "description": "Tells you how likely you are to get a parking ticket on your Toronto block at the hour you're parking, scored 0–100 from 3.4 million City of Toronto tickets, with quieter times to park instead. Free, no sign-up, installs on your phone.",
+      "live": "https://toronto-parking-risk.netlify.app/",
+      "repo": "https://github.com/msanvarov/toronto-parking-risk",
+      "media": "/assets/open-source/toronto-parking-risk.jpg",
+      "tags": [
+        "TypeScript",
+        "Open data",
+        "PWA"
       ]
     }
   ],

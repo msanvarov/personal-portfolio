@@ -25,6 +25,7 @@ Sal builds production software across the stack: TypeScript / React / Next.js on
 
 - [Algo Vision](https://algo-vision.sal-anvarov.com/): Twenty-two interactive visualizations of how algorithms compute, from sorting to Raft consensus. [Source](https://github.com/msanvarov/algo-vision)
 - [Reference Packer](https://reference-packer.netlify.app/): Packs several reference images into one sheet per subject for AI video on Higgsfield, lints it, and builds the prompt for Seedance, Kling, Wan, Veo or Gemini Omni. [Source](https://github.com/msanvarov/reference-packer)
+- [Ticket Risk TO](https://toronto-parking-risk.netlify.app/): Scores 0–100 how likely you are to get a parking ticket on your Toronto block at a given hour, from 3.4 million City of Toronto tickets. [Source](https://github.com/msanvarov/toronto-parking-risk)
 - [gated-attention-minimal](https://github.com/msanvarov/gated-attention-minimal): Minimal PyTorch implementation of gated attention, the G1 variant (arXiv:2505.06708). [Live demo](https://gated-attention-minimal.netlify.app/)
 - [titans-minimal](https://github.com/msanvarov/titans-minimal): Minimal PyTorch implementation of Titans' test-time neural memory (arXiv:2501.00663). [Live demo](https://titans-minimal.netlify.app/)
 - [gspo-minimal](https://github.com/msanvarov/gspo-minimal): Minimal PyTorch implementation of Group Sequence Policy Optimization (arXiv:2507.18071). [Live demo](https://gspo-minimal.netlify.app/)

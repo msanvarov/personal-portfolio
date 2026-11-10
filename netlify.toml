@@ -19,10 +19,10 @@
   status = 301
   force = true
 
-# Offerings moved to the studio site, DEV BY SAL.
+# Offerings moved to the studio site, DBS Labs.
 [[redirects]]
   from = "/offerings"
-  to = "https://by-sal.dev/offerings"
+  to = "https://dbs-labs.ai/offerings"
   status = 301
   force = true
 

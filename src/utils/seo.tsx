@@ -86,21 +86,20 @@ export const personLd = () => ({
   alternateName: 'Salimjon Anvarov',
   url: SITE_URL,
   image: DEFAULT_OG_IMAGE,
-  jobTitle: 'Full Stack Developer, Founder of DEV BY SAL & Co-founder of Cleanlist.ai',
+  jobTitle: 'Full Stack Developer, Founder of DBS Labs & Co-founder of Cleanlist.ai',
   description:
-    'Full stack developer in Toronto, founder of DEV BY SAL and co-founder of Cleanlist.ai. Presents at a Toronto Meetup on AI topics — using different AI techniques to build AI-native software.',
+    'Full stack developer in Toronto, founder of DBS Labs and co-founder of Cleanlist.ai. Presents at a Toronto Meetup on AI topics — using different AI techniques to build AI-native software.',
   sameAs: [
     'https://github.com/msanvarov',
     'https://linkedin.com/in/sal-anvarov',
     'https://cleanlist.ai',
-    'https://by-sal.dev',
+    'https://dbs-labs.ai',
   ],
   worksFor: [
     {
       '@type': 'Organization',
-      name: 'DEV BY SAL LTD.',
-      alternateName: 'DEV BY SAL',
-      url: 'https://by-sal.dev',
+      name: 'DBS Labs',
+      url: 'https://dbs-labs.ai',
     },
     { '@type': 'Organization', name: 'Cleanlist.ai', url: 'https://cleanlist.ai' },
   ],

@@ -293,7 +293,7 @@ const WorksTile = ({ className }: { className?: string }) => (
 const StudioTile = ({ className }: { className?: string }) => (
   <BentoCard
     href={STUDIO.url}
-    label={`${STUDIO.name} — visit by-sal.dev`}
+    label={`${STUDIO.name} — visit dbs-labs.ai`}
     delay={0.15}
     className={cn(
       'flex flex-col items-center p-5 text-center sm:p-6',
@@ -305,7 +305,7 @@ const StudioTile = ({ className }: { className?: string }) => (
       Consulting and product engineering now run through my studio.
     </p>
     <span className="btn-brand mt-5 h-11 w-fit px-5 text-sm">
-      by-sal.dev <ArrowUpRight className="size-4" />
+      dbs-labs.ai <ArrowUpRight className="size-4" />
     </span>
   </BentoCard>
 );

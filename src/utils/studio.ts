@@ -1,6 +1,6 @@
-/** DEV BY SAL — Sal's software studio (consulting and product work). */
+/** DBS Labs — Sal's software studio (consulting and product work). */
 export const STUDIO = {
-  name: 'DEV BY SAL',
-  legalName: 'DEV BY SAL LTD.',
-  url: 'https://by-sal.dev',
+  name: 'DBS Labs',
+  legalName: 'DBS Labs',
+  url: 'https://dbs-labs.ai',
 } as const;

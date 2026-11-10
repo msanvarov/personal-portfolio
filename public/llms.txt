@@ -1,12 +1,12 @@
 # Sal Anvarov
 
-> Personal portfolio of Sal Anvarov — full stack developer, founder of the software studio DEV BY SAL (https://by-sal.dev) and Co-founder of Cleanlist.ai, based in Toronto. He presents at a Toronto Meetup on AI topics — how to use different AI techniques to build AI-native software. The site catalogs hands-on case studies (TANNED TO, Pairus, Cleanlist, Hopin Technologies, Flurrish, Hellotax, Natura Market) and long-form writing on software architecture, developer experience, frontend safety, and ML internals.
+> Personal portfolio of Sal Anvarov — full stack developer, founder of the software studio DBS Labs (https://dbs-labs.ai) and Co-founder of Cleanlist.ai, based in Toronto. He presents at a Toronto Meetup on AI topics — how to use different AI techniques to build AI-native software. The site catalogs hands-on case studies (TANNED TO, Pairus, Cleanlist, Hopin Technologies, Flurrish, Hellotax, Natura Market) and long-form writing on software architecture, developer experience, frontend safety, and ML internals.
 
 Sal builds production software across the stack: TypeScript / React / Next.js on the frontend, Node.js / NestJS / FastAPI on the backend, with deployments on AWS and GCP. Recent focus: AI-powered B2B tooling (Cleanlist.ai), Chrome extension engineering, and lead-enrichment data pipelines.
 
 ## About
 
-- [DEV BY SAL — studio](https://by-sal.dev): Sal's software studio (DEV BY SAL LTD.). Consulting and product engineering offerings live at [by-sal.dev/offerings](https://by-sal.dev/offerings).
+- [DBS Labs — studio](https://dbs-labs.ai): Sal's software studio. Consulting and product engineering offerings live at [dbs-labs.ai/offerings](https://dbs-labs.ai/offerings).
 - [Bio](https://www.sal-anvarov.com/bio): Background, work history, and how Sal moved from a CS undergrad in Ontario into AI-powered B2B tooling.
 - [Credentials](https://www.sal-anvarov.com/credentials): Resume — current role at Cleanlist.ai (Co-founder), prior roles at Oproma, Permion.ai, and earlier positions, plus capabilities and expertise breakdown.
 - [Contact](https://www.sal-anvarov.com/contact): Reach Sal via Formspree, email, or schedule a chat on Calendly.

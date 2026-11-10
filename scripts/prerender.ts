@@ -20,7 +20,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import * as runtime from 'react/jsx-runtime';
 import remarkGfm from 'remark-gfm';
 
-const STUDIO = { name: 'DEV BY SAL', url: 'https://by-sal.dev' };
+const STUDIO = { name: 'DBS Labs', url: 'https://dbs-labs.ai' };
 const NAME = 'Sal Anvarov';
 
 type Json = Record<string, any>;
@@ -148,16 +148,16 @@ export const prerender = async (
     url: `${site}/`,
     image: defaultImage,
     jobTitle:
-      'Full Stack Developer, Founder of DEV BY SAL & Co-founder of Cleanlist.ai',
+      'Full Stack Developer, Founder of DBS Labs & Co-founder of Cleanlist.ai',
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Toronto',
       addressCountry: 'CA',
     },
     description:
-      'Full stack developer in Toronto, founder of DEV BY SAL and co-founder of Cleanlist.ai. Presents at a Toronto Meetup on AI topics — using different AI techniques to build AI-native software.',
+      'Full stack developer in Toronto, founder of DBS Labs and co-founder of Cleanlist.ai. Presents at a Toronto Meetup on AI topics — using different AI techniques to build AI-native software.',
     worksFor: [
-      { '@type': 'Organization', name: 'DEV BY SAL LTD.', url: STUDIO.url },
+      { '@type': 'Organization', name: 'DBS Labs', url: STUDIO.url },
       {
         '@type': 'Organization',
         name: 'Cleanlist.ai',

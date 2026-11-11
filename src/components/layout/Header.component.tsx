@@ -42,17 +42,19 @@ export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
-  // Scroll edge effect: the hairline appears only once content is underneath.
+  // The pill lifts with a soft shadow once content scrolls underneath it.
   useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 8));
 
   return (
-    <header
-      className={cn(
-        'material sticky top-0 z-50 border-b transition-[border-color] duration-300',
-        scrolled ? 'border-border' : 'border-transparent',
-      )}
-    >
-      <div className="mx-auto flex h-12 max-w-6xl items-center justify-between gap-4 px-4 md:px-6">
+    <header className="pointer-events-none sticky top-0 z-50 px-3 pt-3 md:pt-4">
+      <div
+        className={cn(
+          'material pointer-events-auto mx-auto flex h-14 max-w-4xl items-center justify-between gap-4 rounded-full border border-border pl-4 pr-2.5 transition-shadow duration-300 md:pl-5',
+          scrolled
+            ? 'shadow-[0_8px_32px_-12px_rgb(0_0_0/0.18)]'
+            : 'shadow-[0_2px_12px_-6px_rgb(0_0_0/0.08)]',
+        )}
+      >
         <Link to="/" aria-label="Home" className="group shrink-0">
           <img
             src="/assets/logo/logo.png"
@@ -118,14 +120,12 @@ export const Header = () => {
             <SheetContent
               side="top"
               showCloseButton={false}
-              overlayClassName="top-12 bg-transparent"
-              className="material border-0 bg-transparent shadow-none data-[side=top]:top-12 data-[side=top]:h-[calc(100dvh-3rem)] data-[side=top]:border-b-0"
+              overlayClassName="bg-background/30"
+              className="material rounded-[1.75rem] border border-border bg-transparent shadow-[0_16px_48px_-16px_rgb(0_0_0/0.25)] data-[side=top]:inset-x-3 data-[side=top]:top-[4.75rem] data-[side=top]:max-h-[calc(100dvh-5.5rem)] data-[side=top]:overflow-y-auto data-[side=top]:border-b"
             >
               <SheetTitle className="sr-only">Menu</SheetTitle>
-              <nav
-                aria-label="Mobile"
-                className="flex flex-col gap-1 px-6 pt-4"
-              >
+              <nav aria-label="Mobile" className="flex flex-col gap-1 p-5">
+
                 {menu.map((entry) => (
                   <Link
                     key={entry.path}

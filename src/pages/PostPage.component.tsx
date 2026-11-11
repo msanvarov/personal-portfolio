@@ -198,7 +198,7 @@ const PostPage = () => {
           posts={posts}
           categories={categories}
           tags={tags}
-          className="hidden lg:sticky lg:top-16 lg:block"
+          className="hidden lg:sticky lg:top-24 lg:block"
         />
 
         {/* Phones and tablets: a compact list instead of the sidebar. */}

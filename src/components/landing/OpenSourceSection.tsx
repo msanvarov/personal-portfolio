@@ -400,7 +400,7 @@ const HorizontalScroller = () => {
 const StackedGrid = () => (
   <section
     aria-label="Open source projects"
-    className="grid gap-4 md:grid-cols-2 md:gap-6"
+    className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6"
   >
     <Intro className="mb-4 md:col-span-2" />
     {FEATURED.map((f) => (

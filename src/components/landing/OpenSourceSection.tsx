@@ -257,7 +257,7 @@ const CardStack = ({
     'btn-quiet size-9 shrink-0 rounded-full p-0 focus-visible:outline-2 focus-visible:outline-brand';
 
   return (
-    <div className={cn('flex flex-col gap-4', className)}>
+    <div className={cn('flex min-w-0 flex-col gap-4', className)}>
       <div className="flex items-center justify-between gap-4 px-1">
         <h3 className="text-lg font-semibold text-foreground">{group.name}</h3>
         <div className="flex items-center gap-2">
@@ -285,8 +285,14 @@ const CardStack = ({
           </button>
         </div>
       </div>
-      {/* Every card sits in the same grid cell, so the deck is as tall as its tallest card. */}
-      <div className="grid flex-1 grid-cols-1" style={{ paddingTop: PEEK * 12 }}>
+      {/* Every card sits in the same grid cell, so the deck is as tall as its tallest card.
+          The column is pinned to the deck's width: without minmax(0, 1fr) it grows to fit
+          the widest card's content (e.g. with enlarged system text) and spills into the
+          next deck. */}
+      <div
+        className="grid min-w-0 flex-1 grid-cols-[minmax(0,1fr)]"
+        style={{ paddingTop: PEEK * 12 }}
+      >
         {group.cards.map((repo, i) => {
           const pos = (i - active + n) % n;
           const depth = Math.min(pos, PEEK);
@@ -301,7 +307,7 @@ const CardStack = ({
               }}
               transition={reduce ? { duration: 0 } : SPRING}
               style={{ zIndex: n - pos }}
-              className="flex origin-top [grid-area:1/1]"
+              className="flex min-w-0 origin-top [grid-area:1/1]"
               aria-hidden={pos > 0}
               // Cards behind the front one can't be focused or clicked.
               {...{ inert: pos > 0 ? '' : undefined }}

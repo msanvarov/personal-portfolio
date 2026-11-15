@@ -286,7 +286,7 @@ const CardStack = ({
         </div>
       </div>
       {/* Every card sits in the same grid cell, so the deck is as tall as its tallest card. */}
-      <div className="grid flex-1" style={{ paddingTop: PEEK * 12 }}>
+      <div className="grid flex-1 grid-cols-1" style={{ paddingTop: PEEK * 12 }}>
         {group.cards.map((repo, i) => {
           const pos = (i - active + n) % n;
           const depth = Math.min(pos, PEEK);
@@ -394,7 +394,7 @@ const HorizontalScroller = () => {
 const StackedGrid = () => (
   <section
     aria-label="Open source projects"
-    className="grid gap-4 md:grid-cols-2 md:gap-6"
+    className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6"
   >
     <Intro className="mb-4 md:col-span-2" />
     {FEATURED.map((f) => (
